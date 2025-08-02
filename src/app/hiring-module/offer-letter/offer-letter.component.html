@@ -32,7 +32,7 @@
               </button> -->
             </div>
           </div>
-          <div class="scroll-container table-responsive-custom">
+          <div class="scroll-container p-0">
             <table class="table table-bordered">
               <thead class="custom-bg">
                 <tr class="text-light">
@@ -123,7 +123,7 @@
           </div>
 
           <!-- Pagination Controls -->
-          <hr *ngIf="rows.length > 0" class="custom-hr mb-1 mt-1">
+          <hr *ngIf="rows.length > 0" class="custom-hr mb-2 mt-1">
           <div class="d-flex justify-content-between align-items-center mt-1" *ngIf="rows.length > 0">
             <span class="small badge bg-secondary text-white">
               Showing {{ startIndex }} to {{ endIndex }} of {{ rows.length }} Records

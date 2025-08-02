@@ -3,6 +3,7 @@ import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/c
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
@@ -39,7 +40,8 @@ export class EmployeeCodeComponent implements OnInit {
     private render: Renderer2,
     private dialog: MatDialog,
     private authService: AuthService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -154,13 +156,14 @@ export class EmployeeCodeComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log(result);
-        Swal.fire({
-          title: 'Warning',
-          text: 'Need to implement from backend',
-          icon: 'warning',
-          confirmButtonText: 'Close',
-          allowOutsideClick: false
-        });
+        // Swal.fire({
+        //   title: 'Warning',
+        //   text: 'Need to implement from backend',
+        //   icon: 'warning',
+        //   confirmButtonText: 'Close',
+        //   allowOutsideClick: false
+        // });
+        this.router.navigate(['/employee-code', id]);
       }
     });
   }

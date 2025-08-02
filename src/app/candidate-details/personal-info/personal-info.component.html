@@ -173,9 +173,9 @@
                         <div class="col-md-4">
 
                           <label class="form-label form-label-small">Mobile Number</label>
-                          <input type="text" [value]="jobCodeData.email" [readOnly]="isAllDataPresent"
-                            formControlName="mobileNumber" placeholder="9876543210" class="form-control form-control-sm"
-                            (keydown)="onlyNumbers($event)" maxlength="10" />
+                          <input type="text" [value]="jobCodeData.email" formControlName="mobileNumber"
+                            placeholder="9876543210" class="form-control form-control-sm"
+                            (keydown)="onlyNumbers($event)" maxlength="10" readonly />
                           <div
                             *ngIf="registrationForm.get('mobileNumber')?.touched && registrationForm.get('mobileNumber')?.invalid"
                             class="text-danger fs-custom">
@@ -211,8 +211,9 @@
 
                         <div class="col-md-4">
                           <label class="form-label form-label-small">First Name</label>
-                          <input type="text" [value]="jobCodeData.name" [readOnly]="isAllDataPresent"
-                            formControlName="firstName" class="form-control form-control-sm" />
+                          <input type="text" [value]="jobCodeData.name" [readOnly]="isAllDataPresent" noFirstSpace
+                            formControlName="firstName" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
                           <div
                             *ngIf="registrationForm.get('firstName')?.touched && registrationForm.get('firstName')?.invalid"
                             class="text-danger fs-custom">
@@ -221,13 +222,14 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Middle Name</label>
-                          <input type="text" [readOnly]="isAllDataPresent" formControlName="middleName"
+                          <input type="text" noFirstSpace [readOnly]="isAllDataPresent" formControlName="middleName"
                             placeholder="Middle Name" class="form-control form-control-sm" />
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Last Name</label>
-                          <input type="text" placeholder="Last Name" [readOnly]="isAllDataPresent"
-                            formControlName="lastName" class="form-control form-control-sm" />
+                          <input type="text" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
+                            formControlName="lastName" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
                           <div
                             *ngIf="registrationForm.get('lastName')?.touched && registrationForm.get('lastName')?.invalid"
                             class="text-danger fs-custom">
@@ -238,16 +240,13 @@
                           <label class="form-label form-label-small">Date of Birth</label>
                           <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
                             formControlName="dob" autocomplete="off" [bsConfig]="{
-                        adaptivePosition: true,
-                        showWeekNumbers: false,
-                        isAnimated: true,
-                        containerClass: colorTheme,
-                        customTodayClass: 'custom-today-class',
-                        dateInputFormat: 'DD-MMM-YYYY'
-                      }" [maxDate]="today" bsDatepicker required readonly />
-
-
-
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MMM-YYYY'
+                            }" [maxDate]="maxDate" bsDatepicker required readonly />
                           <div *ngIf="registrationForm.get('dob')?.touched && registrationForm.get('dob')?.invalid"
                             class="text-danger fs-custom">
                             Date of Birth is required
@@ -255,8 +254,9 @@
                         </div>
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">Father's Name</label>
-                          <input type="text" [readOnly]="isAllDataPresent" formControlName="fatherName"
-                            placeholder="Father's Name" class="form-control form-control-sm" />
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="fatherName"
+                            placeholder="Father's Name" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
                           <div
                             *ngIf="registrationForm.get('fatherName')?.touched && registrationForm.get('fatherName')?.invalid"
                             class="text-danger fs-custom">
@@ -316,50 +316,72 @@
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">UAN Number (Optional)</label>
                           <input type="text" [readOnly]="isAllDataPresent" formControlName="uan"
-                            placeholder="UAN Number" class="form-control form-control-sm" maxlength="12" />
+                            (keydown)="onlyNumbers($event)" placeholder="UAN Number"
+                            class="form-control form-control-sm" maxlength="12" />
                           <div *ngIf="registrationForm.get('uan')?.touched && registrationForm.get('uan')?.invalid"
                             class="text-danger fs-custom">
-                            UAN Number is required
+                            Valid UAN Number is required
                           </div>
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Passport Number (Optional)</label>
-                          <input type="text" [readOnly]="isAllDataPresent" formControlName="passport"
-                            placeholder="Passport Number" class="form-control form-control-sm" />
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="passport"
+                            placeholder="A1234567" class="form-control form-control-sm" maxlength="8" />
                           <div
                             *ngIf="registrationForm.get('passport')?.touched && registrationForm.get('passport')?.invalid"
                             class="text-danger fs-custom">
-                            Passport Number is required
+                            Valid Passport Number is required (A1234567)
                           </div>
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">DL Number (Optional)</label>
-                          <input type="text" [readOnly]="isAllDataPresent" formControlName="licence"
-                            placeholder="Driving Licence Number" class="form-control form-control-sm" />
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="licence"
+                            placeholder="AP0123456789012" class="form-control form-control-sm" maxlength="16"
+                            (input)="toUppercase($event)" />
                           <div
-                            *ngIf="registrationForm.get('licence')?.touched && registrationForm.get('licence')?.invalid"
+                            *ngIf="registrationForm.get('licence')?.hasError('invalidLicence') && registrationForm.get('licence')?.touched"
                             class="text-danger fs-custom">
-                            DL Number is required
+                            enter valid DL Number (AP0123456789012)
                           </div>
+
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                           <label class="form-label form-label-small">PAN Number</label>
                           <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"
-                            placeholder="ABCDE1234F" maxlength="10" class="form-control form-control-sm text-uppercase"
-                            (keydown)="panCardKeydown($event)"
+                            placeholder="ABCDE1234F" maxlength="10" minlength="10"
+                            class="form-control form-control-sm text-uppercase" (keydown)="panCardKeydown($event)"
                             (input)="registrationForm.get('pan')?.setValue($event.target.value.toUpperCase())" />
 
                           <div
-                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.errors?.['invalidPan']"
+                            *ngIf="registrationForm.get('pan')?.hasError('pattern') && registrationForm.get('pan')?.touched"
                             class="text-danger fs-custom">
-                            Invalid PAN format. Expected: ABCDE1234F
+                            Enter a valid PAN (e.g., ABCDE1234F)
+                          </div>
+                        </div> -->
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">PAN Number</label>
+                          <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"
+                            placeholder="ABCDE1234F" maxlength="10" minlength="10"
+                            class="form-control form-control-sm text-uppercase" (keydown)="panCardKeydown($event)"
+                            (input)="registrationForm.get('pan')?.setValue($event.target.value.toUpperCase())" />
+                          <div
+                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.hasError('required')"
+                            class="text-danger fs-custom">
+                            PAN number is required.
                           </div>
                           <div
-                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.errors?.['required']"
+                            *ngIf="registrationForm.get('pan')?.touched && (registrationForm.get('pan')?.hasError('minlength') || registrationForm.get('pan')?.hasError('maxlength'))"
                             class="text-danger fs-custom">
-                            PAN is required.
+                            PAN must be exactly 10 characters long.
+                          </div>
+                          <div
+                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.hasError('pattern')"
+                            class="text-danger fs-custom">
+                            Enter a valid PAN (e.g., ABCDE1234F)
                           </div>
                         </div>
+
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Aadhar Number</label>
                           <input type="text" [readOnly]="isAllDataPresent" formControlName="adhar"
@@ -372,8 +394,9 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">District</label>
-                          <input type="text" [readOnly]="isAllDataPresent" formControlName="district"
-                            placeholder="District" class="form-control form-control-sm" />
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="district"
+                            maxlength="100" placeholder="District" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
                           <div
                             *ngIf="registrationForm.get('district')?.touched && registrationForm.get('district')?.invalid"
                             class="text-danger fs-custom">
@@ -504,7 +527,7 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <label class="form-label form-label-small">Address1</label>
-                            <textarea formControlName="addressA" placeholder="Address1"
+                            <textarea formControlName="addressA" placeholder="Address1" noFirstSpace maxlength="100"
                               [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm" [ngClass]="{
                                 'is-invalid': registrationForm.get('addressA')?.touched && registrationForm.get('addressA')?.invalid
                               }" rows="1">
@@ -522,8 +545,8 @@
 
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Address2</label>
-                          <textarea formControlName="addressB" placeholder="Address2"
-                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                          <textarea formControlName="addressB" placeholder="Address2" noFirstSpace
+                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm" maxlength="100"
                             [ngClass]="{'is-invalid': registrationForm.get('addressB')?.touched && registrationForm.get('addressB')?.invalid }"
                             rows="1"></textarea>
                           <!-- <div
@@ -534,7 +557,7 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Address3</label>
-                          <textarea formControlName="addressC" placeholder="Address3"
+                          <textarea formControlName="addressC" placeholder="Address3" maxlength="100" noFirstSpace
                             [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
                             [ngClass]="{'is-invalid': registrationForm.get('addressC')?.touched && registrationForm.get('addressC')?.invalid }"
                             rows="1"></textarea>
@@ -615,8 +638,8 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <label class="form-label form-label-small">Address1</label>
-                            <textarea formControlName="permanentAddressA" placeholder="Address1"
-                              [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                            <textarea formControlName="permanentAddressA" placeholder="Address1" maxlength="100"
+                              noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
                               [ngClass]="{'is-invalid': registrationForm.get('permanentAddressA')?.touched && registrationForm.get('permanentAddressA')?.invalid }"
                               rows="1"></textarea>
                             <!-- <div
@@ -630,8 +653,8 @@
 
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Address2</label>
-                          <textarea formControlName="permanentAddressB" placeholder="Address2"
-                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                          <textarea formControlName="permanentAddressB" placeholder="Address2" maxlength="100"
+                            noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
                             [ngClass]="{'is-invalid': registrationForm.get('permanentAddressB')?.touched && registrationForm.get('permanentAddressB')?.invalid }"
                             rows="1"></textarea>
                           <!-- <div
@@ -642,8 +665,8 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Address3</label>
-                          <textarea formControlName="permanentAddressC" placeholder="Address3"
-                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                          <textarea formControlName="permanentAddressC" placeholder="Address3" maxlength="100"
+                            noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
                             [ngClass]="{'is-invalid': registrationForm.get('permanentAddressC')?.touched && registrationForm.get('permanentAddressC')?.invalid }"
                             rows="1"></textarea>
                           <!-- <div
@@ -845,8 +868,8 @@
                         </div>
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">College Name</label>
-                          <input type="text" formControlName="college" placeholder="College name"
-                            class="form-control form-control-sm" />
+                          <input type="text" formControlName="college" placeholder="College name" maxlength="100"
+                            noFirstSpace class="form-control form-control-sm" />
                           <div
                             *ngIf="registrationForm.get('college')?.touched && registrationForm.get('college')?.invalid"
                             class="text-danger fs-custom">
@@ -1496,7 +1519,7 @@
                           <div class="col-md-4">
                             <label class="form-label form-label-small">Job Responsibilities</label>
                             <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="500"
-                              formControlName="suitableJobDescription" class="form-control form-control-sm"
+                              noFirstSpace formControlName="suitableJobDescription" class="form-control form-control-sm"
                               [readOnly]="isExperienceBoolean" placeholder="Description"></textarea>
                             <div
                               *ngIf="registrationForm.get('suitableJobDescription')?.touched && registrationForm.get('suitableJobDescription')?.invalid"
@@ -1514,7 +1537,7 @@
                       <div class="col-md-9 row g-3 align-items-center">
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Current Salary</label>
-                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
+                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" maxlength="8"
                             [readOnly]="isExperienceBoolean" formControlName="currentSalary" placeholder="₹"
                             (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
                           <div
@@ -1525,7 +1548,7 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Expected Salary</label>
-                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
+                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" maxlength="8"
                             [readOnly]="isExperienceBoolean" formControlName="expectedSalary" placeholder="₹"
                             (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
                           <div
@@ -1697,8 +1720,8 @@
 
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">Company Name</label>
-                          <input *ngIf="editButtonDisplay" type="text" formControlName="companyName"
-                            placeholder="Company Name" class="form-control form-control-sm"
+                          <input *ngIf="editButtonDisplay" type="text" formControlName="companyName" maxlength="100"
+                            noFirstSpace placeholder="Company Name" class="form-control form-control-sm"
                             (blur)="checkDuplicateCompanyName()" />
 
                           <div
@@ -1972,88 +1995,88 @@
                   <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name | uppercase }})</h6>
 
                   <!-- <div class="scroll-container mb-0"> -->
-                    <!-- Headings for Desktop -->
-                    <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">
-                      <div class="col-md-1">Status</div>
-                      <div class="col-md-2">Round Title</div>
-                      <div class="col-md-2">Date</div>
-                      <div class="col-md-2">Time</div>
-                      <div class="col-md-3">Location</div>
-                      <div class="col-md-2">Status</div>
-                    </div>
+                  <!-- Headings for Desktop -->
+                  <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">
+                    <div class="col-md-1">Status</div>
+                    <div class="col-md-2">Round Title</div>
+                    <div class="col-md-2">Date</div>
+                    <div class="col-md-2">Time</div>
+                    <div class="col-md-3">Location</div>
+                    <div class="col-md-2">Status</div>
+                  </div>
 
-                    <!-- Interview Loop -->
-                    <div *ngFor="let interview of loadedData.candidateInterviewDetails"
-                      class="rounded mb-3 p-3 p-md-2 border interview-card" [ngClass]="{
+                  <!-- Interview Loop -->
+                  <div *ngFor="let interview of loadedData.candidateInterviewDetails"
+                    class="rounded mb-3 p-3 p-md-2 border interview-card" [ngClass]="{
                         'filled-bg': interview.candidateInterviewFeedBackDTO?.length,
                         'custom-bg text-white': !interview.candidateInterviewFeedBackDTO?.length
                       }">
 
-                      <!-- Desktop Layout -->
-                      <div class="row align-items-center p-0 d-none d-md-flex">
-                        <div class="col-md-1 text-center">
-                          <i [ngClass]="{
+                    <!-- Desktop Layout -->
+                    <div class="row align-items-center p-0 d-none d-md-flex">
+                      <div class="col-md-1 text-center">
+                        <i [ngClass]="{
                             'bi bi-check-circle-fill text-success': interview.candidateInterviewFeedBackDTO?.length,
                             'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
                           }" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div class="col-md-2 fw-semibold">
-                          {{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : '' }}
-                        </div>
-                        <div class="col-md-2">{{ formatFullDateForInterview(interview.interviewDate) }}</div>
-                        <div class="col-md-2">{{ interview.interviewTime || '--' }}</div>
-                        <div class="col-md-3 text-truncate" [attr.title]="interview.locationName || '--'"
-                          style="max-width: 100%;">
-                          {{ interview.locationName?.length > 25 ? (interview.locationName | slice: 0:25) + '...' :
-                          (interview.locationName || '--') }}
-                        </div>
-                        <div class="col-md-2 fw-medium" [ngClass]="{
+                      </div>
+                      <div class="col-md-2 fw-semibold">
+                        {{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : '' }}
+                      </div>
+                      <div class="col-md-2">{{ formatFullDateForInterview(interview.interviewDate) }}</div>
+                      <div class="col-md-2">{{ interview.interviewTime || '--' }}</div>
+                      <div class="col-md-3 text-truncate" [attr.title]="interview.locationName || '--'"
+                        style="max-width: 100%;">
+                        {{ interview.locationName?.length > 25 ? (interview.locationName | slice: 0:25) + '...' :
+                        (interview.locationName || '--') }}
+                      </div>
+                      <div class="col-md-2 fw-medium" [ngClass]="{
                           'text-success': interview.status === 1004,
                           'text-warning': interview.status === 1001,
                           'text-danger': interview.status === 1002 || interview.status === 1005,
                           'text-primary': interview.status === 1006
                         }">
-                          {{
-                          interview.status === 1001 ? 'Pending' :
-                          interview.status === 1002 ? 'Cancelled' :
-                          interview.status === 1004 ? 'Completed' :
-                          interview.status === 1005 ? 'Rejected' :
-                          interview.status === 1006 ? 'On Hold' : 'Unknown'
-                          }}
-                        </div>
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
                       </div>
+                    </div>
 
-                      <!-- Mobile Layout -->
-                      <div class="d-flex d-md-none flex-column gap-1">
-                        <div class="d-flex align-items-center gap-2">
-                          <i [ngClass]="{
+                    <!-- Mobile Layout -->
+                    <div class="d-flex d-md-none flex-column gap-1">
+                      <div class="d-flex align-items-center gap-2">
+                        <i [ngClass]="{
                         'bi bi-check-circle-fill text-success mr-1': interview.candidateInterviewFeedBackDTO?.length,
                         'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
                       }" style="font-size: 1.3rem;"></i>
-                          <strong>{{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')'
-                            :
-                            ''
-                            }}</strong>
-                        </div>
-                        <div><strong>Date:</strong> {{ interview.interviewDate || '--' }}</div>
-                        <div><strong>Time:</strong> {{ interview.interviewTime || '--' }}</div>
-                        <!-- <div><strong>Location:</strong> {{ interview.locationName || '--' }}</div> -->
-                        <div [ngClass]="{
+                        <strong>{{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')'
+                          :
+                          ''
+                          }}</strong>
+                      </div>
+                      <div><strong>Date:</strong> {{ interview.interviewDate || '--' }}</div>
+                      <div><strong>Time:</strong> {{ interview.interviewTime || '--' }}</div>
+                      <!-- <div><strong>Location:</strong> {{ interview.locationName || '--' }}</div> -->
+                      <div [ngClass]="{
                           'text-success': interview.status === 1004,
                           'text-warning': interview.status === 1001,
                           'text-danger': interview.status === 1002 || interview.status === 1005,
                           'text-primary': interview.status === 1006
                         }"><strong>Status:</strong>
-                          {{
-                          interview.status === 1001 ? 'Pending' :
-                          interview.status === 1002 ? 'Cancelled' :
-                          interview.status === 1004 ? 'Completed' :
-                          interview.status === 1005 ? 'Rejected' :
-                          interview.status === 1006 ? 'On Hold' : 'Unknown'
-                          }}
-                        </div>
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
                       </div>
                     </div>
+                  </div>
                   <!-- </div> -->
                 </div>
               </div>

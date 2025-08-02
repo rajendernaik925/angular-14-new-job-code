@@ -1,11 +1,10 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, HostListener, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import * as echarts from 'echarts';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
-import { error } from 'console';
 
 
 @Component({
@@ -30,7 +29,7 @@ export class HiringDashboardComponent implements OnInit, AfterViewInit, AfterVie
   userMessage = '';
   messages: { text: string, sender: 'user' | 'bot' }[] = []; // distinguish who sent the message
   isTyping = false;
-  organogramLogo:string = 'assets/img/job-code/Isolation_Mode.svg';
+  organogramLogo: string = 'assets/img/job-code/Isolation_Mode.svg';
   userData: any;
 
 
@@ -191,6 +190,33 @@ export class HiringDashboardComponent implements OnInit, AfterViewInit, AfterVie
 
   private utterance: SpeechSynthesisUtterance | null = null;
   speakRemainder(): void {
+    console.log('Today Activities clicked!');
+    Swal.fire({
+      html: `
+        <div class="mb-3">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZM9W5m85CN4_xgg6D1yEnJKLArugi2Hx-cA&s" alt="delete" style="width:60px; height:60px; border-radius: 15px;" />
+        </div>
+        <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to speak today activity?</h5>
+        <p class="text-muted mb-0" style="font-size: 14px;">
+          This will speak complete the Hiring Module work.
+        </p>
+      `,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Speak',
+      reverseButtons: true,
+      customClass: {
+        popup: 'p-3 rounded-4',
+        htmlContainer: 'text-center',
+        actions: 'd-flex justify-content-center',
+        cancelButton: 'btn btn-danger btn-sm shadow-none mr-2',
+        confirmButton: 'btn btn-success btn-sm shadow-none'
+      },
+      buttonsStyling: false,
+      width: '550px',
+      backdrop: true
+    })
+    return;
     if (window.speechSynthesis.speaking) {
       window.speechSynthesis.cancel();
     }
@@ -217,7 +243,49 @@ export class HiringDashboardComponent implements OnInit, AfterViewInit, AfterVie
     window.speechSynthesis.speak(this.utterance);
   }
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key.toLowerCase() === 'o') {
+      event.preventDefault();
+      this.speakRemainder();
+    }
+  }
 
+  toggleChat(): void {
+    this.isChatOpen = !this.isChatOpen;
+    this.messages = {} = [];
+  }
+
+  // botReplies: string[] = [
+  //   "Sure, I can help with that!",
+  //   "Can you please provide more details?",
+  //   "That's interesting!",
+  //   "Let me check that for you.",
+  //   "Thank you for your message!",
+  //   "I'm here to assist you.",
+  //   "Could you clarify that?",
+  //   "Sounds good!"
+  // ];
+
+
+
+  // sendMessage(): void {
+  //   const trimmedMessage = this.userMessage.trim();
+  //   if (trimmedMessage) {
+  //     const userMsg = trimmedMessage;
+  //     this.userMessage = '';
+  //     this.messages.push({ text: userMsg, sender: 'user' });
+
+  //     this.isTyping = true;
+
+  //     setTimeout(() => {
+  //       const randomIndex = Math.floor(Math.random() * this.botReplies.length);
+  //       const botReply = this.botReplies[randomIndex];
+  //       this.messages.push({ text: botReply, sender: 'bot' });
+  //       this.isTyping = false;
+  //     }, 2000);
+  //   }
+  // }
 
   botReplies: string[] = [
     "Sure, I can help with that!",
@@ -230,28 +298,61 @@ export class HiringDashboardComponent implements OnInit, AfterViewInit, AfterVie
     "Sounds good!"
   ];
 
-  toggleChat(): void {
-    this.isChatOpen = !this.isChatOpen;
-    this.messages = {} = [];
-  }
+
 
   sendMessage(): void {
-    const trimmedMessage = this.userMessage.trim();
+    const trimmedMessage = this.userMessage.trim().toLowerCase();
     if (trimmedMessage) {
-      const userMsg = trimmedMessage;
+      const userMsg = this.userMessage;
       this.userMessage = '';
       this.messages.push({ text: userMsg, sender: 'user' });
 
       this.isTyping = true;
 
       setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * this.botReplies.length);
-        const botReply = this.botReplies[randomIndex];
+        const botReply = this.getBotReply(trimmedMessage);
         this.messages.push({ text: botReply, sender: 'bot' });
         this.isTyping = false;
-      }, 2000);
+      }, 1500);
     }
   }
+
+  getBotReply(message: string): string {
+    if (message.includes('approved')) {
+      return `There are ${this.candidatesCount.approved} approved candidates.`;
+    }
+    if (message.includes('rejected')) {
+      return `There are ${this.candidatesCount.rejected} rejected candidates.`;
+    }
+    if (message.includes('hold')) {
+      return `There are ${this.candidatesCount.hold} candidates on hold.`;
+    }
+    if (message.includes('ongoing')) {
+      return `There are ${this.candidatesCount.onGoing} ongoing processes.`;
+    }
+    if (message.includes('cancelled')) {
+      return `There are ${this.candidatesCount.cancelled} cancelled candidates.`;
+    }
+    if (message.includes('shortlisted')) {
+      return `There are ${this.candidatesCount.shortlisted} shortlisted candidates.`;
+    }
+    if (message.includes('scheduled')) {
+      return `There are ${this.candidatesCount.scheduled} scheduled interviews.`;
+    }
+    if (message.includes('unscheduled')) {
+      return `There are ${this.candidatesCount.unScheduled} unscheduled candidates.`;
+    }
+    if (message.includes('offer') || message.includes('offer letter')) {
+      return `Offer letters have been initiated for ${this.candidatesCount.offerLetterInitiated} candidates.`;
+    }
+    if (message.includes('onboarding') || message.includes('employee')) {
+      return `${this.candidatesCount.employeeOnboarding} employees are onboarding.`;
+    }
+
+    const randomIndex = Math.floor(Math.random() * this.botReplies.length);
+    return this.botReplies[randomIndex];
+  }
+
 
 
   ngAfterViewChecked() {

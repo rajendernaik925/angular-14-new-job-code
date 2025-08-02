@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-personal-info',
@@ -82,12 +83,15 @@ export class personalInfoComponent implements OnInit {
   paySlipFilePath3: string | null = '';
   showSidebar = false;
   today: Date = new Date();
+  maxDate: Date;
   selectedPayslip1FileName: string = 'Upload Payslip 1';
   selectedServiceLetterFileName: string = 'Upload Service Letter';
   hasExperince: boolean = false;
   experienceId: any;
   uploadResume: string = 'Upload Resume'
   uploadPhoto: string = 'Upload Photo'
+  alertMessage: string | null = null;
+  private panAlertTimeout: any;
 
 
   // sections = [
@@ -110,6 +114,8 @@ export class personalInfoComponent implements OnInit {
     this.registrationForm = this.fb.group({
 
 
+
+
       // educationDetails: this.fb.array([this.createEducationFormGroup()]),
       jobCodeId: [{ value: '', disabled: false }, Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -128,7 +134,7 @@ export class personalInfoComponent implements OnInit {
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       district: ['', Validators.required],
       // pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
-      pan: ['', [Validators.required]],
+      pan: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]$/)]],
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
       resume: [''],
       photo: [''],
@@ -183,6 +189,9 @@ export class personalInfoComponent implements OnInit {
       expectedSalary: ['', Validators.required],
       suitableJobDescription: ['', Validators.required]
     });
+
+    const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
+    this.maxDate = eighteenYearsAgo;
   }
 
   ngOnInit(): void {
@@ -278,7 +287,7 @@ export class personalInfoComponent implements OnInit {
         ) {
           // console.log("Registered Data:", res?.candidateCommunicationAddressDetails?.postalCode);
 
-          this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
+          this.resumeFile = this.loadedData?.candidatePersonalInformationDetails?.resumeFile || null;
 
           // const resumeControl = this.registrationForm.get('resume');
 
@@ -327,6 +336,7 @@ export class personalInfoComponent implements OnInit {
           // Patch form data
           this.registrationForm.patchValue({
             firstName: res?.candidatePersonalInformationDetails?.firstName ? res.candidatePersonalInformationDetails.firstName : this.jobCodeData.name,
+            mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber ? res.candidatePersonalInformationDetails.mobileNumber : this.jobCodeData.mobileNumber,
             middleName: res?.candidatePersonalInformationDetails?.middleName || '',
             lastName: res?.candidatePersonalInformationDetails?.lastName || '',
             maritalStatusId: res?.candidatePersonalInformationDetails?.maritalStatusId || '',
@@ -337,7 +347,6 @@ export class personalInfoComponent implements OnInit {
             fatherName: res?.candidatePersonalInformationDetails?.fatherName || '',
             passport: res?.candidatePersonalInformationDetails?.passport || '',
             uan: res?.candidatePersonalInformationDetails?.uan || '',
-            // mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber || '',
             district: res?.candidatePersonalInformationDetails?.district || '',
             licence: res?.candidatePersonalInformationDetails?.licence || '',
             pan: res?.candidatePersonalInformationDetails?.pan || '',
@@ -1110,7 +1119,17 @@ export class personalInfoComponent implements OnInit {
           icon: 'error',
           confirmButtonText: 'OK'
         });
-        fileInput.value = ''; // Clear the input
+        fileInput.value = ''; 
+        return;
+      }
+
+      if (file.type !== 'application/pdf') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: 'Please upload a PDF file only.',
+        });
+        (event.target as HTMLInputElement).value = '';
         return;
       }
 
@@ -1212,6 +1231,57 @@ export class personalInfoComponent implements OnInit {
           sectionData[field] = control?.value;
         }
       });
+
+      const control = this.registrationForm.get('licence');
+      const value = (control?.value || '').toString().trim().toUpperCase();
+      console.log("DL Number:", value);
+
+      if (value) {
+        const pattern = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{6,12}$/;
+        if (value.length < 10 || value.length > 16 || !pattern.test(value)) {
+          control?.setErrors({ invalidLicence: true });
+          control?.markAsTouched();
+          isValid = false;
+        } else {
+          sectionData['licence'] = value;
+        }
+      }
+
+      const uanControl = this.registrationForm.get('uan');
+      const uanValue = (uanControl?.value || '').toString().trim();
+      console.log("UAN:", uanValue);
+
+      if (uanValue) {
+        const pattern = /^[0-9]{12}$/;
+
+        if (uanValue.length !== 12 || !pattern.test(uanValue)) {
+          uanControl?.setErrors({ invalidUan: true });
+          uanControl?.markAsTouched();
+          isValid = false;
+        } else {
+          sectionData['uan'] = uanValue;
+        }
+      }
+
+      const passportControl = this.registrationForm.get('passport');
+      const passportValue = (passportControl?.value || '').toString().trim().toUpperCase();
+      console.log("Passport:", passportValue);
+
+      if (passportValue) {
+        const pattern = /^[A-PR-WY][0-9]{7}$/; // excludes Q, X, Z (not used in Indian passports)
+
+        if (passportValue.length !== 8 || !pattern.test(passportValue)) {
+          passportControl?.setErrors({ invalidPassport: true });
+          passportControl?.markAsTouched();
+          isValid = false;
+        } else {
+          sectionData['passport'] = passportValue;
+        }
+      }
+
+
+
+
 
       if (!isValid) {
         this.showAlert("Please fill required fields!", 'danger');
@@ -1734,23 +1804,11 @@ export class personalInfoComponent implements OnInit {
   }
 
   title() {
-    // this.isLoading = true;
     this.authService.title().subscribe({
       next: (res: any) => {
-
-        // this.isLoading = false;
         this.titleOptions = res;
       },
       error: (err: HttpErrorResponse) => {
-
-        // this.isLoading = false;
-        // console.log("error", err);
-        Swal.fire({
-          title: 'error',
-          text: err.error.message,
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
       }
     })
   }
@@ -2020,8 +2078,7 @@ export class personalInfoComponent implements OnInit {
     return duplicates.length > 0;
   }
 
-  alertMessage: string | null = null;
-  private panAlertTimeout: any;
+
 
   panCardKeydown(event: KeyboardEvent): void {
     const input = event.target as HTMLInputElement;
@@ -2131,6 +2188,16 @@ export class personalInfoComponent implements OnInit {
       return;
     }
 
+    if (file.type !== 'application/pdf') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: 'Please upload a PDF file only.',
+        });
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
     this.registrationForm.get(controlName)?.setValue(file);
     console.log("Selected file:", file);
 
@@ -2230,22 +2297,22 @@ export class personalInfoComponent implements OnInit {
   }
 
   dobFormat(dobStr: string | null | undefined): Date | '' {
-  if (!dobStr) return '';
+    if (!dobStr) return '';
 
-  const [dd, mm, yyyy] = dobStr.split('-');
-  const day = Number(dd);
-  const month = Number(mm) - 1; // JS months are 0-based
-  const year = Number(yyyy);
+    const [dd, mm, yyyy] = dobStr.split('-');
+    const day = Number(dd);
+    const month = Number(mm) - 1; // JS months are 0-based
+    const year = Number(yyyy);
 
-  if (
-    isNaN(day) || isNaN(month) || isNaN(year) ||
-    day < 1 || day > 31 || month < 0 || month > 11 || year < 1000
-  ) {
-    return '';
+    if (
+      isNaN(day) || isNaN(month) || isNaN(year) ||
+      day < 1 || day > 31 || month < 0 || month > 11 || year < 1000
+    ) {
+      return '';
+    }
+
+    return new Date(year, month, day);
   }
-
-  return new Date(year, month, day);
-}
 
 
   UpdatePayslip() {
@@ -2371,5 +2438,65 @@ export class personalInfoComponent implements OnInit {
 
     return `${dayStr} ${monthName} ${year}`;
   }
+
+  allowOnlyLetters(event: KeyboardEvent) {
+    const charCode = event.key;
+    const pattern = /^[a-zA-Z\s]*$/;
+
+    if (!pattern.test(charCode)) {
+      event.preventDefault();
+    }
+  }
+
+  // dlKeydown(event: KeyboardEvent): void {
+  //   const input = event.target as HTMLInputElement;
+  //   const key = event.key.toUpperCase();
+  //   const value = input?.value.toUpperCase();
+  //   const pos = input.selectionStart ?? value.length;
+
+  //   // Allow control/navigation keys
+  //   if (
+  //     ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(key) ||
+  //     event.ctrlKey || event.metaKey
+  //   ) {
+  //     return;
+  //   }
+
+  //   // Maximum length check (say max 16 characters)
+  //   if (value.length >= 16 && input.selectionStart === input.selectionEnd) {
+  //     event.preventDefault();
+  //     this.showAlert('DL number cannot exceed 16 characters.', 'danger');
+  //     return;
+  //   }
+
+  //   // Position-based validation
+  //   if (pos < 2) {
+  //     // First two characters: letters
+  //     if (!/^[A-Z]$/.test(key)) {
+  //       event.preventDefault();
+  //       this.showAlert('First two characters must be letters (A-Z).', 'danger');
+  //     }
+  //   } else if (pos >= 2 && pos < 4) {
+  //     // Next two characters: digits
+  //     if (!/^[0-9]$/.test(key)) {
+  //       event.preventDefault();
+  //       this.showAlert('Characters 3 and 4 must be digits (0-9).', 'danger');
+  //     }
+  //   } else if (pos >= 4) {
+  //     // Remaining characters: letters or digits
+  //     if (!/^[A-Z0-9]$/.test(key)) {
+  //       event.preventDefault();
+  //       this.showAlert('Only letters and digits allowed after position 4.', 'danger');
+  //     }
+  //   }
+  // }
+
+
+  toUppercase(event: any) {
+    event.target.value = event.target.value.toUpperCase();
+  }
+
+
+
 
 }

@@ -428,11 +428,18 @@
                       Schedule
                     </button>
                     <button (click)="rescheduleInterview(employeeId)"
-                      *ngIf="exp.status === 1002 || exp.status == 1006 && exp?.interviewRoundName != 'HR'"
+                      *ngIf="(exp.status === 1002 || exp.status == 1006) && exp?.interviewRoundName !== 'HR'"
                       class="btn btn-sm btn-warning border-0 px-2 py-1 text-white">
                       Reschedule
                     </button>
-                    <span *ngIf="exp.status === 1002 || exp.status == 1006 && exp?.interviewRoundName == 'HR'" class="">
+                    <span *ngIf="exp.status === 1002 && exp?.interviewRoundName == 'HR'" class="">
+                      <button (click)="rescheduleInterview(employeeId)"
+                        class="btn btn-sm btn-warning border-0 px-2 py-1 text-white">
+                        Reschedule
+                      </button>
+                    </span>
+
+                    <span *ngIf="(exp.status === 1006) && exp?.interviewRoundName == 'HR'" class="">
                       HR Hold
                     </span>
 
@@ -458,7 +465,7 @@
                     </ng-template>
                   </td>
                 </tr>
-                <tr *ngIf="(exp.status === 1002 || exp.status === 1006) && exp?.interviewRoundName === 'HR'" class="mt-2">
+                <tr *ngIf="exp.status === 1006 && exp?.interviewRoundName === 'HR'" class="mt-2">
                   <td colspan="8" class=" text-center text-danger mt-2">
                     When Hold, the HR needs to take action from the Hold tab.
                   </td>

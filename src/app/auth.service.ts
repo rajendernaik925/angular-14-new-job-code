@@ -893,7 +893,7 @@ export class AuthService {
   }
 
 
-  private jobCodeUrls: string = "http://192.168.213.233:2025/";
+  private jobCodeUrls: string = "http://192.168.215.251:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -935,31 +935,49 @@ export class AuthService {
 
   }
   masterBu() {
-    return this.http.get(`${this.jobCodeUrls}master/bu`).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get(`${this.jobCodeUrls}master/bu`)
   }
 
   jobTitle(): Observable<any> {
-    return this.http.get(`${this.jobCodeUrls}master/title`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/title`)
   }
 
   listofTeams(): Observable<any> {
-    return this.http.get(`${this.jobCodeUrls}master/department`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/department`)
   }
 
   ReportingManagers(): Observable<any> {
-    return this.http.get(`${this.jobCodeUrls}master/reportingmanager`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/reportingmanager`)
+  }
+
+  employeeList(): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/employeementtypes`)
+  }
+
+  ptStates(): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/ptstates`)
+  }
+
+  costCenterList(id: any): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/costcenter/${id}`)
+  }
+
+  salesGroup(id: any): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/salesgroup/${id}`)
+  }
+
+  salesDistrict(): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/salesdistrict`)
+  }
+
+  salesOffice(): Observable<any> {
+    return this.http.get(`${this.jobCodeUrls}master/salesoffice`)
   }
 
   trackingData(id: any): Observable<any> {
-    return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`);
+    return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`).pipe(
+      catchError(this.handleError)
+    )
   }
 
   publishMode(formData: any): Observable<any> {
@@ -1029,6 +1047,10 @@ export class AuthService {
     return this.http.get(`${this.jobCodeUrls}master/noticeperiodindays`)
   }
 
+  probationPeriod() {
+    return this.http.get(`${this.jobCodeUrls}master/probationperiod`)
+  }
+
   states() {
     return this.http.get(`${this.jobCodeUrls}master/states`).pipe(
       catchError(this.handleError)
@@ -1048,7 +1070,9 @@ export class AuthService {
   }
 
   registeredData(id: any) {
-    return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`)
+    return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`).pipe(
+      catchError(this.handleError)
+    )
   }
 
   deleteEducation(id: any): Observable<any> {
@@ -1261,11 +1285,11 @@ export class AuthService {
     )
   }
 
-  GenerateOffer(id: any): Observable<HttpResponse<any>> {
-    return this.http.get(`${this.jobCodeUrls}report/generate/${id}`, {
+  GenerateOffer(id: any,loginId:any): Observable<HttpResponse<any>> {
+    return this.http.get(`${this.jobCodeUrls}report/generate/${id}/${loginId}`, {
       observe: 'response',
-      responseType: 'text' as 'json' // Forces Angular to treat text as JSON
-    });
+      responseType: 'text' as 'json' 
+    })
   }
 
   private fuelUrls: string = "http://192.168.215.162:8094/";

@@ -263,10 +263,46 @@ export class JobcodeComponent implements OnInit {
   //   }
   // }
 
+  // onFileSelect(event: Event): void {
+  //   const file = (event.target as HTMLInputElement).files?.[0];
+  //   if (file) {
+  //     const maxSizeInBytes = 5 * 1024 * 1024;
+  //     if (file.size > maxSizeInBytes) {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'File too large!',
+  //         text: 'Please select a file smaller than 5 MB.',
+  //       });
+  //       (event.target as HTMLInputElement).value = '';
+  //       return;
+  //     }
+  //     this.uploadedFile = file;
+  //     const fileBlob = new Blob([file], { type: file.type });
+  //     this.createJobForm.patchValue({ resume: fileBlob });
+  //     this.createJobForm.get('jobDescriptionFile')?.updateValueAndValidity();
+  //   } else {
+  //     console.log('No file selected.');
+  //   }
+  // }
+
   onFileSelect(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
+
     if (file) {
       const maxSizeInBytes = 5 * 1024 * 1024;
+
+      // Check file type
+      if (file.type !== 'application/pdf') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: 'Please upload a PDF file only.',
+        });
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
+      // Check file size
       if (file.size > maxSizeInBytes) {
         Swal.fire({
           icon: 'error',
@@ -276,6 +312,7 @@ export class JobcodeComponent implements OnInit {
         (event.target as HTMLInputElement).value = '';
         return;
       }
+
       this.uploadedFile = file;
       const fileBlob = new Blob([file], { type: file.type });
       this.createJobForm.patchValue({ resume: fileBlob });
@@ -284,6 +321,7 @@ export class JobcodeComponent implements OnInit {
       console.log('No file selected.');
     }
   }
+
 
   ctcRangeValidator(group: FormGroup): { [key: string]: boolean } | null {
     const min = group.get('jobCtcMin')?.value;
@@ -521,6 +559,13 @@ export class JobcodeComponent implements OnInit {
     );
 
     this.showDropdown = true;
+
+    if (this.filteredManagers.length === 0) {
+      setTimeout(() => {
+        this.searchText = '';
+        this.createJobForm.get('jobReportingManagerId')?.setValue(null);
+      }, 200);
+    }
   }
 
   selectManager(manager: any) {
@@ -533,6 +578,14 @@ export class JobcodeComponent implements OnInit {
   hideDropdownWithDelay() {
     setTimeout(() => {
       this.showDropdown = false;
+      const matched = this.managers.find(
+        m => m.name.toLowerCase() === this.searchText.toLowerCase()
+      );
+
+      if (!matched) {
+        this.searchText = '';
+        this.createJobForm.get('jobReportingManagerId')?.setValue(null);
+      }
     }, 200);
   }
 
@@ -547,6 +600,13 @@ export class JobcodeComponent implements OnInit {
     );
 
     this.jobTitleDropdownVisible = true;
+
+    if (this.filteredJobTitles.length === 0) {
+      setTimeout(() => {
+        this.jobTitleSearchText = '';
+        this.createJobForm.get('jobTitle')?.setValue(null);
+      }, 200);
+    }
   }
 
   selectJobTitle(item: any) {
@@ -559,6 +619,14 @@ export class JobcodeComponent implements OnInit {
   hideJobTitleDropdownWithDelay() {
     setTimeout(() => {
       this.jobTitleDropdownVisible = false;
+      const matched = this.jobTitleList.find(
+        m => m.name.toLowerCase() === this.jobTitleSearchText.toLowerCase()
+      );
+
+      if (!matched) {
+        this.jobTitleSearchText = '';
+        this.createJobForm.get('jobTitle')?.setValue(null);
+      }
     }, 200);
   }
 
@@ -599,6 +667,13 @@ export class JobcodeComponent implements OnInit {
     );
 
     this.showDepartmentDropdown = true;
+
+    if (this.filteredDepartments.length === 0) {
+      setTimeout(() => {
+        this.departmentSearchText = '';
+        this.createJobForm.get('teamId')?.setValue(null);
+      }, 200);
+    }
   }
 
   selectDepartment(dept: any) {
@@ -611,6 +686,14 @@ export class JobcodeComponent implements OnInit {
   hideDepartmentDropdownWithDelay() {
     setTimeout(() => {
       this.showDepartmentDropdown = false;
+      const matched = this.teams.find(
+        m => m.name.toLowerCase() === this.departmentSearchText.toLowerCase()
+      );
+
+      if (!matched) {
+        this.departmentSearchText = '';
+        this.createJobForm.get('teamId')?.setValue(null);
+      }
     }, 200);
   }
 

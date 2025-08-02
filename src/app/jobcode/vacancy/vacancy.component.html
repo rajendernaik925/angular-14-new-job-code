@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <app-nav></app-nav>
 </div>
-<div class="mt-3 container-flui">
+<div class="mt-3 container-fluid">
   <div class="row g-2">
     <div class="col-md-2 mb-2">
       <div class="card border-0 p-0">
@@ -21,11 +21,11 @@
                 <i class="bi bi-arrow-left  fs-5"></i>
               </span>
               <span *ngIf="!viewMoreValue" class="fw-bold">
-                Vacancy 
+                Vacancy
                 <span class="badge badge-light  badge bg-secondary text-white">{{totalRecords}}</span>
               </span>
               <span *ngIf="viewMoreValue" class="fw-bold">
-                {{referenceJobCode}} 
+                {{referenceJobCode}}
               </span>
             </div>
             <div class="col-md-6 col-5 d-flex justify-content-end align-items-center">
@@ -195,7 +195,8 @@
                   <td class="small-header fw-bold fst-italic text-center cursor-pointer "
                     [ngClass]="{'text-primary text-decoration-underline hover': row.resumeName !== '--'}"
                     (click)="viewResume(row.resumeFile)">
-                    {{ row.resumeName === '--' ? row.resumeName : 'Resume.pdf' }}
+                    <span
+                      [innerHTML]="row.resumeName === '--' ? row.resumeName : '<i class=\'bi bi-eye-fill\'></i>'"></span>
                   </td>
 
                   <!-- <td class="small-header text-center d-flex justify-content-center align-items-center" (click)="tracking(row)">
@@ -274,13 +275,13 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
-            <input type="text" id="fullName" class="form-control form-control-sm text-uppercase"
-              formControlName="fullName" placeholder="Enter full name" autocomplete="off" />
+            <input type="text" id="fullName" class="form-control form-control-sm text-uppercase" maxlength="100"
+              formControlName="fullName" noFirstSpace placeholder="Enter full name" autocomplete="off" />
             <div *ngIf="submitted && addCandidateForm.get('fullName').invalid" class="text-danger fs-small">
               Full Name is required.
             </div>
             <div *ngIf="addCandidateForm.get('fullName').hasError('pattern')" class="text-danger fs-small">
-              Job title must contain only letters and spaces.
+              Full Name must contain only letters and spaces.
             </div>
           </div>
           <div class="col-md-6">
@@ -297,21 +298,30 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="emailAddress" class="form-label">Email Address <span class="text-danger">*</span></label>
-            <input type="email" id="emailAddress" class="form-control text-uppercase form-control-sm"
+            <input type="email" id="emailAddress" noFirstSpace class="form-control text-uppercase form-control-sm"
               formControlName="emailAddress" placeholder="Enter email address" autocomplete="off" />
-            <div *ngIf="submitted && addCandidateForm.get('emailAddress').invalid" class="text-danger fs-small">
+            <!-- <div *ngIf="submitted && addCandidateForm.get('emailAddress').invalid" class="text-danger fs-small">
+              Please enter a valid email address.
+            </div> -->
+            <div *ngIf="addCandidateForm.get('emailAddress')?.touched && addCandidateForm.get('emailAddress')?.invalid"
+              class="text-danger fs-small">
               Please enter a valid email address.
             </div>
+
           </div>
           <div class="col-md-6">
-            <label for="workExperience" class="form-label">Work Experience <span class="text-danger">*</span></label>
-            <input type="number" id="workExperience text-uppercase" class="form-control form-control-sm"
-              formControlName="workExperience" placeholder="Enter work experience" autocomplete="off" maxlength="2"
-              (keydown)="preventNegativeInput($event, $event.target.value)" />
-            <div *ngIf="submitted && addCandidateForm.get('workExperience').invalid" class="text-danger fs-small">
+            <label for="workExperience" class="form-label">
+              Work Experience <span class="text-danger">*</span>
+            </label>
+            <input type="text" id="workExperience" class="form-control form-control-sm text-uppercase"
+              formControlName="workExperience" placeholder="Enter work experience (e.g. 3.11)" autocomplete="off"
+              maxlength="5" (keydown)="preventInvalidExperienceInput($event)"
+              (input)="validateExperienceInput($event)" />
+            <div *ngIf="submitted && addCandidateForm.get('workExperience')?.invalid" class="text-danger fs-small">
               Work Experience is required.
             </div>
           </div>
+
         </div>
 
         <div class="row mb-3">

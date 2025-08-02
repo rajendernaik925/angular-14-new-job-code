@@ -149,11 +149,23 @@ export class VacancyComponent implements OnInit {
       const maxSizeInMB = 5;
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
+      
+
       if (file.size > maxSizeInBytes) {
         Swal.fire({
           icon: 'error',
           title: 'File too large',
           text: 'Please select a file less than 5 MB.'
+        });
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
+      if (file.type !== 'application/pdf') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: 'Please upload a PDF file only.',
         });
         (event.target as HTMLInputElement).value = '';
         return;
@@ -180,6 +192,48 @@ export class VacancyComponent implements OnInit {
       event.preventDefault();
     }
   }
+
+  experienceValue = ''; // Optional: if you need to bind separately
+
+  // Prevent invalid key presses
+  preventInvalidExperienceInput(event: KeyboardEvent): void {
+    const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    const key = event.key;
+
+    if (
+      allowedKeys.includes(key) ||
+      (key >= '0' && key <= '9') ||
+      key === '.'
+    ) {
+      return;
+    }
+
+    // Prevent e, -, +, etc.
+    event.preventDefault();
+  }
+
+  // Validate and auto-correct format
+  validateExperienceInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // Remove invalid characters and multiple dots
+    value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+
+    // Extract parts
+    const [yearsStr, monthsStr = ''] = value.split('.');
+    const years = parseInt(yearsStr || '0', 10);
+    const months = parseInt(monthsStr || '0', 10);
+
+    // Prevent months > 11
+    if (monthsStr && months > 11) {
+      value = `${years + 1}`;
+    }
+
+    input.value = value;
+    this.addCandidateForm.get('workExperience')?.setValue(value);
+  }
+
 
 
   onSubmit(): void {

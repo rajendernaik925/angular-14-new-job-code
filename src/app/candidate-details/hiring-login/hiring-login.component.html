@@ -83,7 +83,7 @@
 
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
                     <div class="mb-3">
-                        <input type="email" id="email" class="form-control"
+                        <input type="email" id="email" class="form-control" noFirstSpace
                             [ngClass]="{ 'is-invalid': submitted && loginForm.get('email')?.invalid }"
                             formControlName="email" placeholder="Enter your email" />
                         <div *ngIf="submitted && loginForm.get('email')?.hasError('required')" class="text-danger">

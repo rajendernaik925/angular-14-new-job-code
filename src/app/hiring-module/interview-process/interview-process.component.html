@@ -373,13 +373,7 @@
                 </button>
               </ng-container>
             </div>
-            <div *ngIf="photoFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="photoFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(photoFile)">
-                  Photo
-                </button>
-              </ng-container>
-            </div>
+            
             <div *ngIf="aadharFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="aadharFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(aadharFile)">
@@ -408,10 +402,17 @@
                 </button>
               </ng-container>
             </div>
-            <div *ngIf="BTechFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="BTechFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="BTechFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(BTechFile)">
                   B.Tech/Degree
+                </button>
+              </ng-container>
+            </div>
+            <div *ngIf="photoFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+              <ng-container *ngIf="photoFile">
+                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(photoFile)">
+                  Photo
                 </button>
               </ng-container>
             </div>
@@ -735,7 +736,7 @@
         <div class="col-md-3">
           <label>Proposed CTC:</label>
           <input type="text" formControlName="expectedCTC" class="form-control" placeholder="₹ amount"
-            (keypress)="allowNumericWithDot($event)">
+            (keypress)="allowNumericWithDot($event)" maxlength="8">
           <div *ngIf="feedbackForm.controls['expectedCTC'].invalid && feedbackForm.controls['expectedCTC'].touched"
             class="text-danger fs-custom">
             Expected CTC is required.

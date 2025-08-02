@@ -131,6 +131,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { UnscheduledComponent } from './hiring-module/unscheduled/unscheduled.component';
 import { ActiveUrlPipe } from './hiring-module/active-url.pipe';
 import { FuelComponent } from './HR/fuel/fuel.component';
+import { EmployeeBasicDetailComponent } from './HR/employee-basic-detail/employee-basic-detail.component';
+import { StringOnlyDirective } from './directives/string-only.directive';
+import { NoFirstSpaceDirective } from './directives/no-first-space.directive';
 
 
 
@@ -142,6 +145,8 @@ import { FuelComponent } from './HR/fuel/fuel.component';
     NavComponent,
     SettingsComponent,
     NumbersOnlyDirective,
+    StringOnlyDirective,
+    NoFirstSpaceDirective,
     TrackCapslockDirective,
     ProgressBarComponent,
     BirthdaysComponent,
@@ -208,7 +213,8 @@ import { FuelComponent } from './HR/fuel/fuel.component';
     OrganogramTrackingComponent,
     PageNotFoundComponent,
     UnscheduledComponent,
-    FuelComponent
+    FuelComponent,
+    EmployeeBasicDetailComponent
   ],
   imports: [
     BrowserModule,

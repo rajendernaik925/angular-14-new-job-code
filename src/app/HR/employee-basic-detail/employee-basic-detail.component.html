@@ -1,18 +1,33 @@
 <div class="container-flui card ">
     <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
-        <div class="">
-            <!-- <div class="card-header custom-bg fw-bold text-white mb-3 d-flex justify-content-between align-items-center">
-                <div>Employee Basic Details</div>
-                <button type="button" class="btn btn-light btn-sm border-0 shadow-none" (click)="checkList()">Check List</button>
-            </div> -->
-
-            <div class="card-header custom-bg fw-bold text-white mb-3">
+        <div class="card pb-2">
+            <div class="card-header custom-bg fw-bold text-white">
                 Employee Basic Details
             </div>
 
-            <div class="scroll-container border-0 card">
-                <div class="container-fluid mb-0">
-                    <div class='row'>
+            <div class="card-body mb-0">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="system" formControlName="employeeIdType"
+                        checked />
+                    <label class="form-check-label">System</label>
+                </div>
+
+                <div class="mt-2 text-secondary small">
+                    If Manual is checked, employee ID should be manual entry
+                    <span class="text-muted">(Useful for Mumbai Location)</span> /
+                    If System is checked, employee ID is auto-generated
+                    <span class="text-muted">(Useful for Hyd Location)</span>
+                </div>
+            </div>
+            <!-- <hr class="m-0 p-0 mb-2 px-2 mx-2"> -->
+            <div class="scroll-containe">
+                <div class="container-fluid">
+                    <div class='row mb-4'>
+                        <!-- <div class='col-md-3 fw-bold-d'>Basic Information</div>
+                        <div class='col-md-9 row g-3'> -->
+
+
+
                         <div class='col-md-3'>
                             <label class='form-label form-label-small'>Title</label>
 
@@ -64,7 +79,7 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2' for='gender'>Gender</label>
+                            <label class='form-label form-label-small mt-3' for='gender'>Gender</label>
                             <select formControlName="genderId" class="form-control form-control-sm "
                                 [ngClass]="{ 'is-invalid': employeeForm.get('genderId')?.invalid && employeeForm.get('genderId')?.touched }">
                                 <option value="">Select</option>
@@ -78,13 +93,13 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Call/Full Name</label>
+                            <label class='form-label form-label-small mt-3'>Call/Full Name</label>
                             <input type='text' class='form-control form-control-sm ' stringOnly noFirstSpace
                                 formControlName='fullName' placeholder='Enter Full Name' />
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2' for='ctc'>CTC per Annum</label>
+                            <label class='form-label form-label-small mt-3' for='ctc'>CTC per Annum</label>
                             <input type="text" class="form-control form-control-sm " formControlName="ctc"
                                 placeholder="Enter CTC Amount" maxlength="8" numbersOnly [ngClass]="{
                               'is-invalid': employeeForm.get('ctc')?.invalid && employeeForm.get('ctc')?.touched
@@ -99,18 +114,17 @@
                                 </div> -->
                         </div>
 
-
+                        
 
                         <div class='col-md-3'>
-                            <!-- <label class='form-label form-label-small mt-2' for='reportingOfficer '>Reporting
+                            <!-- <label class='form-label form-label-small mt-3' for='reportingOfficer '>Reporting
                                 Officer</label>
                             <input type="text" class="form-control form-control-sm " formControlName="reportingOfficer"
                                 placeholder="Reporting Manager Name/ID"
                                 [ngClass]="{'is-invalid': employeeForm.get('reportingOfficer')?.invalid && employeeForm.get('reportingOfficer')?.touched}" /> -->
 
 
-                            <label class='form-label form-label-small mt-2' for='reportingOfficer'>Reporting
-                                Officer</label>
+                                <label class='form-label form-label-small mt-3' for='reportingOfficer'>Reporting Officer</label>
                             <select class="form-control form-control-sm py-1 " formControlName="reportingOfficer"
                                 [ngClass]="{ 'is-invalid': employeeForm.get('reportingOfficer')?.invalid && employeeForm.get('reportingOfficer')?.touched}">
                                 <option value="">--Select One--</option>
@@ -122,10 +136,23 @@
                                 </div> -->
                         </div>
 
-
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>Employement Type</label>
+                            <select class="form-control form-control-sm py-1 " formControlName="employmentType"
+                                [ngClass]="{
+                              'is-invalid': employeeForm.get('employmentType')?.invalid && employeeForm.get('employmentType')?.touched
+                            }">
+                                <option value="">--Select One--</option>
+                                <option value="1">Rajender</option>
+                            </select>
+                            <!-- <div *ngIf="employeeForm.get('employmentType')?.touched && employeeForm.get('employmentType')?.invalid"
+                                    class="text-danger small mt-1">
+                                    Employment Type is required.
+                                </div> -->
+                        </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Date Of Birth</label>
+                            <label class='form-label form-label-small mt-3'>Date Of Birth</label>
                             <!-- <input type="date" class="form-control form-control-sm" formControlName="dob" 
                                 [ngClass]="{ 'is-invalid': employeeForm.get('dob')?.invalid && employeeForm.get('dob')?.touched}" placeholder="Date of Birth" /> -->
 
@@ -146,7 +173,7 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Date Of Join</label>
+                            <label class='form-label form-label-small mt-3'>Date Of Join</label>
                             <!-- <input type="date" class="form-control form-control-sm" formControlName="doj"
                                     placeholder="Date Of Join" [ngClass]="{
                                       'is-invalid': employeeForm.get('doj')?.invalid && employeeForm.get('doj')?.touched
@@ -168,10 +195,22 @@
                                 </div> -->
                         </div>
 
-
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>PT State</label>
+                            <select class="form-control form-control-sm py-1 " formControlName="ptState" [ngClass]="{
+                              'is-invalid': employeeForm.get('ptState')?.invalid && employeeForm.get('ptState')?.touched
+                            }">
+                                <option value="">--Select One--</option>
+                                <option value="1">Rajender</option>
+                            </select>
+                            <!-- <div *ngIf="employeeForm.get('ptState')?.touched && employeeForm.get('ptState')?.invalid"
+                                    class="text-danger small mt-1">
+                                    PT State is required.
+                                </div> -->
+                        </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2' for='mobileNumber'>Mobile No</label>
+                            <label class='form-label form-label-small mt-3' for='mobileNumber'>Mobile No</label>
                             <input type="text" class="form-control form-control-sm " formControlName="mobileNumber"
                                 placeholder="Enter 10-digit Mobile Number" numbersOnly maxlength="10"
                                 [ngClass]="{'is-invalid': employeeForm.get('mobileNumber')?.invalid && employeeForm.get('mobileNumber')?.touched }" />
@@ -186,17 +225,34 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Email ID</label>
+                            <label class='form-label form-label-small mt-3'>Email ID</label>
                             <input type="email" noFirstSpace class="form-control form-control-sm "
                                 formControlName="email" placeholder="Email" />
                         </div>
 
-
-
-
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>Employee Code</label>
+                            <input type="text" class="form-control form-control-sm " noFirstSpace numbersOnly
+                                maxlength="8" formControlName="employeeCode" placeholder="Enter Your Employee Code" />
+                        </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Notice Period</label>
+                            <label class='form-label form-label-small mt-3'>Probation Period</label>
+                            <select class="form-control form-control-sm py-1 " formControlName="probationPeriod"
+                                [ngClass]="{
+                              'is-invalid': employeeForm.get('probationPeriod')?.invalid && employeeForm.get('probationPeriod')?.touched
+                            }">
+                                <option value="">--Select One--</option>
+                                <option value="1">Rajender</option>
+                            </select>
+                            <!-- <div *ngIf="employeeForm.get('probationPeriod')?.touched && employeeForm.get('probationPeriod')?.errors?.['required']"
+                                    class="text-danger small mt-1">
+                                    Probation Period is required.
+                                </div> -->
+                        </div>
+
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>Notice Period</label>
 
                             <select formControlName="joiningTime"
                                 [ngClass]="{ 'is-invalid': employeeForm.get('joiningTime')?.invalid && employeeForm.get('joiningTime')?.touched}"
@@ -213,7 +269,7 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Date(As per Offer Letter)</label>
+                            <label class='form-label form-label-small mt-3'>Date(As per Offer Letter)</label>
                             <input type="text" id="offerLetterDate" class="form-control form-control-sm"
                                 placeholder="dd-mm-yyyy" formControlName="offerLetterDate" autocomplete="off"
                                 [bsConfig]="{
@@ -231,16 +287,14 @@
                                 </div> -->
                         </div>
 
-
+                        
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2' for='division'>Division</label>
+                            <label class='form-label form-label-small mt-3' for='division'>Division</label>
                             <select class="form-control form-control-sm py-1 " formControlName="division"
-                                (change)="onBusinessUnitChange($event)"
                                 [ngClass]="{ 'is-invalid': employeeForm.get('division')?.invalid && employeeForm.get('division')?.touched}">
                                 <option value="">--Select One--</option>
-                                <option *ngFor="let item of businessUnitsList" [value]="item.id">{{ item.name }}
-                                </option>
+                                <option *ngFor="let item of businessUnitsList" [value]="item.id">{{ item.name }} </option>
                             </select>
 
                             <!-- <div *ngIf="employeeForm.get('division')?.touched && employeeForm.get('division')?.invalid"
@@ -250,82 +304,25 @@
                         </div>
 
                         <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Employee Code</label>
-                            <input type="text" class="form-control form-control-sm " noFirstSpace numbersOnly
-                                maxlength="8" formControlName="employeeCode" placeholder="Enter Your Employee Code"
-                                [ngClass]="{ 'highlight-suggestion': showEmployeeCodeHighlight }" readonly />
-                        </div>
-
-                        <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Employement Type</label>
-                            <select class="form-control form-control-sm py-1 " formControlName="employmentType"
-                                [ngClass]="{
-                              'is-invalid': employeeForm.get('employmentType')?.invalid && employeeForm.get('employmentType')?.touched
-                            }">
-                                <option value="">--Select One--</option>
-                                <option *ngFor="let item of employeeDataList" [value]="item.id">{{ item.name }}
-                                </option>
-                            </select>
-                            <!-- <div *ngIf="employeeForm.get('employmentType')?.touched && employeeForm.get('employmentType')?.invalid"
-                                    class="text-danger small mt-1">
-                                    Employment Type is required.
-                                </div> -->
-                        </div>
-
-                        <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Probation Period</label>
-                            <select class="form-control form-control-sm py-1 " formControlName="probationPeriod"
-                                [ngClass]="{
-                              'is-invalid': employeeForm.get('probationPeriod')?.invalid && employeeForm.get('probationPeriod')?.touched
-                            }">
-                                <option value="">--Select One--</option>
-                                <option *ngFor="let joining of probationPeriodList" [value]="joining.id">
-                                    {{ joining.name }}
-                                </option>
-                            </select>
-                            <!-- <div *ngIf="employeeForm.get('probationPeriod')?.touched && employeeForm.get('probationPeriod')?.errors?.['required']"
-                                    class="text-danger small mt-1">
-                                    Probation Period is required.
-                                </div> -->
-                        </div>
-
-                        <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>PT State</label>
-                            <select class="form-control form-control-sm py-1 " formControlName="ptState" [ngClass]="{
-                              'is-invalid': employeeForm.get('ptState')?.invalid && employeeForm.get('ptState')?.touched
-                            }">
-                                <option value="">--Select One--</option>
-                                <option *ngFor="let item of ptStatesList" [value]="item.statecode">{{ item.ptstate }}
-                                </option>
-                            </select>
-                            <!-- <div *ngIf="employeeForm.get('ptState')?.touched && employeeForm.get('ptState')?.invalid"
-                                    class="text-danger small mt-1">
-                                    PT State is required.
-                                </div> -->
-                        </div>
-
-                        <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Cost Center</label>
+                            <label class='form-label form-label-small mt-3'>Cost Center</label>
                             <div class="d-flex align-items-center">
                                 <select class="form-control form-control-sm py-1 mr-3 " formControlName="costCenter"
-                                    style="width: 120px;"
-                                    [ngClass]="{'is-invalid': employeeForm.get('costCenter')?.invalid && employeeForm.get('costCenter')?.touched}">
+                                    style="width: 120px;" [ngClass]="{'is-invalid': employeeForm.get('costCenter')?.invalid && employeeForm.get('costCenter')?.touched}">
                                     <option value="">Select </option>
-                                    <option *ngFor="let item of costCenterList" [value]="item.id">{{ item.name }}
-                                    </option>
+                                    <option value="1">Rajender</option>
                                 </select>
 
                                 <div class="form-check form-check-inline mr-3">
                                     <input type="radio" name="costDigit" class="form-check-input" value="5"
-                                        formControlName="costDigit" id="digit5"
-                                        [ngClass]="{'is-invalid': employeeForm.get('costDigit')?.invalid && employeeForm.get('costDigit')?.touched}" />
+                                        formControlName="costDigit" id="digit5" 
+                                        [ngClass]="{'is-invalid': employeeForm.get('costDigit')?.invalid && employeeForm.get('costDigit')?.touched}"/>
                                     <label class="form-check-label" for="digit5">5 Digit</label>
                                 </div>
 
                                 <div class="form-check form-check-inline">
                                     <input type="radio" name="costDigit" class="form-check-input" value="6"
-                                        formControlName="costDigit" id="digit6"
-                                        [ngClass]="{'is-invalid': employeeForm.get('costDigit')?.invalid && employeeForm.get('costDigit')?.touched}" />
+                                        formControlName="costDigit" id="digit6" 
+                                        [ngClass]="{'is-invalid': employeeForm.get('costDigit')?.invalid && employeeForm.get('costDigit')?.touched}"/>
                                     <label class="form-check-label" for="digit6">6 Digit</label>
                                 </div>
 
@@ -334,8 +331,8 @@
 
                         </div>
 
-                        <!-- <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Status</label>
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>Status</label>
                             <select formControlName="status" class="form-control form-control-sm "
                                 [ngClass]="{ 'is-invalid': employeeForm.get('status')?.invalid && employeeForm.get('status')?.touched }">
                                 <option value="">Select</option>
@@ -343,9 +340,9 @@
                                 <option value="2">Closed</option>
                                 <option value="3">Hold</option>
                             </select>
-                        </div> -->
-                        <!-- <div class='col-md-3'>
-                            <label class='form-label form-label-small mt-2'>Action Date</label>
+                        </div>
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small mt-3'>Action Date</label>
                             <input type="text" id="actionDate" class="form-control form-control-sm"
                                 placeholder="dd-mm-yyyy" formControlName="actionDate" autocomplete="off" [bsConfig]="{
                                     adaptivePosition: true,
@@ -356,49 +353,48 @@
                                     dateInputFormat: 'DD-MMM-YYYY'
                                     }" bsDatepicker required readonly
                                 [ngClass]="{ 'is-invalid': employeeForm.get('actionDate')?.invalid && employeeForm.get('actionDate')?.touched}" />
-                        </div> -->
+                        </div>
 
-                        <!-- <div class='col-md-6'>
-                            <label class='form-label form-label-small mt-2'>Reason</label>
+                        <div class='col-md-6'>
+                            <label class='form-label form-label-small mt-3'>Reason</label>
                             <textarea class="form-control form-control-sm " noFirstSpace formControlName="reason"
                                 placeholder="Enter Reason" rows="1" maxlength="500"
                                 [ngClass]="{ 'is-invalid': employeeForm.get('reason')?.invalid && employeeForm.get('reason')?.touched }">
                             </textarea>
 
-                        </div> -->
+                        </div>
 
                         <!-- </div> -->
                     </div>
+
+
+
+
                 </div>
 
-                <div class="light-green-bg p-1 rounded fw-bold my-3">
+                <div class="light-green-bg p-1 rounded fw-bold">
                     Sales Office/group Mapping (Optional)
                 </div>
 
 
-                <div class="container-fluid">
-                    <div class='row '>
+                <div class="container-fluid mt-3">
+                    <div class='row mb-4'>
 
-                        <div class="col-md-3">
-                            <label class="form-label form-label-small" for="salesState">Sales State/District</label>
-                            <select class="form-control form-control-sm py-1" id="salesState"
-                                formControlName="salesState">
+                        <div class='col-md-3'>
+                            <label class='form-label form-label-small' for='salesState'>Sales State/District</label>
+                            <select class="form-control form-control-sm py-1 " formControlName="salesState">
                                 <option value="">--Select One--</option>
-                                <option *ngFor="let title of salesDistrictList" [value]="title?.salesdistcode">
-                                    {{ title?.salesdistname }}
-                                </option>
+                                <option value="1">Rajender</option>
                             </select>
                         </div>
 
-
                         <div class='col-md-3'>
                             <label class='form-label form-label-small'>Sale Office(HQ)</label>
-                            <select class="form-control form-control-sm py-1 " formControlName="salesOffice"
-                                (change)="onSalesOfficeChange($event)"
-                                [ngClass]="{'is-invalid': employeeForm.get('salesOffice')?.invalid && employeeForm.get('salesOffice')?.touched}">
+                            <select class="form-control form-control-sm py-1 " formControlName="salesOffice" [ngClass]="{
+                              'is-invalid': employeeForm.get('salesOffice')?.invalid && employeeForm.get('salesOffice')?.touched
+                            }">
                                 <option value="">--Select One--</option>
-                                <option *ngFor="let title of salesOfficeList" [value]="title?.salesofficecode">{{
-                                    title?.salesofficename }}</option>
+                                <option value="1">Rajender</option>
                             </select>
                             <!-- <div *ngIf="employeeForm.get('salesOffice')?.touched && employeeForm.get('salesOffice')?.hasError('required')"
                                     class="text-danger small mt-1">
@@ -410,20 +406,130 @@
                             <label class='form-label form-label-small'> Sale Group</label>
                             <select class="form-control form-control-sm py-1 " formControlName="salesGroup">
                                 <option value="">--Select One--</option>
-                                <option *ngFor="let title of salesGroupList" [value]="title?.SALESGROUPCODE">{{
-                                    title?.SALESGROUPNAME }}</option>
+                                <option value="1">Rajender</option>
                             </select>
                         </div>
                         <div class="col-md-3 mt-4">
-                            <button class="btn btn-secondary btn-sm mr-2 shadow-none border-none px-4 " type="button"
+                            <button class="btn btn-secondary btn-sm mr-4 shadow-none border-none px-5" type="button"
                                 (click)="reset()">Reset</button>
-                            <button class="btn custom-bg btn-sm shadow-none border-none text-white px-4 "
+                            <button class="btn custom-bg btn-sm shadow-none border-none px-5 text-white"
                                 type="submit">Save</button>
                         </div>
                     </div>
                 </div>
 
 
+            </div>
+            <!-- <div class="d-flex justify-content-center mr-4 mb-3">
+                <button class="btn btn-secondary btn-sm mr-4 shadow-none border-none px-5" type="button"
+                    (click)="reset()">Reset</button>
+                <button class="btn custom-bg btn-sm shadow-none border-none px-5 text-white" type="submit">Save</button>
+            </div> -->
+
+
+
+        </div>
+
+
+    </form>
+
+    <!-- search criteria -->
+    <div class="light-green-bg p-1 rounded fw-bold">
+        Search Criteria
+    </div>
+
+
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="container-fluid mt-3">
+            <div class="row mb-4">
+                <!-- <div class="col-md-3 fw-bold-d">Search Information</div>
+                <div class="col-md-9 row g-3"> -->
+
+                <!-- Sales State / District -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small">Business Unit</label>
+                    <select class="form-control form-control-sm py-1 " formControlName="BU">
+                        <option value="">--Select One--</option>
+                        <option *ngFor="let item of businessUnitsList" [value]="item.id">{{ item.name }} </option>
+                    </select>
+                </div>
+
+                <!-- Employee ID -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small">Employee ID</label>
+                    <input type="text" class="form-control form-control-sm " formControlName="empId" noFirstSpace
+                        numbersOnly maxlength="8" placeholder="Enter Employee ID"
+                        [ngClass]="{ 'is-invalid': searchForm.get('empId')?.invalid && searchForm.get('empId')?.touched}" />
+                </div>
+
+                <!-- First/Last Name -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small">First/Last Name</label>
+                    <input type="text" class="form-control form-control-sm " formControlName="FLName" stringOnly
+                        noFirstSpace placeholder="Enter Full Name" />
+                </div>
+
+                <!-- Date Of Join -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small">Date Of Join</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="dateOfJoin" bsDatepicker
+                        readonly autocomplete="off" placeholder="dd-mm-yyyy" [bsConfig]="{
+                   adaptivePosition: true,
+                   showWeekNumbers: false,
+                   isAnimated: true,
+                   containerClass: colorTheme,
+                   customTodayClass: 'custom-today-class',
+                   dateInputFormat: 'DD-MMM-YYYY'
+                 }" [ngClass]="{
+                   'is-invalid': searchForm.get('dateOfJoin')?.invalid &&
+                                 searchForm.get('dateOfJoin')?.touched
+                 }" />
+                </div>
+
+                <!-- Employee Type -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small mt-3">Employee Type</label>
+                    <select formControlName="empType" class="form-control form-control-sm " [ngClass]="{
+                    'is-invalid': searchForm.get('empType')?.invalid &&
+                                  searchForm.get('empType')?.touched
+                  }">
+                        <option value="">Select</option>
+                        <option *ngFor="let title of titleList" [value]="title?.id">{{ title?.name }}</option>
+                    </select>
+                </div>
+
+                <!-- Department -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small mt-3">Department</label>
+                    <select formControlName="department" class="form-control form-control-sm " [ngClass]="{
+                    'is-invalid': searchForm.get('department')?.invalid &&
+                                  searchForm.get('department')?.touched
+                  }">
+                        <option value="">Select</option>
+                        <option *ngFor="let title of titleList" [value]="title?.id">{{ title?.name }}</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3">
+                    <label class="form-label form-label-small mt-3">Status</label>
+                    <select formControlName="status" class="form-control form-control-sm " [ngClass]="{
+                    'is-invalid': searchForm.get('status')?.invalid &&
+                                  searchForm.get('status')?.touched
+                  }">
+                        <option value="">Select</option>
+                        <option *ngFor="let title of titleList" [value]="title?.id">{{ title?.name }}</option>
+                    </select>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-md-3 mt-4">
+                    <button class="btn custom-bg text-white btn-sm shadow-none border-none px-5 mt-3" type="submit">
+                        Search
+                    </button>
+                </div>
+
+                <!-- </div> -->
             </div>
         </div>
     </form>

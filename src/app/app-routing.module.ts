@@ -90,6 +90,7 @@ import { OrganogramTrackingComponent } from './organogram/organogram-tracking/or
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { UnscheduledComponent } from './hiring-module/unscheduled/unscheduled.component';
 import { FuelComponent } from './HR/fuel/fuel.component';
+import { EmployeeBasicDetailComponent } from './HR/employee-basic-detail/employee-basic-detail.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -151,7 +152,7 @@ const routes: Routes = [
   { path: 'vacancy', component: VacancyComponent },
   { path: 'nonfunctional', component: NonFunctionalComponent },
   { path: 'use-case', component: UseCaseComponent },
-  { path: 'appendices', component: AppendicesComponent },
+  { path: 'employee-code/:id', component: AppendicesComponent },
   { path: 'jobcode/:id', component: JobDetailComponent },
   { path: 'tracking/:id', component: TrackingComponent },
   { path: 'personal-info', component: personalInfoComponent },
@@ -173,6 +174,7 @@ const routes: Routes = [
   { path: 'organogram/:id', component: OrganogramTrackingComponent },
   {path:'unscheduled',component:UnscheduledComponent},
   {path:'fuel',component:FuelComponent},
+  {path:'employee-basic-details', component:EmployeeBasicDetailComponent},
 
 
   // Manager 

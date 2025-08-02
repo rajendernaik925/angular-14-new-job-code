@@ -37,6 +37,8 @@ export class OfferLetterComponent implements OnInit {
   maxDate: Date;
   panAlertMessage: string | null = null;
   private panAlertTimeout: any;
+  userData: any;
+  loginId: number | null = null;
 
 
 
@@ -49,6 +51,12 @@ export class OfferLetterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
+    this.userData = JSON.parse(loggedUser);
+    this.loginId = this.userData.user.empID;
+
+
     this.offerCandidates();
     this.generateColumns();
     // this.generateRows();
@@ -148,34 +156,94 @@ export class OfferLetterComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
+  // GenerateOffer(employeeId: any) {
+  //   this.isLoading = true;
+  //   console.log("employeeId : ", employeeId);
+  //   this.authService.GenerateOffer(employeeId).subscribe({
+  //     next: (res: HttpResponse<any>) => {
+  //       console.log(res)
+  //       if (res.status === 200) {
+  //         this.isLoading = false;
+  //         console.log("res : ", res);
+  //         this.offerCandidates();
+  //         Swal.fire({
+  //           title: 'Success',
+  //           text: 'Offer Letter Generated Successfully',
+  //           icon: 'success',
+  //           showConfirmButton: false,
+  //           timer: 1000,
+  //           timerProgressBar: true,
+  //         })
+  //       }
+  //     },
+  //     error: (err: HttpErrorResponse) => {
+  //       console.log("error : ", err);
+  //       this.isLoading = false;
+  //     }
+  //   })
+
+
+  // }
+
   GenerateOffer(employeeId: any) {
-    this.isLoading = true;
-    console.log("employeeId : ", employeeId);
-    this.authService.GenerateOffer(employeeId).subscribe({
-      next: (res: HttpResponse<any>) => {
-        console.log(res)
-        if (res.status === 200) {
-          this.isLoading = false;
-          console.log("res : ", res);
-          this.offerCandidates();
-          Swal.fire({
-            title: 'Success',
-            text: 'Offer Letter Generated Successfully',
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 1000,
-            timerProgressBar: true,
-          })
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        console.log("error : ", err);
-        this.isLoading = false;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to generate the offer letter for this candidate?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Generate',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.isLoading = true;
+        console.log("employeeId : ", employeeId);
+        const empId = this.loginId
+        this.authService.GenerateOffer(employeeId, empId).subscribe({
+          next: (res: HttpResponse<any>) => {
+            this.isLoading = false;
+            console.log("res : ", res);
+
+            if (res.status === 200) {
+              this.offerCandidates();
+              Swal.fire({
+                title: 'Success',
+                text: 'Offer Letter Generated Successfully',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+              });
+            }
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isLoading = false;
+            console.error("Raw backend error:", err.error);
+
+            let errorMsg = 'An unexpected error occurred.';
+
+            try {
+              const parsedError = JSON.parse(err.error);
+              if (parsedError?.message) {
+                errorMsg = parsedError.message;
+              }
+            } catch {
+              // If not JSON, show the raw error
+              errorMsg = typeof err.error === 'string' ? err.error : errorMsg;
+            }
+
+            Swal.fire({
+              title: 'Error',
+              text: errorMsg,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+
+        });
       }
-    })
-
-
+    });
   }
+
 
   viewFile(file: any) {
     if (!file) {

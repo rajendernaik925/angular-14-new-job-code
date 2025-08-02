@@ -46,8 +46,8 @@ export class JobDetailComponent implements OnInit {
     private route: ActivatedRoute,
   ) {
     this.publishForm = this.fb.group({
-      publishMode: ['', Validators.required], // Ensure publishMode is always required
-      businessUnit: this.fb.group({}) // Initially empty
+      publishMode: ['Offline', Validators.required],
+      businessUnit: this.fb.group({}) 
     });
 
     // Subscribe to publishMode value changes
@@ -87,8 +87,6 @@ export class JobDetailComponent implements OnInit {
     });
     return controls;
   }
-
-
 
   addBusinessUnitValidation() {
     const businessUnitControl = this.publishForm.get('businessUnit');

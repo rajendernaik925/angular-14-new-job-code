@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
+
 @Component({
   selector: 'app-vacancy',
   templateUrl: './vacancy.component.html',
@@ -38,6 +39,13 @@ export class VacancyComponent implements OnInit {
   referenceJobCode: string | null = null;
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
+  isEmployeeTypeInvalid = false;
+  selectedEmployeeType: string = '';
+  employeeTypes = [
+    { id: '1', name: 'Office Candidate' },
+    { id: '2', name: 'Field Candidate' }
+  ];
+
 
   constructor(
     private authService: AuthService,
@@ -49,9 +57,11 @@ export class VacancyComponent implements OnInit {
     this.addCandidateForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z\s]+$/)]],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      // mobileNumber: ['', [Validators.required]],
       emailAddress: ['', [Validators.required, Validators.email]],
       workExperience: ['', [Validators.required]],
       jobCodeId: ['', Validators.required],
+      employeeTypeId: ['', Validators.required],
       resume: [{ value: null, disabled: false }],
     });
   }
@@ -143,13 +153,50 @@ export class VacancyComponent implements OnInit {
     });
   }
 
+  // onFileSelect(event: Event): void {
+  //   const file = (event.target as HTMLInputElement).files?.[0];
+  //   if (file) {
+  //     const maxSizeInMB = 5;
+  //     const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+
+
+  //     if (file.size > maxSizeInBytes) {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'File too large',
+  //         text: 'Please select a file less than 5 MB.'
+  //       });
+  //       (event.target as HTMLInputElement).value = '';
+  //       return;
+  //     }
+
+  //     if (file.type !== 'application/pdf') {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Invalid File Type!',
+  //         text: 'Please upload a PDF file only.',
+  //       });
+  //       (event.target as HTMLInputElement).value = '';
+  //       return;
+  //     }
+
+  //     this.uploadedFile = file;
+
+  //     const fileBlob = new Blob([file], { type: file.type });
+
+  //     this.addCandidateForm.patchValue({ resume: fileBlob });
+  //     this.addCandidateForm.get('resume')?.updateValueAndValidity();
+  //   } else {
+  //     // console.log('No file selected.');
+  //   }
+  // }
+
   onFileSelect(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const maxSizeInMB = 5;
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-
-      
 
       if (file.size > maxSizeInBytes) {
         Swal.fire({
@@ -177,12 +224,37 @@ export class VacancyComponent implements OnInit {
 
       this.addCandidateForm.patchValue({ resume: fileBlob });
       this.addCandidateForm.get('resume')?.updateValueAndValidity();
-    } else {
-      // console.log('No file selected.');
+
+      // ✅ Call API immediately after file selection
+      const formData = new FormData();
+      formData.append('resume', file);
+
+      // this.isLoading = true;
+
+      // this.authService.resumeData(formData).subscribe({
+      //   next: (res: any) => {
+      //     // this.isLoading = false;
+      //     console.log('Resume upload response:', res);
+      //     if (res) {
+      //       this.addCandidateForm.patchValue({
+      //         fullName: res.name || '',
+      //         mobileNumber: res.mobile
+      //           ? res.mobile.replace(/^(\+91|91)/, '').slice(-10)
+      //           : '',
+      //         emailAddress: res.email || ''
+      //       });
+      //     }
+      //   },
+      //   error: (err: HttpErrorResponse) => {
+      //     Swal.fire({
+      //       icon: 'error',
+      //       title: 'Upload Failed',
+      //       text: 'Something went wrong while uploading. Please try again.',
+      //     });
+      //   }
+      // });
     }
   }
-
-
 
   preventNegativeInput(event: KeyboardEvent, currentValue: string): void {
     if (event.key === '-' || event.key === 'e') {
@@ -193,46 +265,87 @@ export class VacancyComponent implements OnInit {
     }
   }
 
-  experienceValue = ''; // Optional: if you need to bind separately
+  validExperienceInput(event: KeyboardEvent): void {
+    const inputChar = event.key;
+    const inputElement = event.target as HTMLInputElement;
+    const currentValue = inputElement.value;
 
-  // Prevent invalid key presses
-  preventInvalidExperienceInput(event: KeyboardEvent): void {
     const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
-    const key = event.key;
+    if (allowedKeys.includes(inputChar)) return;
 
-    if (
-      allowedKeys.includes(key) ||
-      (key >= '0' && key <= '9') ||
-      key === '.'
-    ) {
+    if (!/[\d.]/.test(inputChar)) {
+      event.preventDefault();
       return;
     }
 
-    // Prevent e, -, +, etc.
-    event.preventDefault();
+    if (inputChar === '.' && currentValue === '') {
+      event.preventDefault();
+      return;
+    }
+
+    if (inputChar === '.' && currentValue.includes('.')) {
+      event.preventDefault();
+      return;
+    }
+
+    const parts = currentValue.split('.');
+
+    if (!currentValue.includes('.') && parts[0].length >= 2 && /\d/.test(inputChar)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (parts.length === 2 && parts[1].length >= 2 && /\d/.test(inputChar)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (/^00(\.00?)?$/.test(currentValue + inputChar)) {
+      event.preventDefault();
+      return;
+    }
   }
 
-  // Validate and auto-correct format
-  validateExperienceInput(event: Event): void {
+
+  CorrectExperienceValue(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = input.value;
 
-    // Remove invalid characters and multiple dots
+    // Allow only digits and one dot
     value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
 
-    // Extract parts
-    const [yearsStr, monthsStr = ''] = value.split('.');
-    const years = parseInt(yearsStr || '0', 10);
-    const months = parseInt(monthsStr || '0', 10);
+    // Split on dot
+    let [yearsRaw = '', monthsRaw = ''] = value.split('.');
 
-    // Prevent months > 11
-    if (monthsStr && months > 11) {
-      value = `${years + 1}`;
+    // Handle if user types just "."
+    if (yearsRaw === '' && monthsRaw !== '') {
+      yearsRaw = '0';
     }
 
-    input.value = value;
-    this.addCandidateForm.get('workExperience')?.setValue(value);
+    let years = parseInt(yearsRaw || '0', 10);
+    let months = parseInt(monthsRaw.slice(0, 2) || '0', 10);
+
+    // If months > 11, roll over to next year
+    if (months > 11) {
+      years += 1;
+      months = 0;
+    }
+
+    // Build final string
+    let finalValue = '';
+    if (value.endsWith('.') && monthsRaw === '') {
+      // If user just typed dot, allow e.g. "1." or "0."
+      finalValue = `${years}.`;
+    } else {
+      finalValue = months ? `${years}.${months}` : `${years}`;
+    }
+
+    input.value = finalValue;
+    this.addCandidateForm.get('workExperience')?.setValue(finalValue);
   }
+
+
+
 
 
 
@@ -251,6 +364,7 @@ export class VacancyComponent implements OnInit {
       workExp: formValues.workExperience,
       createdBy: this.userData.user.empID,
       jobCodeId: this.candidateId,
+      employeeTypeId: formValues.employeeTypeId,
     };
 
     const formData = new FormData();
@@ -408,4 +522,17 @@ export class VacancyComponent implements OnInit {
     this.showPDF = false; // Hide the modal
     this.fileURL = null; // Clear the URL
   }
+
+  oisEmployeeTypeInvalid = false;
+
+  onEmployeeTypeChange(event: Event): void {
+    const selectedType = (event.target as HTMLSelectElement).value;
+    this.addCandidateForm.get('employeeTypeId')?.setValue(selectedType);
+    console.log('Selected Employee Type:', selectedType);
+
+    // validation
+    this.isEmployeeTypeInvalid = !selectedType;
+  }
+
+
 }

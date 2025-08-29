@@ -41,7 +41,7 @@ export class EmployeeCodeComponent implements OnInit {
     private dialog: MatDialog,
     private authService: AuthService,
     private sanitizer: DomSanitizer,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -163,7 +163,15 @@ export class EmployeeCodeComponent implements OnInit {
         //   confirmButtonText: 'Close',
         //   allowOutsideClick: false
         // });
-        this.router.navigate(['/employee-code', id]);
+
+        // TypeScript
+        const base64Once = btoa(id.toString());
+        const base64Twice = btoa(base64Once); // double encoding
+
+        this.router.navigate(['/employee-code', base64Twice]);
+
+
+        // this.router.navigate(['/employee-code', id]);
       }
     });
   }

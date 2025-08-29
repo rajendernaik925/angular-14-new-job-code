@@ -144,9 +144,37 @@
                 <!-- personal updated design -->
 
                 <div class="container-fluid border-0 pt-4 card ">
-                  <h5 class="mb-4 fw-bold">Personal Info</h5>
+                  <!-- <h5 class="mb-4 fw-bold">Personal Info</h5> -->
 
-                  <div class="scroll-container">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Personal Info</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+                  <div class="scroll-container container-fluid">
                     <div class="row mb-4">
                       <div class="col-md-3 fw-bold-d">Job Code and Email Address</div>
                       <div class="col-md-9 row g-3">
@@ -436,6 +464,7 @@
                                   </span>
                                 </label>
                                 <input type="file" id="resumeUpload" accept=".pdf" class="d-none"
+                                [ngClass]="{ 'is-invalid': registrationForm.get('resume')?.invalid && registrationForm.get('resume')?.touched }"
                                   (change)="onFileSelect($event, 'resume')" />
                               </div>
                             </ng-template>
@@ -518,9 +547,36 @@
 
               <div *ngIf="activeTab === 'address'">
                 <div class="container-fluid border-0 pt-4 card ">
-                  <h5 class="mb-4 fw-bold">Address</h5>
+                  <!-- <h5 class="mb-4 fw-bold">Address</h5> -->
 
-                  <div class="scroll-container container-flui">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Address</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+                  <div class="scroll-container container-fluid">
                     <div class="row mb-2">
                       <div class="col-md-3 fw-bold-d">Communication address</div>
                       <div class="col-md-9 row g-3">
@@ -756,7 +812,37 @@
               <div *ngIf="activeTab === 'education'">
 
                 <div class="container-fluid border-0 pt-4 card ">
-                  <h5 class="mb-4 fw-bold">Education</h5>
+                  <!-- <h5 class="mb-4 fw-bold">Education</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Education</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+
                   <div class="scroll-container container-fluid">
 
                     <div *ngIf="editButtonDisplay" class="row mt-2">
@@ -1128,7 +1214,37 @@
 
               <div *ngIf="activeTab === 'documents'">
                 <div class="container-fluid border-0 pt-4 card ">
-                  <h5 class="mb-4 fw-bold">Documents</h5>
+                  <!-- <h5 class="mb-4 fw-bold">Documents</h5> -->
+
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Documents</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                        <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+
                   <div class="scroll-container container-fluid">
 
                     <!-- aadhaar card -->
@@ -1457,7 +1573,35 @@
 
 
                 <div class="container-fluid border-0 pt-4 card ">
-                  <h5 class="mb-4 fw-bold">Working Experience</h5>
+                  <!-- <h5 class="mb-4 fw-bold">Working Experience</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Working Experience</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                        <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
                   <div class="scroll-container container-fluid">
 
 

@@ -134,6 +134,8 @@ import { FuelComponent } from './HR/fuel/fuel.component';
 import { EmployeeBasicDetailComponent } from './HR/employee-basic-detail/employee-basic-detail.component';
 import { StringOnlyDirective } from './directives/string-only.directive';
 import { NoFirstSpaceDirective } from './directives/no-first-space.directive';
+import { LeaveCalenderComponent } from './HR/leave-calender/leave-calender.component';
+import { EmployeeProfileComponent } from './hiring-module/employee-profile/employee-profile.component';
 
 
 
@@ -214,7 +216,9 @@ import { NoFirstSpaceDirective } from './directives/no-first-space.directive';
     PageNotFoundComponent,
     UnscheduledComponent,
     FuelComponent,
-    EmployeeBasicDetailComponent
+    EmployeeBasicDetailComponent,
+    LeaveCalenderComponent,
+    EmployeeProfileComponent
   ],
   imports: [
     BrowserModule,

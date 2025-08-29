@@ -1,0 +1,303 @@
+.custom-bg
+  background: #0072BC
+
+.section-min-height
+  max-height: calc(100vh - 90px)
+  min-height: calc(100vh - 90px)  
+
+.custom-text
+  color: #0072BC  
+
+.fw-bold
+  font-weight: bold
+.cursor-pointer
+  cursor: pointer
+  &:Hover
+    color: #0072BC
+input:focus,
+select:focus,
+textarea:focus
+  border-color: black !important
+  box-shadow: none !important
+
+.light-green-bg 
+  background-color: #cbead5
+.custom-hr
+  border: 1px solid #0072BC !important
+.small 
+  font-size: 13px
+
+input,
+select,
+textarea,
+.form-control,
+.form-select
+  font-size: 0.75rem
+  padding: 0.25rem 0.4rem
+  height: auto !important
+  min-height: 30px
+  line-height: 1.2
+
+label
+  font-size: 13px
+  //color: #6c757d
+  margin-bottom: 2px
+
+input.is-invalid::placeholder 
+  color: red
+
+
+select.is-invalid 
+  color: red !important
+
+
+.bounce-top
+  animation: bounce-top 0.9s both
+
+@keyframes bounce-top
+  0%
+    transform: translateY(-45px)
+    animation-timing-function: ease-in
+    opacity: 1
+  24%
+    opacity: 1
+  40%
+    transform: translateY(-24px)
+    animation-timing-function: ease-in
+  65%
+    transform: translateY(-12px)
+    animation-timing-function: ease-in
+  82%
+    transform: translateY(-6px)
+    animation-timing-function: ease-in
+  93%
+    transform: translateY(-4px)
+    animation-timing-function: ease-in
+  25%, 55%, 75%, 87%
+    transform: translateY(0)
+    animation-timing-function: ease-out
+  100%
+    transform: translateY(0)
+    animation-timing-function: ease-out
+    opacity: 1
+
+
+
+.scale-in-ver-top
+  animation: scale-in-ver-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+
+@keyframes scale-in-ver-top
+  0%
+    transform: scaleY(0)
+    transform-origin: 100% 0
+    opacity: 1
+  100%
+    transform: scaleY(1)
+    transform-origin: 100% 0
+    opacity: 1
+
+// Uiverse.io - Input Style by Praashoo7
+
+.input
+  border: none
+  outline: none
+  border-radius: 15px
+  padding: 1em
+  //background-color: #eee
+  background-color: #E8F0FE
+  box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3)
+  transition: 300ms ease-in-out
+
+  &::placeholder
+    color: #a5aaaeff
+    transition: color 0.3s ease
+
+  &:focus
+    background-color: #0072BC
+    color: white
+    transform: scale(1.05)
+    box-shadow: 13px 13px 100px #969696, -13px -13px 100px #ffffff
+
+    &::placeholder
+      color: white
+
+select.form-select
+  color: #555
+  outline: none
+
+  option
+    background-color: white
+    color: #555
+    padding: 0.4rem
+
+    &:hover
+      background-color: #0072BC
+      color: white
+
+
+.arrow-buttons
+  display: flex
+
+.arrow-btn
+  position: relative
+  padding: 6px 20px
+  color: white
+  border: none
+  cursor: pointer
+  transition: background 0.3s ease
+  margin: 0
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%)
+
+  &:hover
+    background: #0072BC
+
+  // push arrows into each other
+  &:not(:first-child)
+    margin-left: -26px   // overlap by arrow width
+
+  // First button: flat start, arrow end
+  &:first-child
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)
+
+
+
+    
+.bg-gradient-image
+  //background-image: url("https://png.pngtree.com/background/20211215/original/pngtree-technology-light-blue-gradient-simple-technology-poster-picture-image_1472754.jpg")
+  //background-image: url("https://marketplace.canva.com/EAD2962NKnQ/2/0/1600w/canva-rainbow-gradient-pink-and-purple-virtual-background-_Tcjok-d9b4.jpg")
+  background-image: url("https://img.freepik.com/premium-photo/abstract-86-background-wallpaper-gradient_792836-183404.jpg?semt=ais_hybrid&w=740&q=80")
+  //background-image: url("https://media.istockphoto.com/id/1149011243/vector/horizontal-vector-illustration-of-an-empty-light-bluish-grey-grungy-textured-background.jpg?s=612x612&w=0&k=20&c=PBeWiCr8PlhqTcJMKkmvRwFVHmpcxMabI1jSVsoOH9U=")
+  background-size: cover    // makes the image cover the whole div
+  background-position: center  // centers the image
+  background-repeat: no-repeat
+  min-height: calc(100vh - 90px)   // fills vertically if content is short
+  //box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px
+  //box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px
+  //box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px
+
+
+
+.image-wrapper
+  display: inline-block
+  position: relative
+
+  .user-icon
+    width: 80px // adjust size as needed
+    position: absolute
+    bottom: -15px // half of the icon height to make it overlap
+    left: 50%
+    transform: translateX(-50%)
+    border-radius: 50% // makes it circular
+    border: 3px solid white // optional border for better look
+    background: white // optional background
+
+
+.sidebar
+  position: fixed
+  top: 0
+  right: -250px
+  width: 250px
+  height: 100%
+  background: #f8f9fa
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2)
+  padding: 20px
+  transition: right 0.3s ease
+  z-index: 1050
+
+  &.open
+    right: 0
+
+
+.custom-alert
+  position: fixed
+  top: 47px
+  right: 13px
+  min-width: 250px
+  z-index: 1050
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2)
+  transition: opacity 0.4s ease-in-out
+  opacity: 0
+  pointer-events: none
+
+  &.slide-in
+    opacity: 1
+    pointer-events: auto
+
+  &.slide-out
+    opacity: 0
+    pointer-events: none
+
+
+
+
+//test
+
+//.scale-in-center
+  animation: scale-in-center .2s cubic-bezier(.25,.46,.45,.94) both
+
+@keyframes scale-in-center
+  0%
+    transform: scale(0)
+    opacity: 1
+  100%
+    transform: scale(1)
+    opacity: 1
+
+
+
+.scroll-container
+  //max-height: calc(100vh - 245px)
+  max-height: calc(100vh - 90px)
+  min-height: calc(100vh - 90px)
+  overflow-y: scroll // Keep scrolling functionality
+  display: block
+  max-width: 100%
+  position: relative
+
+  // Hide scrollbar for Webkit-based browsers (Chrome, Safari, Edge)
+  &::-webkit-scrollbar
+    display: none
+  // Hide scrollbar for Firefox
+  scrollbar-width: none
+
+  // Hide scrollbar for Internet Explorer 10+
+  -ms-overflow-style: none
+
+
+
+
+//offcanvas
+
+$offcanvas-width: 400px
+$offcanvas-bg: white
+$offcanvas-shadow: -2px 0 5px rgba(0, 0, 0, 0.2)
+$offcanvas-transition: right 0.3s ease-in-out
+$z-index-offcanvas: 1050
+
+.offcanvas-right
+  position: fixed
+  top: 0
+  right: -$offcanvas-width
+  width: $offcanvas-width
+  height: 94%
+  background-color: $offcanvas-bg
+  box-shadow: $offcanvas-shadow
+  transition: $offcanvas-transition
+  z-index: $z-index-offcanvas
+  overflow-y: auto
+
+  &.show
+    right: 0
+
+.offcanvas-header
+  padding: 1rem
+  border-bottom: 1px solid #dee2e6
+  display: flex
+  justify-content: space-between
+  align-items: center
+
+.offcanvas-body
+  padding: 1rem
+
+

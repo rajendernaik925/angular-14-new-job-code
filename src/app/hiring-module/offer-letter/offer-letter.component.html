@@ -2,7 +2,7 @@
   <app-nav></app-nav>
 </div>
 
-<div class="container-flui mt-3">
+<div class="container-fluid mt-3">
   <div class="row g-2">
     <div class="col-md-2 mb-2">
       <div class="card border-0 p-0 shadow">
@@ -49,10 +49,10 @@
                     [hidden]="col.key === 'status' && row['status'] === '1001'">
 
                     <!-- Action button cell -->
-                    <ng-container *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
+                    <!-- <ng-container *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
                       <button *ngIf="row['offerLink'] && row['offerLink'] !== 'N/A'; else generateButton"
                         class="border-none custom-action-btn px-2 bg-info text-white"
-                        (click)="viewFile(row['offerLink'])">
+                        (click)="viewFile(row['offerLink'],row.candidateId)">
                         View
                       </button>
 
@@ -63,7 +63,46 @@
                           {{ row['status'] === '1002' ? 'Generated' : 'Generate' }}
                         </button>
                       </ng-template>
+                    </ng-container> -->
+
+                    <ng-container *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
+
+                      <!-- If offer link exists -->
+                      <ng-container *ngIf="row['offerLink'] && row['offerLink'] !== 'N/A'; else generateButton">
+
+                        <!-- View button -->
+                        <button class="border-none custom-action-btn px-2 bg-info text-white mr-1"
+                          (click)="viewFile(row['offerLink'], row.candidateId,row.viewFlag)">
+                          View
+                        </button>
+
+                        <!-- Send button -->
+                        <button *ngIf="row.viewFlag == '1' && row.sendFlag == 'P'" class="border-none custom-action-btn px-2 custom-bg text-white text-white"
+                          (click)="sendOfferLetterToCandidate(row.candidateId)">
+                          Send
+                        </button>
+
+                        <button *ngIf="row.viewFlag == '1' && row.sendFlag == 'F'" class="border-none custom-action-btn px-2 bg-warning text-white text-white"
+                          (click)="sendOfferLetterToCandidate(row.candidateId)">
+                          Resend
+                        </button>
+
+                        <span *ngIf="row.viewFlag == '1' && row.sendFlag == 'S'" class="border-none custom-action-btn px-2 bg-success text-white text-white">
+                          Sent
+                        </span>
+                      </ng-container>
+
+                      <!-- If no offer link: Show generate button -->
+                      <ng-template #generateButton>
+                        <button class="border-none custom-action-btn px-2"
+                          [ngClass]="row['status'] === '1002' ? 'bg-secondary text-white' : 'custom-bg text-white'"
+                          (click)="GenerateOffer(row.candidateId)" [disabled]="row['status'] === '1002'">
+                          {{ row['status'] === '1002' ? 'Generated' : 'Generate' }}
+                        </button>
+                      </ng-template>
+
                     </ng-container>
+
 
                     <!-- Normal cells -->
                     <ng-template #normalCell>
@@ -85,8 +124,8 @@
                             dateInputFormat: 'DD-MM-YYYY',
                             minDate: today,
                             maxDate: maxDate
-                          }" bsDatepicker [ngModel]="row[col.key]" (ngModelChange)="onDateChange($event, row, col.key)" autocomplete="off"
-                            required />
+                          }" bsDatepicker [ngModel]="row[col.key]" (ngModelChange)="onDateChange($event, row, col.key)"
+                            autocomplete="off" required />
 
                         </ng-template>
                       </ng-container>
@@ -146,7 +185,7 @@
               </li>
               <!-- Always show Next button but disable if on last page -->
               <li class="page-item" [class.disabled]="currentPage === totalPages">
-                <button type="button" class="border-none text-white custom-action-btn px-2 py-1 mr-2"
+                <button type="button" class="border-none text-white custom-action-btn px-2 py-1"
                   (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
                   [ngClass]="{'custom-bg': currentPage < totalPages, 'bg-secondary': currentPage === totalPages}">
                   <i class="bi bi-chevron-right"></i>

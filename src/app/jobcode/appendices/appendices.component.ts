@@ -84,9 +84,23 @@ export class AppendicesComponent implements OnInit {
   ngOnInit(): void {
 
     this.route.paramMap.subscribe(params => {
-      this.empId = Number(params.get('id')) || null;
-      console.log('Job Code ID:', this.empId);
+      const encodedId = params.get('id');
+      if (encodedId) {
+        try {
+          const firstDecode = atob(encodedId);       
+          const secondDecode = atob(firstDecode);    
+          this.empId = Number(secondDecode) || null;
+          console.log('Decoded Job Code ID:', this.empId);
+        } catch (error) {
+          console.error('Error decoding encoded ID:', error);
+          this.empId = null;
+        }
+      } else {
+        this.empId = null;
+      }
     });
+
+
     this.loadUserData();
 
     this.gender();
@@ -293,7 +307,7 @@ export class AppendicesComponent implements OnInit {
   }
 
   checkList() {
-    this.showAlert("Need to display all details about candidate",'success')
+    this.showAlert("Need to display all details about candidate", 'success')
   }
 
 

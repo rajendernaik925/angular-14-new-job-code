@@ -95,7 +95,9 @@ export class OfferLetterComponent implements OnInit {
           expectedCtc: item.expectedCtc || 'N/A',
           joiningDate: item.joiningDate,
           status: item.status || 'N/A',
-          offerLink: item.offerLetterFile || 'N/A'
+          offerLink: item.offerLetterFile || 'N/A',
+          viewFlag: item.viewFlag || 'N/A',
+          sendFlag: item.sendFlag || 'N/A'
         }));
         // let i = this.rows.length;
 
@@ -152,7 +154,7 @@ export class OfferLetterComponent implements OnInit {
     if (!this.searchQueryText || !text) return text;
     const escapedQuery = this.searchQueryText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-    const highlightedText = String(text).replace(regex, `<span class="badge text-white" style="font-weight: bold; background-color: #198754;">$1</span>`);
+    const highlightedText = String(text).replace(regex, `<span style="font-weight: bold; color: #0072BC;">$1</span>`);
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
@@ -190,8 +192,9 @@ export class OfferLetterComponent implements OnInit {
       title: 'Are you sure?',
       text: 'Do you want to generate the offer letter for this candidate?',
       icon: 'question',
+      reverseButtons: true,
       showCancelButton: true,
-      confirmButtonText: 'Yes, Generate',
+      confirmButtonText: 'Generate',
       cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -245,22 +248,130 @@ export class OfferLetterComponent implements OnInit {
   }
 
 
-  viewFile(file: any) {
+  // viewFile(file: any) {
+  //   if (!file) {
+  //     console.error("No file available for download.");
+  //     return;
+  //   }
+
+  //   const byteCharacters = atob(file);
+  //   const byteNumbers = new Array(byteCharacters?.length)
+  //     .fill(0)
+  //     .map((_, i) => byteCharacters.charCodeAt(i));
+  //   const byteArray = new Uint8Array(byteNumbers);
+  //   const blob = new Blob([byteArray], { type: "application/pdf" });
+
+  //   const objectURL = URL.createObjectURL(blob);
+  //   this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+  //   this.showPDF = true;
+  // }
+
+
+  viewFile(file: any, candidateId: any, viewFlagValue: any) {
+    console.log("view value ", viewFlagValue)
     if (!file) {
       console.error("No file available for download.");
       return;
     }
 
-    const byteCharacters = atob(file);
-    const byteNumbers = new Array(byteCharacters?.length)
-      .fill(0)
-      .map((_, i) => byteCharacters.charCodeAt(i));
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
+    if (viewFlagValue == '1') {
+      const byteCharacters = atob(file);
+      const byteNumbers = new Array(byteCharacters?.length)
+        .fill(0)
+        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
 
-    const objectURL = URL.createObjectURL(blob);
-    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
-    this.showPDF = true;
+      const objectURL = URL.createObjectURL(blob);
+      this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+      this.showPDF = true;
+      // this.offerCandidates();
+      return;
+    }
+
+    Swal.fire({
+      html: `
+      <div class="mb-3">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZM9W5m85CN4_xgg6D1yEnJKLArugi2Hx-cA&s" 
+             alt="view" style="width:60px; height:60px; border-radius: 15px;" />
+      </div>
+      <h5 class="mb-2" style="font-weight: bold;">Do you want to view the Offer Letter?</h5>
+      <p class="text-muted mb-0" style="font-size: 14px;">
+        This action will be recorded as your first view. Only after this, you will be able to send the Offer Letter to the candidate.
+      </p>
+    `,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, View Now',
+      reverseButtons: true,
+      customClass: {
+        popup: 'p-3 rounded-4',
+        htmlContainer: 'text-center',
+        actions: 'd-flex justify-content-center',
+        cancelButton: 'btn btn-danger btn-sm shadow-none mr-2',
+        confirmButton: 'btn btn-success btn-sm shadow-none'
+      },
+      buttonsStyling: false,
+      width: '550px',
+      backdrop: true
+    }).then(result => {
+      if (result.isConfirmed) {
+        // Proceed to view PDF
+        const byteCharacters = atob(file);
+        const byteNumbers = new Array(byteCharacters?.length)
+          .fill(0)
+          .map((_, i) => byteCharacters.charCodeAt(i));
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "application/pdf" });
+
+        const objectURL = URL.createObjectURL(blob);
+        this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+        this.showPDF = true;
+
+        this.authService.logFirstOfferView(candidateId, this.loginId).subscribe({
+          next: (res: any) => {
+            console.log("res", res);
+            this.offerCandidates();
+          },
+          error: (err: HttpErrorResponse) => {
+            console.log("error : ", err);
+          }
+        });
+      }
+    });
+  }
+
+  sendOfferLetterToCandidate(candidateId: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to send the offer letter to the candidate?',
+      icon: 'question',
+      reverseButtons: true,
+      showCancelButton: true,
+      confirmButtonText: 'Send',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.isLoading = true;
+        this.authService.sendOfferLetterToCandidate(candidateId, this.loginId).subscribe({
+          next: (res: any) => {
+            this.isLoading = false;
+            console.log("res", res);
+            this.offerCandidates();
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: res.message || 'Offer letter sent successfully',
+              confirmButtonText: 'OK'
+            });
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isLoading = false;
+            console.log("error : ", err);
+          }
+        });
+      }
+    });
   }
 
   close() {
@@ -396,9 +507,6 @@ export class OfferLetterComponent implements OnInit {
   closeAlert() {
     this.panAlertMessage = null;
   }
-
-
-
 
 
 }

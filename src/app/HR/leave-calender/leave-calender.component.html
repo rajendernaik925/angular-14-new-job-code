@@ -1,0 +1,187 @@
+<div class="container-fluid">
+    <app-nav></app-nav>
+</div>
+
+<div class="container-fluid card border-0 mt-3">
+    <div class="row">
+        <!-- Sidebar -->
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar-wrapper">
+            <div class="p-3 border-end bg-light h-100 d-flex flex-column">
+                <!-- Fixed Header -->
+                <div class="sticky-header">
+                    <h6 class="fw-bold mb-1 p-2">Employee Name</h6>
+                    <hr class="mt-1 mb-2">
+                </div>
+
+                <!-- Scrollable List -->
+                <div class="scroll-container flex-grow-1 overflow-auto ">
+                    <div *ngFor="let emp of employeeList">
+                        <!-- Parent -->
+                        <div class="d-flex align-items-center justify-content-between w-100 px-3 py-2 mb-1 rounded"
+                            [ngClass]="{ 'custom-bg': emp.id === activeParentId }" (click)="toggleParent(emp)"
+                            style="cursor: pointer;">
+
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person mr-1"></i>
+                                <span class="mr-2">{{ emp.name }}</span>
+                            </div>
+
+                            <i class="bi" [ngClass]="emp.expanded ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                        </div>
+
+
+
+                        <!-- Children -->
+                        <div *ngIf="emp.expanded" class="ms-3 mt-1">
+                            <div *ngFor="let child of emp.children"
+                                class="d-flex align-items-center gap-2 px-3 py-1 rounded ps-2 custom-text"
+                                [ngClass]="{ 'bg-secondary text-white': child.id === activeChildId }"
+                                (click)="selectChild(emp.id, child.id, $event)"
+                                style="cursor: pointer; font-size: 0.85rem;">
+                                <i class="bi bi-person-fill-check mr-2"></i>
+                                <span>{{ child.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Leave Table -->
+        <div class="col-md-10">
+            <div *ngIf="!isCard">
+                <table class="table table-bordered table-sm  small" *ngIf="activeParentId; else noData">
+                    <thead class="custom-bg">
+                        <tr>
+                            <th>Name</th>
+                            <th class="text-center" *ngFor="let month of months">{{ month.name }}</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center">Used</th>
+                            <th class="text-center">Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Parent Row: Highlighted if no child is selected -->
+                        <tr [ngClass]="{ 'table-primary fw-semibold': !activeChildId }">
+                            <td class="custom-text text-decoration-underline hover"
+                                (click)="showDataInCards(activeParentId, null)">
+                                {{ getParentName(activeParentId) }}
+                            </td>
+                            <td class="text-center" *ngFor="let month of months">
+                                <span class="position-relative">
+                                    {{ getParentLeaveValue(activeParentId, month.key) }}
+                                    <span *ngIf="+getParentLeaveValue(activeParentId, month.key) > 3"
+                                        class="position-absolute top-0 start-100 translate-middle bg-danger border border-light rounded-circle"
+                                        style="width: 5px; height: 5px;">
+                                    </span>
+
+                                </span>
+                            </td>
+
+                            <td class="text-center">{{ getParentLeaveValue(activeParentId, 'tot') }}</td>
+                            <td class="text-center">{{ getParentLeaveValue(activeParentId, 'used') }}</td>
+                            <td class="text-center">{{ getParentLeaveValue(activeParentId, 'remaining') }}</td>
+                        </tr>
+
+                        <!-- Children Rows: Highlighted if selected -->
+                        <tr *ngFor="let child of getParentChildren(activeParentId)"
+                            [ngClass]="{ 'table-primary fw-semibold': activeChildId === child.id }">
+                            <td class="custom-text text-decoration-underline hover"
+                                (click)="showDataInCards(activeParentId, child.id)">
+                                {{ child.name }}
+                            </td>
+                            <td class="text-center" *ngFor="let month of months">
+                                {{ +child.leaves[0]?.[month.key] || 0 }}
+                                <span class="position-relative">
+                                    <span *ngIf="+child.leaves[0]?.[month.key] > 3"
+                                        class="position-absolute top-0 start-100 translate-middle bg-danger border border-light rounded-circle"
+                                        style="width: 5px; height: 5px;"></span>
+                                </span>
+
+                            </td>
+
+                            <td class="text-center">{{ child.leaves[0]?.tot || 0 }}</td>
+                            <td class="text-center">{{ child.leaves[0]?.used || 0 }}</td>
+                            <td class="text-center">{{ child.leaves[0]?.remaining || 0 }}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+                <ng-template #noData>
+                    <div class="alert alert-info text-center small">No leave records found.</div>
+                </ng-template>
+            </div>
+
+
+            <!-- card -->
+            <div *ngIf="isCard">
+                <div *ngIf="selectedEmpLeaves.length > 0; else noData">
+                    <div *ngFor="let leave of selectedEmpLeaves" class="card border-0">
+                        <div class="card-body p-2">
+                            <h6 class="fw-bold custom-text"><i class="bi bi-chevron-left mr-1 text-decoration-underline"
+                                    (click)="back()"></i>Leave Summary ({{clickedName}})</h6>
+
+                            <div class="scroll-container container-fluid">
+                                <div class="row row-cols-1 row-cols-sm-3 g-2 text-center mt-1">
+                                    <div class="col card-hover-effect">
+                                        <div class="book">
+                                            <div class="fw-semibold small">Total Leaves</div>
+                                            <div class="fs-5 fw-bold">{{ leave.tot }}</div>
+                                            <div class="cover">
+                                                <div class="fw-semibold small">Total Leaves</div>
+                                                <div class="fs-5 fw-bold">{{ leave.tot }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col card-hover-effect">
+                                        <div class="book">
+                                            <div class="fw-semibold small">Used Leaves</div>
+                                            <div class="fs-5 fw-bold">{{ leave.used }}</div>
+                                            <div class="cover">
+                                                <div class="fw-semibold small">Used Leaves</div>
+                                                <div class="fs-5 fw-bold">{{ leave.used }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col card-hover-effect">
+
+                                        <div class="book">
+                                            <div class="fw-semibold small">Remaining Leaves</div>
+                                            <div class="fs-5 fw-bold">{{ leave.remaining }}</div>
+                                            <div class="cover">
+                                                <div class="fw-semibold small">Remaining Leaves</div>
+                                                <div class="fs-5 fw-bold">{{ leave.remaining }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3 border-2 custom-bg custom-text" />
+                                <div class="row row-cols-2 row-cols-sm-3 text-center small">
+                                    <div class="col mb-2 card-hover-effect" *ngFor="let month of months">
+                                        <div class="book">
+                                            <div class="fw-semibold">{{ month.name }} Used in this month</div>
+                                            <div class="fs-6 fw-bold">{{ leave[month.key] }}</div>
+                                            <div class="cover">
+                                                <div class="fw-semibold">{{ month.name }} Used</div>
+                                                <div class="fs-6 fw-bold">{{ leave[month.key] }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #noData>
+                    <div class="alert alert-info text-center small">No leave records found.</div>
+                </ng-template>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

@@ -1,7 +1,6 @@
 <div class="container-fluid">
   <app-nav></app-nav>
 </div>
-
 <div class="bread_crumb">
   <!-- <div class="loggdEmps">
       <h2>{{ todayLogins }}</h2>
@@ -237,6 +236,16 @@
               <a>Employee Basic Details</a>
             </div> -->
 
+            <div class="theCard new_label" [routerLink]="['/leave-calender']">
+              <!-- <div class="new_pdf">New</div> -->
+              <img src="../../assets/img/job-code/icons8-job-offer-64.png" alt="vaccine" />
+              <a>Leave Calender</a>
+            </div>
+            <div class="theCard new_label" [routerLink]="['/employee-profile']">
+              <div class="new_pdf">New</div>
+              <img src="../../assets/img/job-code/icons8-job-offer-64.png" alt="vaccine" />
+              <a>Employee Profile </a>
+            </div>
 
             <div class="theCard new_label" [routerLink]="['/jobcode']">
               <!-- <div class="new_pdf">New</div> -->
@@ -251,17 +260,16 @@
               <img src="../../assets/img/job-code/icons8-recruitment-64.png" alt="vaccine" />
               <a>Hiring Module</a>
             </div>
-            <div class="theCard" [routerLink]="['/organogram']">
+            <!-- <div class="theCard" [routerLink]="['/organogram']">
               <img src="https://cdn-icons-png.flaticon.com/512/8920/8920535.png" alt="vaccine" />
-              <!-- <a>Field Workforce</a> -->
               <a>Organogram</a>
-            </div>
+            </div> -->
 
-            <!-- <div class="theCard" [routerLink]="['/registration']">
+            <div class="theCard" [routerLink]="['/registration']">
               <img src="https://cdn-icons-png.flaticon.com/512/8920/8920535.png" alt="vaccine" />
               <a>fieldwork Candidate</a>
             </div>
-            <div class="theCard" [routerLink]="['/fieldwork-dashboard']">
+            <!-- <div class="theCard" [routerLink]="['/fieldwork-dashboard']">
               <img src="https://cdn-icons-png.flaticon.com/512/8920/8920535.png" alt="vaccine" />
               <a>Inducation (fieldwork)</a>
             </div> -->

@@ -2,7 +2,7 @@
   <app-nav></app-nav>
 </div>
 
-<div class="container-flui mt-3">
+<div class="container-fluid mt-3">
   <div class="row g-2 position-relative">
     <div *ngIf="isSidebarOpen" class="col-md-2 mb-2 position-relative sidebar-wrapper">
       <div class="card border-0 p-0 shadow">
@@ -55,8 +55,7 @@
                       <span *ngIf="row.status === 'Rejected'" class="text-danger fw-bold">Rejected</span>
                       <span *ngIf="row.status === 'Approved'" class="text-success fw-bold">Approved</span>
                       <!-- <span *ngIf="row.status === 'Pending'" class="text-warning fw-bold">Pending Completion</span> -->
-                      <span *ngIf="row.status === 'Pending'" class="text-danger fw-bold">Awaiting Complete
-                        Details</span>
+                      <span *ngIf="row.status === 'Pending'" class="text-danger fw-bold">Details Pending</span>
                       <span *ngIf="row.status === 'Cancelled'" class="text-danger fw-bold">Cancelled</span>
                       <span *ngIf="row.status === 'Hold'" class="text-orange-dark fw-bold">Hold</span>
                     </ng-container>

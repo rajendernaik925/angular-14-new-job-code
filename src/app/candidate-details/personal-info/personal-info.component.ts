@@ -199,7 +199,7 @@ export class personalInfoComponent implements OnInit {
     this.handleExperienceToggle('fresher');
     const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
     this.jobCodeData = loginData;
-    // console.log("loggin data : ", this.jobCodeData);
+    console.log("loggin data : ", this.jobCodeData);
     // console.log("hiring login data : ", this.jobCodeData.email)
     this.registrationForm.get('jobCodeId')?.setValue(this.jobCodeData?.jobCodeRefId);
     this.registrationForm.get('email')?.setValue(this.jobCodeData.email);

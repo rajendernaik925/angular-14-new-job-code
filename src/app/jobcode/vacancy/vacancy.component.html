@@ -34,7 +34,7 @@
                 style="max-width: 250px;"> -->
               <!-- <i class="fa fa-search"></i> -->
               <button *ngIf="viewMoreValue" type="button" (click)="addCandidate()"
-                class="btn btn-sm custom-bg text-light">
+                class="btn btn-sm custom-bg text-light border-0 shadow-none">
                 Add Candidate
               </button>
             </div>
@@ -108,7 +108,8 @@
 
 
               <tbody class="" *ngIf="paginatedRows?.length > 0; else noData">
-                <tr class="small-header table-hoverr" *ngFor="let row of paginatedRows">
+                <tr class="small-header table-hoverr" *ngFor="let row of paginatedRows"
+                  (click)="viewMore(row.jobCodeId,row.jcReferenceId)">
                   <th class="small-header text-uppercase" scope="row" [innerHTML]="highlightMatch(row.jcReferenceId)">
                   </th>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.jobTitleName)"></td>
@@ -275,7 +276,7 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
-            <input type="text" id="fullName" class="form-control form-control-sm text-uppercase" maxlength="100"
+            <input type="text" id="fullName" class="form-control form-control-sm text-uppercase" maxlength="50"
               formControlName="fullName" noFirstSpace placeholder="Enter full name" autocomplete="off" />
             <div *ngIf="submitted && addCandidateForm.get('fullName').invalid" class="text-danger fs-small">
               Full Name is required.
@@ -286,8 +287,8 @@
           </div>
           <div class="col-md-6">
             <label for="mobileNumber" class="form-label">Mobile Number <span class="text-danger">*</span></label>
-            <input type="number" id="mobileNumber" class="form-control form-control-sm" formControlName="mobileNumber"
-              placeholder="Enter mobile number" maxlength="10"
+            <input type="number" id="mobileNumber" class="form-control text-uppercase form-control-sm"
+              formControlName="mobileNumber" placeholder="Enter mobile number" maxlength="10"
               (keydown)="preventNegativeInput($event, $event.target.value)" autocomplete="off" />
             <div *ngIf="submitted && addCandidateForm.get('mobileNumber').invalid" class="text-danger fs-small">
               Mobile Number is required
@@ -313,16 +314,56 @@
             <label for="workExperience" class="form-label">
               Work Experience <span class="text-danger">*</span>
             </label>
-            <input type="text" id="workExperience" class="form-control form-control-sm text-uppercase"
+            <!-- <input type="text" id="workExperience" class="form-control form-control-sm text-uppercase"
               formControlName="workExperience" placeholder="Enter work experience (e.g. 3.11)" autocomplete="off"
               maxlength="5" (keydown)="preventInvalidExperienceInput($event)"
-              (input)="validateExperienceInput($event)" />
+              (input)="validateExperienceInput($event)" /> -->
+
+            <input type="text" class="form-control form-control-sm text-uppercase" formControlName="workExperience"
+              placeholder="Enter work experience (e.g. 3.11)" maxlength="5" autocomplete="off"
+              (keydown)="validExperienceInput($event)" (input)="CorrectExperienceValue($event)" />
+
             <div *ngIf="submitted && addCandidateForm.get('workExperience')?.invalid" class="text-danger fs-small">
               Work Experience is required.
             </div>
           </div>
 
         </div>
+        <!-- <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label form-label-small">Employee Type</label>
+            <select class="form-control form-control-sm" (change)="onEmployeeTypeChange($event)">
+              <option value="">Select</option>
+              <option value="1">Office Candidate</option>
+              <option value="2">Field Candidate</option>
+            </select>
+
+            <div *ngIf="isEmployeeTypeInvalid" class="text-danger fs-small">
+              Employee Type is required
+            </div>
+          </div>
+        </div> -->
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label form-label-small d-block">Employee Type</label>
+
+            <div class="form-check form-check-inline" *ngFor="let type of employeeTypes">
+              <input class="form-check-input" type="radio" name="employeeType" [id]="'employeeType' + type.id"
+                [value]="type.id" (change)="onEmployeeTypeChange($event)" />
+              <label class="form-check-label" [for]="'employeeType' + type.id">
+                {{ type.name }}
+              </label>
+            </div>
+
+            <div *ngIf="isEmployeeTypeInvalid" class="text-danger fs-small mt-1">
+              Employee Type is required
+            </div>
+          </div>
+        </div>
+
+
+
+
 
         <div class="row mb-3">
           <div class="col-md-12">

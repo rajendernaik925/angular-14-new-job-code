@@ -1,0 +1,104 @@
+.custom-bg
+  background: #0072bc
+  color: white
+
+.custom-text
+  color: #0072BC  
+.p-3 
+  padding: 0 !important
+
+.col-md-2
+  padding-left: 5px
+  padding-right: 0
+.col-md-10
+  padding-left: 0px
+  padding-right: 0  
+
+.fw-bold
+  font-weight: bold
+.nav-link
+  color: #333
+  transition: all 0.2s ease
+
+  &:hover
+    background-color: #e9ecef
+    color: #000
+
+  &.active
+    background-color: #0072BC !important
+    color: #fff !important
+.custom-small-font 
+  font-size: 0.85rem
+
+.fw-semibold 
+  font-weight: 500
+.text-decoration-underline
+  //text-decoration: underline
+  cursor: pointer
+
+.hover:hover
+  text-decoration: underline  
+
+.scroll-container
+  max-height: calc(100vh - 180px) 
+  overflow-y: auto
+  padding-right: 4px
+
+  // Hide scrollbars visually but keep scrolling
+  &::-webkit-scrollbar
+    width: 0
+
+  scrollbar-width: none
+  -ms-overflow-style: none
+
+.card-hover-effect
+  .border
+    transition: background-color 0.3s, color 0.3s
+
+    &:hover
+      background-color: #0072BC
+      color: #ffffff
+
+      .fw-semibold,
+      .fw-bold
+        color: #ffffff !important
+
+.book
+  position: relative
+  border-radius: 10px
+  //width: 220px
+  height: 100px
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2)
+  transform-style: preserve-3d
+  perspective: 2000px
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  background: whitesmoke
+  overflow: hidden
+
+  .fw-semibold
+    color: #6B7280 // gray text (label)
+
+  .fs-5
+    color: #1F2937 // dark text (count)
+
+  .cover
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    border-radius: 10px
+    background: white
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    transition: transform 0.5s
+    transform-origin: left
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2)
+
+.book:hover .cover
+  transform: rotateY(-80deg)

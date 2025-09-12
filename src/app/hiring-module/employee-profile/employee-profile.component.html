@@ -130,15 +130,15 @@
 
                                     <div class="text-start w-100 px-2 text-center mt-4 ">
                                         <!-- <span class="d-block mb-1">13431</span> -->
-                                        <span class="d-block mb-1">RAJENDER BHUKYA</span>
-                                        <span class="d-block mb-1 small">JUNIOR SOFTWARE ENGINEER</span>
-                                        <!-- <span class="d-block mb-1 small">PERMANENT</span> -->
-                                        <span class="d-block mb-1 small">9876543210</span>
-                                        <span class="d-block mb-1 small">RAJENDER@GMAIL.COM</span>
-                                        <span class="d-block mb-1 small">INFORMATION TECHNOLOGY</span>
+                                        <span class="d-block mb-1 text-uppercase ">{{candidateData?.candidatePersonalInformationDetails?.callName}}</span>
+                                        <span class="d-block mb-1 small">{{candidateData?.candidatePersonalInformationDetails?.designationName}}</span> 
+                                        <span *ngIf="candidateData?.candidatePersonalInformationDetails?.dob" class="d-block mb-1 small"> DOB : {{candidateData?.candidatePersonalInformationDetails?.dob}}</span>
+                                        <span *ngIf="candidateData?.candidatePersonalInformationDetails?.mobileNumber" class="d-block mb-1 small">Mobile : {{candidateData?.candidatePersonalInformationDetails?.mobileNumber}}</span> 
+                                        <span class="d-block mb-1 small">{{candidateData?.candidatePersonalInformationDetails?.departmentName}}</span>  
+                                        <span class="d-block mb-1 small">{{candidateData?.candidatePersonalInformationDetails?.email}}</span>
                                     </div>
-                                    <button class="btn btn-sm custom-bg text-white mt-1 scale-in-center"
-                                        [routerLink]="['/profilePage']">View Profile</button>
+                                    <!-- <button class="btn btn-sm custom-bg text-white mt-1 scale-in-center"
+                                        [routerLink]="['/profilePage']">View Profile</button> -->
 
                                     <div class="mt-auto pt-3 text-center w-100 "
                                         style="font-size: 0.75rem; color: #888; box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px; border-radius: 10px;">
@@ -199,7 +199,6 @@
                                                 <option value="hindi">Hindi</option>
                                                 <option value="tamil">Tamil</option>
                                                 <option value="kannada">Kannada</option>
-                                                <option value="malayalam">Malayalam</option>
                                                 <option value="english">English</option>
                                             </select>
                                         </div>
@@ -340,7 +339,7 @@
                                     </div>
                                     <div class="d-flex justify-content-end mt-3">
                                         <button class="btn btn-sm custom-bg text-white bounce-top shadow-none"
-                                            (click)="setValidation('emergencyDetails')">Add Details</button>
+                                            (click)="setValidation('emergency')">Add Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -979,7 +978,7 @@
                                     </div>
                                     <div *ngIf="isEmergency" class="d-flex justify-content-end mt-3">
                                         <button class="btn btn-sm custom-bg text-white bounce-top shadow-none"
-                                            (click)="submit2('dashboard')">Submit</button>
+                                            >Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -1329,7 +1328,14 @@
       <button type="button" class="btn btn-secondary btn-sm border-0 shadow-none"
               (click)="closeOffcanvas()">Cancel</button>
     </div>
-
   </div>
+</div>
+
+<div class="blur-loader-overlay" *ngIf="isLoading">
+    <div class="blur-loader-spinner">
+        <div class="bounce1 custom-bg"></div>
+        <div class="bounce2 custom-bg"></div>
+        <div class="bounce3 custom-bg"></div>
+    </div>
 </div>
 

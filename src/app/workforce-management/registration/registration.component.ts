@@ -26,18 +26,14 @@ export class RegistrationComponent implements OnInit {
   personalUpdate: boolean = false;
   addressUpadte: boolean = false;
   colorTheme = 'theme-dark-blue';
+  @ViewChild('hiddenResumeInput') hiddenResumeInput!: ElementRef;
+  resumePath: string = '';
 
 
   resumeFile: string | null = null;
-  photoFile: string | null = null;
-  tenthFile: string | null = null;
-  twelthFile: string | null = null;
-  deplomaFile: string | null = null;
-  degreeOrBTechFile: string | null = null;
-  othersFile: string | null = null;
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
-  updateDocumentFlag: boolean = false;
+  maxDob!: Date;
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +44,7 @@ export class RegistrationComponent implements OnInit {
     this.registrationForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      lastName: [''],
       dob: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       highestDegree: ['', Validators.required],
@@ -62,20 +58,24 @@ export class RegistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleExperienceToggle('fresher');
-    const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
+    const loginData = JSON.parse(localStorage.getItem('hiringFieldLoginData') || '{}');
     this.jobCodeData = loginData;
     console.log("hiring login data : ", this.jobCodeData.email)
     this.registrationForm.get('jobCodeId')?.setValue(this.jobCodeData?.jobCodeRefId);
     this.registrationForm.get('email')?.setValue(this.jobCodeData.email);
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
     this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
-    // if (!this.jobCodeData.status) {
-    //   this.router.navigate(['/hiring-login']);
-    // }
+    if (!this.jobCodeData.status) {
+      this.router.navigate(['/hiring-login']);
+    }
+
+    const today = new Date();
+    this.maxDob = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
 
 
     if (this.jobCodeData.candidateId) {
-      // this.loadUserData();
+      this.loadUserData();
     }
   }
 
@@ -83,8 +83,10 @@ export class RegistrationComponent implements OnInit {
 
 
   loadUserData() {
+    this.isLoading = true;
     this.authService.registeredData(this.jobCodeData.candidateId).subscribe({
       next: (res: any) => {
+        this.isLoading = false;
         if (
           res?.candidatePersonalInformationDetails ||
           res?.candidateCommunicationAddressDetails ||
@@ -95,15 +97,9 @@ export class RegistrationComponent implements OnInit {
           (res?.candidateExperienceDetails?.candidateCompanyDetails && res.candidateExperienceDetails.candidateCompanyDetails.length > 0) ||
           res?.candidateExperienceDetails?.candidateSalaryDetails
         ) {
-          console.log("Registered Data:", res?.candidateCommunicationAddressDetails?.postalCode);
 
           this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
-          this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
-          this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
-          this.twelthFile = res?.candidateDocumentDetails?.intermediateFile || null;
-          this.deplomaFile = res?.candidateDocumentDetails?.pgFile || null;
-          this.degreeOrBTechFile = res?.candidateDocumentDetails?.degreeFile || null;
-          this.othersFile = res?.candidateDocumentDetails?.otherFile || null;
+          this.resumePath = res?.candidatePersonalInformationDetails?.resume || null;
 
           const isFresher = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced';
 
@@ -111,38 +107,16 @@ export class RegistrationComponent implements OnInit {
           this.registrationForm.patchValue({
             firstName: res?.candidatePersonalInformationDetails?.firstName ? res.candidatePersonalInformationDetails.firstName : this.jobCodeData.name,
             mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber ? res.candidatePersonalInformationDetails.mobileNumber : this.jobCodeData.mobileNumber,
-            middleName: res?.candidatePersonalInformationDetails?.middleName || '',
             lastName: res?.candidatePersonalInformationDetails?.lastName || '',
-            maritalStatusId: res?.candidatePersonalInformationDetails?.maritalStatusId || null,
-            genderId: res?.candidatePersonalInformationDetails?.genderId || null,
-            titleId: res?.candidatePersonalInformationDetails?.titleId || null,
             dob: res?.candidatePersonalInformationDetails?.dob || '',
-            highestDegree: res?.candidatePersonalInformationDetails?.fatherName || '',
-            district: res?.candidatePersonalInformationDetails?.district || '',
-            pan: res?.candidatePersonalInformationDetails?.pan || '',
+            highestDegree: res?.candidatePersonalInformationDetails?.highestDegree || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
-
-            // Communication Address
-            addressA: res?.candidateCommunicationAddressDetails?.comAddressA || '',
-            addressB: res?.candidateCommunicationAddressDetails?.comAddressB || '',
-            addressC: res?.candidateCommunicationAddressDetails?.comAddressC || '',
-            stateId: res?.candidateCommunicationAddressDetails?.stateId || null,
-            cityId: res?.candidateCommunicationAddressDetails?.cityId || null,
-            addressFlag: res?.candidateCommunicationAddressDetails?.addressFlag || 'no',
-
-            // Permanent Address
-            permanentAddressA: res?.candidatePermanentAddressDetails?.perAddressA || '',
-            permanentAddressB: res?.candidatePermanentAddressDetails?.perAddressB || '',
-            permanentAddressC: res?.candidatePermanentAddressDetails?.perAddressC || '',
-            permanentStateId: res?.candidatePermanentAddressDetails?.stateId || null,
-            permanentCityId: res?.candidatePermanentAddressDetails?.cityId || null,
+            companyName: res?.candidateExperienceDetails?.candidateCompanyDetails[0]?.companyName || '',
+            totalExperience: res?.candidateExperienceDetails?.candidateCompanyDetails[0]?.totalExp || '',
 
             // Experience Details
             isFresher: isFresher,
-            joiningTime: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
-            currentSalary: res?.candidateExperienceDetails?.candidateSalaryDetails?.currentSalary || '',
-            expectedSalary: res?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary || '',
-            suitableJobDescription: res?.candidateExperienceDetails?.candidateSalaryDetails?.description || '',
+            // resume: res?.candidatePersonalInformationDetails?.resume || '',
           });
 
           console.log("Father Name:", res?.candidatePersonalInformationDetails?.fatherName);
@@ -155,22 +129,15 @@ export class RegistrationComponent implements OnInit {
 
           this.handleExperienceToggle(isFresher);
 
-          console.log("Rajender");
-
 
         } else {
           this.resumeFile = null;
-          this.photoFile = null;
-          this.tenthFile = null;
-          this.twelthFile = null;
-          this.deplomaFile = null;
-          this.degreeOrBTechFile = null;
-          this.othersFile = null;
         }
       },
 
       error: (err: HttpErrorResponse) => {
         console.log('HTTP Error:', err);
+        this.isLoading = false;
       }
     });
   }
@@ -320,9 +287,35 @@ export class RegistrationComponent implements OnInit {
 
 
   onFileSelect(event: Event, fieldName: string): void {
+
     console.log("file name : ", fieldName)
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
+
+    // Check file type
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: 'Please upload a PDF file only.',
+        });
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
+      // Check file size
+      if (file.size > maxSizeInBytes) {
+        Swal.fire({
+          icon: 'error',
+          title: 'File too large!',
+          text: 'Please select a file smaller than 5 MB.',
+        });
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+    }
 
     if (file) {
       const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
@@ -335,15 +328,31 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
-
+  openResumeFileInput(): void {
+    // this.hiddenResumeInput.nativeElement.click();
+    this.resumeFile = null;
+  }
 
   setValidation(Action: string) {
     if (Action === 'experience') {
       let isValid = true;
+      // if (this.resumeFile || this.resumePath) {
+      //   this.registrationForm.get('resume')?.clearValidators();
+      //   this.registrationForm.get('resume')?.setValue(this.resumePath);
+      // }
+      if (this.resumeFile || this.resumePath) {
+        const resumeControl = this.registrationForm.get('resume');
+        resumeControl?.clearValidators();
+        resumeControl?.updateValueAndValidity(); // refresh validators
+      }
+
+
+      // Required fields based on fresher/experienced
       const requiredFields = this.isFresher
         ? ['isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume']
         : ['companyName', 'totalExperience', 'isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume'];
 
+      // Validate form
       requiredFields.forEach(field => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
@@ -359,7 +368,7 @@ export class RegistrationComponent implements OnInit {
 
       const formValues = { ...this.registrationForm.value };
 
-      // ✅ Convert display date (DD-MMM-YYYY) to backend format (YYYY-MM-DD)
+      // Format DOB
       if (formValues.dob) {
         const dateObj = new Date(formValues.dob);
         const yyyy = dateObj.getFullYear();
@@ -368,48 +377,57 @@ export class RegistrationComponent implements OnInit {
         formValues.dob = `${yyyy}-${mm}-${dd}`;
       }
 
-      if (this.isFresher) {
-        delete formValues.companyName;
-        delete formValues.totalExperience;
-      }
-
+      // Build final JSON
       const experienceData: any = {
         candidateId: this.jobCodeData.candidateId,
+        firstName: formValues.firstName || null,
+        lastName: formValues.lastName || null,
+        email: formValues.email || null,
+        mobile: formValues.mobileNumber || null,
+        dob: formValues.dob || null,
+        aadhar: formValues.adhar || null,
         isFresher: formValues.isFresher === 'fresher',
-        ...formValues
+        company: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
+        experience: formValues.isFresher === 'fresher' ? 0.0 : formValues.totalExperience || 0.0,
+        highestDegree: formValues.highestDegree || null,
+        // resume: formValues.resume || null,
       };
 
-      if (!this.isFresher) {
-        experienceData.experienceMapDTO = [
-          {
-            companyName: formValues.companyName,
-            totalExp: formValues.totalExperience
-          }
-        ];
-      }
-
-      console.log("DOB for backend:", formValues.dob); // YYYY-MM-DD
+      console.log("DOB for backend:", formValues.dob);
       console.log("Experience Data:", experienceData);
 
       const formData = new FormData();
-      formData.append('experience', JSON.stringify(experienceData));
-      formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-      formData.append('candidateId', this.jobCodeData.candidateId);
-      formData.append('moduleId', '5');
-
+      formData.append('candidateInfo', JSON.stringify(experienceData));
+      if (!this.resumeFile) {
+        formData.append('resume', this.selectedFiles['resume'] || new File([], ''));
+      }
       this.finalSave('experience', formData);
     }
   }
 
-  finalSave(action: string, formData) {
-    console.log(" form data : ", formData);
-    Swal.fire({
-      title: 'Success',
-      text: 'Successfully saved data!',
-      icon: 'success',
-      showConfirmButton: true,
-    });
 
+  finalSave(action: string, formData) {
+    // alert(formData)
+    console.log(" form data : ", formData);
+    this.isLoading = true;
+    this.authService.registration(formData).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        console.log('Registration Response:', res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Successfully saved data!',
+          icon: 'success',
+          showConfirmButton: true,
+        });
+        ; this.loadUserData();
+        this.selectedFiles = {};
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
+        console.error('HTTP Error:', err);
+      }
+    })
   }
 
   formFillMessageAlert() {
@@ -420,6 +438,38 @@ export class RegistrationComponent implements OnInit {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+    });
+  }
+
+  logout(): void {
+    Swal.fire({
+      html: `
+        <div class="mb-3">
+          <img src="assets/img/job-code/logout-gif.gif" alt="logout" style="width:60px; height:60px; " />
+        </div>
+        <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to log out?</h5>
+        <p class="text-muted mb-0" style="font-size: 14px;">
+          You will need to log in again to access your profile and application details.
+        </p>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Log Out',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'p-3 rounded-4',
+        htmlContainer: 'text-center',
+        // actions: 'd-flex justify-content-center',
+        confirmButton: 'btn btn-danger btn-sm w-100 mb-2 shadow-none',
+        cancelButton: 'btn btn-sm btn-outline-secondary w-100',
+      },
+      buttonsStyling: false,
+      width: '500px',
+      backdrop: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('hiringFieldLoginData');
+        this.router.navigate(['/hiring-login']);
+      }
     });
   }
 

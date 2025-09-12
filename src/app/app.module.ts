@@ -136,6 +136,8 @@ import { StringOnlyDirective } from './directives/string-only.directive';
 import { NoFirstSpaceDirective } from './directives/no-first-space.directive';
 import { LeaveCalenderComponent } from './HR/leave-calender/leave-calender.component';
 import { EmployeeProfileComponent } from './hiring-module/employee-profile/employee-profile.component';
+import { CardTemplateComponent } from './HR/card-template/card-template.component';
+import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
 
 
 
@@ -218,7 +220,9 @@ import { EmployeeProfileComponent } from './hiring-module/employee-profile/emplo
     FuelComponent,
     EmployeeBasicDetailComponent,
     LeaveCalenderComponent,
-    EmployeeProfileComponent
+    EmployeeProfileComponent,
+    CardTemplateComponent,
+    TestingPurposeComponent
   ],
   imports: [
     BrowserModule,

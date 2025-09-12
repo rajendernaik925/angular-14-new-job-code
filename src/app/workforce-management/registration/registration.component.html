@@ -1,16 +1,19 @@
 <div class="mt-3">
   <div class="row g-2 mx-0 mb-3">
     <div class="col-md-12">
-      <div class="card border-0 pb-1 pt-1 scale-in-ver-top" style="box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;">
+      <div class="card border-0 pb-1 pt-1 scale-in-ver-top"
+        style="box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;">
         <div class="card-body pb-1 pt-1">
           <form [formGroup]="registrationForm">
             <div>
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="fw-bold text-start custom-text">{{ 'Applicant Information' | uppercase }}
                 </div>
-                <div class="text-end mt-0 align-items-center d-none d-md-block">
-                  <span class="fs-custom rounded-pill text-danger"
-                    aria-label="Fields marked with asterisk are required">(*) Required Fields</span>
+                <div class="text-end mt-0 align-items-center ">
+                  <!-- <span class="fs-custom rounded-pill text-danger"
+                    aria-label="Fields marked with asterisk are required">(*) Required Fields</span> -->
+                  <i class="bi bi-box-arrow-right text-danger cursor-pointer" (click)="logout()"></i>
+                  <!-- <button class="btn btn-sm btn-danger border-0 shadow-none" (click)="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button> -->
                 </div>
               </div>
               <hr class="custom-hr mt-1 scale-in-hor-left" />
@@ -18,15 +21,15 @@
                 <div class="row">
                   <div class="col-md-3">
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="email" [value]="jobCodeData.email"  formControlName="email" placeholder="Enter email address"
-                      class="form-control form-control-sm"
+                    <input type="email" [value]="jobCodeData.email" formControlName="email" readonly
+                      placeholder="Enter email address" class="form-control form-control-sm"
                       [ngClass]="{ 'is-invalid': registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched }" />
                   </div>
 
                   <div class="col-md-3">
                     <label for="mobileNumber">Mobile Number <span class="text-danger">*</span> </label>
-                    <input type="text" placeholder="Enter Mobile Number" formControlName="mobileNumber"
-                      class="form-control form-control-sm input " numbersOnly maxlength="10" 
+                    <input type="text" placeholder="Enter Mobile Number" formControlName="mobileNumber" readonly
+                      class="form-control form-control-sm input " numbersOnly maxlength="10"
                       [ngClass]="{ 'is-invalid': registrationForm.get('mobileNumber')?.invalid && registrationForm.get('mobileNumber')?.touched }" />
                   </div>
                   <div class="col-md-3">
@@ -36,18 +39,16 @@
                       [ngClass]="{ 'is-invalid': registrationForm.get('firstName')?.invalid && registrationForm.get('firstName')?.touched }" />
                   </div>
                   <div class="col-md-3">
-                    <label>Last Name <span class="text-danger">*</span></label>
-                    <input type="text" placeholder="Naik" [readOnly]="isAllDataPresent" formControlName="lastName" stringOnly
-                      placeholder="Enter Last Name"
-                      class="form-control form-control-sm"
-                      [ngClass]="{ 'is-invalid': registrationForm.get('lastName')?.invalid && registrationForm.get('lastName')?.touched }" />
+                    <label>Last Name </label>
+                    <input type="text" placeholder="Naik" [readOnly]="isAllDataPresent" formControlName="lastName"
+                      stringOnly placeholder="Enter Last Name" class="form-control form-control-sm" />
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="col-md-3">
                     <label>Date of Birth <span class="text-danger">*</span></label>
-                    <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                    <!-- <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
                       formControlName="dob" autocomplete="off" [bsConfig]="{
                         adaptivePosition: true,
                         showWeekNumbers: false,
@@ -56,28 +57,53 @@
                         customTodayClass: 'custom-today-class',
                         dateInputFormat: 'DD-MMM-YYYY'
                       }" bsDatepicker required readonly
+                      [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" /> -->
+                    <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                      formControlName="dob" autocomplete="off" [bsConfig]="{
+                          adaptivePosition: true,
+                          showWeekNumbers: false,
+                          isAnimated: true,
+                          containerClass: colorTheme,
+                          customTodayClass: 'custom-today-class',
+                          dateInputFormat: 'DD-MMM-YYYY',
+                          maxDate: maxDob  
+                        }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" />
+
                   </div>
                   <div class="col-md-3">
                     <label for="highestDegree">Highest Degree <span class="text-danger">*</span></label>
                     <input type="text" [readOnly]="isAllDataPresent" formControlName="highestDegree"
-                      placeholder="Enter Highest Degree" class="form-control form-control-sm"
+                      placeholder="Enter Highest Degree" class="form-control form-control-sm" maxlength="25" noFirstSpace
                       [ngClass]="{ 'is-invalid': registrationForm.get('highestDegree')?.invalid && registrationForm.get('highestDegree')?.touched }" />
                   </div>
                   <div class="col-md-3">
                     <label>Aadhar Number <span class="text-danger">*</span></label>
-                    <input type="text" [readOnly]="isAllDataPresent" formControlName="adhar" placeholder="Enter 12 Digit Aadhar Number"
-                      class="form-control form-control-sm" (keydown)="onlyNumbers($event)" maxlength="12"
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="adhar"
+                      placeholder="Enter 12 Digit Aadhar Number" class="form-control form-control-sm"
+                      (keydown)="onlyNumbers($event)" maxlength="12"
                       [ngClass]="{ 'is-invalid': registrationForm.get('adhar')?.invalid && registrationForm.get('adhar')?.touched }" />
                   </div>
                   <div class="col-md-3">
                     <label for="tenth" class="form-label">Latest Resume <span class="text-danger">*</span></label>
                     <div class="file-upload rounded-4">
-                      <ng-container *ngIf="resumeFile && isAllDataPresent; else resumeFileInput">
-                        <button class="btn btn-info badge badge-pill badge-info py-2  btn-sm shadow-none border-0 w-100"
-                          (click)="viewFile(resumeFile)">
-                          View Resume
+                      <ng-container *ngIf="resumeFile; else resumeFileInput">
+                        <!-- <i class="bi bi-eye-fill text-success mr-3 cursor-pointer" (click)="viewFile(resumeFile)"></i>
+                        <i class="bi bi-pencil-square text-info cursor-pointer" (click)="openResumeFileInput()"></i> -->
+                        <button class="btn btn-sm btn-success mr-2" (click)="viewFile(resumeFile)">
+                          <i class="bi bi-eye-fill"></i>
                         </button>
+
+                        <button class="btn btn-sm btn-info" (click)="openResumeFileInput()">
+                          <i class="bi bi-pencil-square"></i>
+                        </button>
+
+                        <input type="file" accept=".pdf" #hiddenResumeInput (change)="onFileSelect($event, 'panFile')"
+                          class="d-none" />
+                        <!-- <button class="btn btn-info badge badge-pill badge-info py-2  btn-sm shadow-none border-0 w-100"
+                          (click)="viewFile(resumeFile)">
+                          <i class="bi bi-eye-fill"></i>
+                        </button> -->
                       </ng-container>
                       <ng-template #resumeFileInput>
                         <input type="file" formControlName="resume" id="resume" #resumeFileInput
@@ -90,6 +116,15 @@
                 </div>
                 <hr class="custom-hr mt-2 scale-in-hor-left" />
                 <div class="row">
+                  <!-- <div class="col-md-3">
+                    <label class="form-label form-label-small">Preferred Mode of Interview <span class="text-danger">*</span></label>
+                    <select class="form-control form-control-sm" formControlName="interviewMode"
+                      [ngClass]="{ 'is-invalid': registrationForm.get('interviewMode')?.invalid && registrationForm.get('interviewMode')?.touched }">
+                      <option value="">Select</option>
+                      <option value="1">Telephonic</option>
+                      <option value="2">Office</option>
+                    </select>
+                  </div> -->
                   <div class="col-md-3">
                     <div class="mb-3">
                       <label class="d-block custom-text">Are you a Fresher or Experienced?</label>
@@ -122,14 +157,16 @@
                   <div class="row mb-2 scale-in-ver-top">
                     <div class="col-md-3">
                       <label>Company Name <span class="text-danger">*</span></label>
-                      <input type="text" formControlName="companyName" placeholder="Company Name"
+                      <input type="text" formControlName="companyName" placeholder="Company Name" stringOnly noFirstSpace
+                        maxlength="50"
                         class="form-control form-control-sm"
                         [ngClass]="{ 'is-invalid': registrationForm.get('companyName')?.invalid && registrationForm.get('companyName')?.touched }" />
                     </div>
 
                     <div class="col-md-3">
                       <label>Total Experience <span class="text-danger">*</span></label>
-                      <input type="text" formControlName="totalExperience" placeholder="Enter Total Year's of experience" maxlength="6"
+                      <input type="text" formControlName="totalExperience"
+                        placeholder="Enter Total Year's of experience" maxlength="6"
                         (keydown)="onlyNumbersWithDot($event)" maxlength="3" class="form-control form-control-sm"
                         [ngClass]="{ 'is-invalid': registrationForm.get('totalExperience')?.invalid && registrationForm.get('totalExperience')?.touched }" />
                     </div>

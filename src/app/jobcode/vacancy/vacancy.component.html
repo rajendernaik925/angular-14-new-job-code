@@ -180,6 +180,9 @@
                     Work Experience
                   </th>
                   <th class="small-header-th cursor-pointer">
+                    Employement Type
+                  </th>
+                  <th class="small-header-th cursor-pointer">
                     Resume
                   </th>
                   <!-- <th class="small-header-th cursor-pointer">
@@ -193,6 +196,7 @@
                   <td class="small-header text-uppercase">{{ row.mobileNumber }}</td>
                   <td class="small-header text-uppercase">{{ row.email }}</td>
                   <td class="small-header text-uppercase">{{ row.workExperience }} years</td>
+                  <td class="small-header text-uppercase">{{ row.employeeType === 1 ? 'Office' : row.employeeType === 2 ? "Field" : '' }}</td>
                   <td class="small-header fw-bold fst-italic text-center cursor-pointer "
                     [ngClass]="{'text-primary text-decoration-underline hover': row.resumeName !== '--'}"
                     (click)="viewResume(row.resumeFile)">

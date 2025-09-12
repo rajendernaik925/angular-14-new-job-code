@@ -215,6 +215,13 @@
               <a>Performance Appraisal</a>
             </div>
 
+             <div class="theCard" [routerLink]="['/testing']">
+              <img src="././assets/img/id-card.png" alt="family-details-icon" />
+              <a>Testing</a>
+            </div>
+
+            
+
             <!-- <div class="theCard" [routerLink]="['/appendices']">
               <img src="https://cdn-icons-png.flaticon.com/512/8920/8920535.png" alt="vaccine" />
               <a>Products</a>
@@ -241,7 +248,7 @@
               <img src="../../assets/img/job-code/icons8-job-offer-64.png" alt="vaccine" />
               <a>Leave Calender</a>
             </div>
-            <div class="theCard new_label" [routerLink]="['/employee-profile']">
+            <div class="theCard new_label" [routerLink]="['/employee-profile/118']">
               <div class="new_pdf">New</div>
               <img src="../../assets/img/job-code/icons8-job-offer-64.png" alt="vaccine" />
               <a>Employee Profile </a>
@@ -1076,8 +1083,11 @@
                 <div class="form-group" *ngIf="thepanValue != 'NO'">
                   <label>PAN Number <sup>*</sup></label>
                   <fieldset [disabled]="empPanDisabled">
-                    <input type="text" formControlName="PAN_Number" [(ngModel)]="example.PAN_Number" maxlength="10"
-                      class="form-control" (input)="handleInput($event.target.value)" />
+                    <!-- <input type="text" formControlName="PAN_Number" [(ngModel)]="example.PAN_Number" maxlength="10"
+                      class="form-control" (input)="handleInput($event.target.value)" /> -->
+                    <input type="text" formControlName="PAN_Number" maxlength="10" class="form-control"
+                      (input)="handleInput($event.target.value)" />
+
 
                     <span *ngIf="
                         panSubmitted &&

@@ -177,6 +177,13 @@
             </li>
 
             <li *ngIf="x.employee_cnf == 'true'">
+              <a [routerLink]="['/id-card-template']">
+                <span>ICT</span>
+                <p>ID Card Template</p>
+              </a>
+            </li>
+
+            <li *ngIf="x.employee_cnf == 'true'">
               <a [routerLink]="['/fuel']">
                 <span>EC</span>
                 <p>Employee Count</p>

@@ -19,6 +19,7 @@ export class HiringLoginComponent implements OnInit {
   isLoading: boolean = false;
   logginStatus: boolean = true;
   jobCodeData: any;
+  fieldCandidateData: any;
   loggedInData: any;
   isLoginExpired: boolean = false;
   logo: string = 'https://sso.heterohealthcare.com/iconnect/assets/img/logo.svg';
@@ -43,11 +44,15 @@ export class HiringLoginComponent implements OnInit {
   ngOnInit(): void {
     // localStorage.removeItem('hiringLoginData');
     const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
+    const fieldCandidateData = JSON.parse(localStorage.getItem('hiringFieldLoginData') || '{}');
     this.jobCodeData = loginData;
-    console.log("loacl sto :", this.jobCodeData)
+    this.fieldCandidateData = fieldCandidateData;
     const createdDateStr = this.jobCodeData?.createdDateTime;
-    if (this.jobCodeData.status === '1001') {
+    if (this.jobCodeData.status === '1001' && this.jobCodeData.employeeType === 1) {
       this.router.navigate(['/personal-info']);
+    }
+    if (this.fieldCandidateData.status === '1001' && this.fieldCandidateData.employeeType === 2) {
+      this.router.navigate(['/registration']);
     }
   }
 
@@ -75,6 +80,7 @@ export class HiringLoginComponent implements OnInit {
           this.isLoading = false;
           this.logginStatus = false;
           this.loggedInData = res.body;
+          console.log("Login Response Body:", res.body);
           console.log("login time : ", this.loggedInData?.createdDateTime)
 
           //  Check expiration and return early if expired
@@ -86,7 +92,7 @@ export class HiringLoginComponent implements OnInit {
 
 
           if (res.status === 200) {
-            localStorage.setItem('hiringLoginData', JSON.stringify(res.body));
+            // localStorage.setItem('hiringLoginData', JSON.stringify(res.body));
             this.closeLogin();
 
             // Optional: clear login data after 5 days
@@ -105,7 +111,15 @@ export class HiringLoginComponent implements OnInit {
             });
 
             setTimeout(() => {
-              this.router.navigate(['/personal-info']);
+              if(this.loggedInData.employeeType === 1){
+              localStorage.setItem('hiringLoginData', JSON.stringify(res.body));
+                this.router.navigate(['/personal-info']); 
+              }
+              if(this.loggedInData.employeeType === 2){
+              localStorage.setItem('hiringFieldLoginData', JSON.stringify(res.body));
+              this.router.navigate(['/registration']);
+              }
+              // this.router.navigate(['/personal-info']);
             }, 1000);
           } else {
             Swal.fire({
@@ -119,23 +133,23 @@ export class HiringLoginComponent implements OnInit {
 
         error: (err: HttpErrorResponse) => {
           this.isLoading = false;
-          console.error("Error Response: ", err);
+        //   console.error("Error Response: ", err);
 
-          let errorMessage = 'Something went wrong. Please try again!';
-          if (err.status === 400) {
-            errorMessage = err.error?.message || 'Invalid credentials!';
-          } else if (err.status === 401) {
-            errorMessage = 'Unauthorized access!';
-          } else if (err.status === 500) {
-            errorMessage = 'Server error. Please try again later!';
-          }
+        //   let errorMessage = 'Something went wrong. Please try again!';
+        //   if (err.status === 400) {
+        //     errorMessage = err.error?.message || 'Invalid credentials!';
+        //   } else if (err.status === 401) {
+        //     errorMessage = 'Unauthorized access!';
+        //   } else if (err.status === 500) {
+        //     errorMessage = 'Server error. Please try again later!';
+        //   }
 
-          Swal.fire({
-            title: 'Error',
-            text: errorMessage,
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+        //   Swal.fire({
+        //     title: 'Error',
+        //     text: errorMessage,
+        //     icon: 'error',
+        //     confirmButtonText: 'OK',
+        //   });
         }
       });
     } else {

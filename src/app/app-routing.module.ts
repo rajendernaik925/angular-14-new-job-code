@@ -93,6 +93,8 @@ import { FuelComponent } from './HR/fuel/fuel.component';
 import { EmployeeBasicDetailComponent } from './HR/employee-basic-detail/employee-basic-detail.component';
 import { LeaveCalenderComponent } from './HR/leave-calender/leave-calender.component';
 import { EmployeeProfileComponent } from './hiring-module/employee-profile/employee-profile.component';
+import { CardTemplateComponent } from './HR/card-template/card-template.component';
+import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -178,7 +180,9 @@ const routes: Routes = [
   {path:'fuel',component:FuelComponent},
   {path:'employee-basic-details', component:EmployeeBasicDetailComponent},
   {path:'leave-calender', component:LeaveCalenderComponent},
-  {path:'employee-profile', component:EmployeeProfileComponent},
+  {path:'employee-profile/:id', component:EmployeeProfileComponent},
+  {path:'id-card-template', component:CardTemplateComponent, canActivate: [AuthGuard]},
+  {path:'testing', component:TestingPurposeComponent},
 
 
   // Manager 

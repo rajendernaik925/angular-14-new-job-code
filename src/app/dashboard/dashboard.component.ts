@@ -473,6 +473,26 @@ export class DashboardComponent implements OnInit {
     // this.myDate = atob(localStorage.getItem('currentDate')); 
 
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate')));
+    const loginDate = this.myDate.split(" ")[0];
+    console.log("date as per login : ", loginDate);
+    const today = new Date();
+    const todayDate = today.toISOString().split('T')[0];
+    console.log("Today Date : ", todayDate);
+    if (loginDate === todayDate) {
+      console.log("Dates match");
+    } else {
+      console.log("Dates do not match");
+      localStorage.removeItem('userData');
+      localStorage.removeItem('loginData');
+      localStorage.removeItem('applction');
+      localStorage.removeItem('othrPrevlgs');
+      localStorage.removeItem('privileges');
+      localStorage.removeItem('newParams');
+      localStorage.removeItem('letterprivileges');
+      this.router.navigate(['/login'], { replaceUrl: true });
+    }
+
+
 
 
 
@@ -616,7 +636,7 @@ export class DashboardComponent implements OnInit {
     if (e == 'NEW') {
       this.empPanDisabled = false;
       // this.datepickerElements = true;
-      PAN_Number.setValidators(Validators.required);
+      PAN_Number.setValidators([Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]);
       PAN_Number.setValidators(checkPanInputValidator(/([A-Za-z]){5}([0-9]){4}([A-Za-z]){1}$/));
       Pan_file.setValidators(Validators.required);
       panReason.clearValidators();
@@ -849,7 +869,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  logout(){
+  logout() {
     this.LocalStorageKeysToRemove.forEach(k =>
       localStorage.removeItem(k));
     this.router.navigate(['/'], { replaceUrl: true });
@@ -871,7 +891,7 @@ export class DashboardComponent implements OnInit {
   // });
 
   // this.router.navigate(['/'], { replaceUrl: true });
-// }
+  // }
 
 
 

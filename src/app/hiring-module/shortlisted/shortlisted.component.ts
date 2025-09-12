@@ -56,6 +56,7 @@ export class ProfileListComponent implements OnInit {
   paySlipFileC: string | null = null;
 
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
+  @ViewChild('aboutFieldCandidateDialog', { static: true }) aboutFieldCandidateDialog!: TemplateRef<any>;
   private dialogRef: any;
   isSidebarOpen = true;
 
@@ -147,7 +148,11 @@ export class ProfileListComponent implements OnInit {
         this.paySlipFileC = res?.candidateExperienceDetails?.candidateSalaryDetails?.paySlipFileC || null;
         this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
         console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
-        this.openDialog();
+        if (res?.candidatePersonalInformationDetails?.employeeType === 2) {
+          this.openFieldCandidateDialog()
+        } else {
+          this.openDialog();
+        }
       },
       error: (err) => {
         this.isLoading = false;
@@ -204,6 +209,14 @@ export class ProfileListComponent implements OnInit {
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
       width: 'auto',
+      height: 'auto',
+      hasBackdrop: true
+    });
+  }
+
+  openFieldCandidateDialog() {
+    this.dialogRef = this.dialog.open(this.aboutFieldCandidateDialog, {
+      width: '900px',
       height: 'auto',
       hasBackdrop: true
     });

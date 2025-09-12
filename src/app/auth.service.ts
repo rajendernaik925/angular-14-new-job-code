@@ -892,8 +892,7 @@ export class AuthService {
     };
   }
 
-
-  private jobCodeUrls: string = "http://192.168.212.45:2025/";
+  private jobCodeUrls: string = "http://192.168.212.135:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -988,7 +987,9 @@ export class AuthService {
 
   hiringLogin(payload): Observable<HttpResponse<any>> {
     console.log("type: ", payload)
-    return this.http.post(`${this.jobCodeUrls}jobcode/login`, payload, { observe: 'response' })
+    return this.http.post(`${this.jobCodeUrls}jobcode/login`, payload, { observe: 'response' }).pipe(
+      catchError(this.handleError)
+    )
   }
 
   hiringRegister(data: FormData): Observable<HttpResponse<any>> {
@@ -1233,14 +1234,14 @@ export class AuthService {
     )
   }
 
-  logFirstOfferView(candidateId:any,loginId:any) {
-    return this.http.post(`${this.jobCodeUrls}hiring/viewofferletter/${candidateId}/${loginId}`,{}).pipe(
+  logFirstOfferView(candidateId: any, loginId: any) {
+    return this.http.post(`${this.jobCodeUrls}hiring/viewofferletter/${candidateId}/${loginId}`, {}).pipe(
       catchError(this.handleError)
     )
   }
 
-  sendOfferLetterToCandidate(candidateId:any,loginId:any) {
-    return this.http.post(`${this.jobCodeUrls}hiring/sendofferletter/${candidateId}/${loginId}`,{}).pipe(
+  sendOfferLetterToCandidate(candidateId: any, loginId: any) {
+    return this.http.post(`${this.jobCodeUrls}hiring/sendofferletter/${candidateId}/${loginId}`, {}).pipe(
       catchError(this.handleError)
     )
   }
@@ -1296,19 +1297,34 @@ export class AuthService {
       catchError(this.handleError)
     )
   }
+  // registration(formData: FormData) {
+  //   return this.http.post(`${this.jobCodeUrls}hiring/fieldcandidate/upload`,formData).pipe(
+  //     catchError(this.handleError)
+  //   )
+  // }
+  registration(formData: FormData) {
+    return this.http.post(
+      `${this.jobCodeUrls}hiring/fieldcandidate/upload`,
+      formData,
+      { responseType: 'text' }   
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   private resumeUrls: string = "http://192.168.214.150:5000/";
-  resumeData(resume:FormData) {
-    return this.http.post(`${this.resumeUrls}extract`,resume).pipe(
+  resumeData(resume: FormData) {
+    return this.http.post(`${this.resumeUrls}extract`, resume).pipe(
       catchError(this.handleError)
     )
   }
 
-  
-  GenerateOffer(id: any,loginId:any): Observable<HttpResponse<any>> {
+
+  GenerateOffer(id: any, loginId: any): Observable<HttpResponse<any>> {
     return this.http.get(`${this.jobCodeUrls}report/generate/${id}/${loginId}`, {
       observe: 'response',
-      responseType: 'text' as 'json' 
+      responseType: 'text' as 'json'
     })
   }
 

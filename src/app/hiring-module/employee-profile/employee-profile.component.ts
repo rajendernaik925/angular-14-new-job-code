@@ -22,49 +22,106 @@ export class EmployeeProfileComponent implements OnInit {
   isEmergency: boolean = false;
   isFullSize: boolean = false;
   maxDate: Date;
+  candidateData: any;
+  isLoading: boolean = false;
 
   familyData = [
     {
-      familyFirstName: 'Ramesh',
-      familyLastName: 'Kumar',
-      familyRelation: 'Father',
-      familyContactNumber: '9876543210',
-      familyPhoto: 'father_photo.jpg',
-      familyAadhar: '123456789012',
-      familyGender: 'Male',
-      familyBloodGroup: 'O+',
-      familydob: '1970-05-12',
-      familyAge: 55,
-      familyExpired: 'No',
-      familyDependent: 'Yes',
-      familyOccupation: 'Retired',
-      familyIsPfNominee: 'Yes',
-      familyIsGraduityNominee: 'No',
-      familyStatus: 'Active'
+      "familyFirstName": "Mohan",
+      "familyLastName": "Sharma",
+      "familyRelation": "Grandfather",
+      "familyContactNumber": "9876000001",
+      "familyPhoto": "grandfather_photo.jpg",
+      "familyAadhar": "111122223333",
+      "familyGender": "Male",
+      "familyBloodGroup": "B+",
+      "familydob": "1945-03-15",
+      "familyAge": 80,
+      "familyExpired": "No",
+      "familyDependent": "No",
+      "familyOccupation": "Retired",
+      "familyIsPfNominee": "No",
+      "familyIsGraduityNominee": "No",
+      "familyStatus": "Active"
     },
     {
-      familyFirstName: 'Sita',
-      familyLastName: 'Kumari',
-      familyRelation: 'Mother',
-      familyContactNumber: '9876512345',
-      familyPhoto: 'mother_photo.jpg',
-      familyAadhar: '987654321098',
-      familyGender: 'Female',
-      familyBloodGroup: 'A+',
-      familydob: '1975-08-20',
-      familyAge: 50,
-      familyExpired: 'No',
-      familyDependent: 'Yes',
-      familyOccupation: 'Homemaker',
-      familyIsPfNominee: 'No',
-      familyIsGraduityNominee: 'Yes',
-      familyStatus: 'Active'
+      "familyFirstName": "Ramesh",
+      "familyLastName": "Sharma",
+      "familyRelation": "Father",
+      "familyContactNumber": "9876000002",
+      "familyPhoto": "father_photo.jpg",
+      "familyAadhar": "222233334444",
+      "familyGender": "Male",
+      "familyBloodGroup": "O+",
+      "familydob": "1972-06-10",
+      "familyAge": 53,
+      "familyExpired": "No",
+      "familyDependent": "Yes",
+      "familyOccupation": "Businessman",
+      "familyIsPfNominee": "Yes",
+      "familyIsGraduityNominee": "No",
+      "familyStatus": "Active"
+    },
+    {
+      "familyFirstName": "Sita",
+      "familyLastName": "Sharma",
+      "familyRelation": "Mother",
+      "familyContactNumber": "9876000003",
+      "familyPhoto": "mother_photo.jpg",
+      "familyAadhar": "333344445555",
+      "familyGender": "Female",
+      "familyBloodGroup": "A+",
+      "familydob": "1976-09-18",
+      "familyAge": 49,
+      "familyExpired": "No",
+      "familyDependent": "Yes",
+      "familyOccupation": "Homemaker",
+      "familyIsPfNominee": "No",
+      "familyIsGraduityNominee": "Yes",
+      "familyStatus": "Active"
+    },
+    {
+      "familyFirstName": "Priya",
+      "familyLastName": "Sharma",
+      "familyRelation": "Sister",
+      "familyContactNumber": "9876000004",
+      "familyPhoto": "sister_photo.jpg",
+      "familyAadhar": "444455556666",
+      "familyGender": "Female",
+      "familyBloodGroup": "AB+",
+      "familydob": "2000-01-25",
+      "familyAge": 25,
+      "familyExpired": "No",
+      "familyDependent": "Yes",
+      "familyOccupation": "Student",
+      "familyIsPfNominee": "No",
+      "familyIsGraduityNominee": "No",
+      "familyStatus": "Active"
+    },
+    {
+      "familyFirstName": "Rahul",
+      "familyLastName": "Sharma",
+      "familyRelation": "Brother",
+      "familyContactNumber": "9876000005",
+      "familyPhoto": "brother_photo.jpg",
+      "familyAadhar": "555566667777",
+      "familyGender": "Male",
+      "familyBloodGroup": "O-",
+      "familydob": "1998-12-05",
+      "familyAge": 27,
+      "familyExpired": "No",
+      "familyDependent": "No",
+      "familyOccupation": "Engineer",
+      "familyIsPfNominee": "Yes",
+      "familyIsGraduityNominee": "Yes",
+      "familyStatus": "Active"
     }
   ];
   selectedFiles: File[] = [];
   familyForm!: FormGroup;
   selectedMemberIndex: number | null = null;
   isOpen: boolean = false;
+  empId: number | null = null;
 
 
 
@@ -164,6 +221,30 @@ export class EmployeeProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.route.paramMap.subscribe(params => {
+      const encodedId = params.get('id');
+      if (encodedId) {
+        try {
+          const firstDecode = atob(encodedId);
+          const secondDecode = atob(firstDecode);
+          this.empId = Number(secondDecode) || null;
+          console.log('Decoded Job Code ID:', this.empId);
+          if (!this.empId) {
+            this.router.navigate(['/hiring/employee-list']);
+          } else {
+            this.loadUserData(this.empId);
+          }
+        } catch (error) {
+          console.error('Error decoding encoded ID:', error);
+          this.empId = null;
+        }
+      } else {
+        this.empId = null;
+      }
+    });
+
+
     this.isEmergency = false;
 
     this.registrationForm.patchValue({ nationality: 'Indian' });
@@ -221,9 +302,9 @@ export class EmployeeProfileComponent implements OnInit {
       formData.append('moduleId', '1');
       console.log("form alue : ", JSON.stringify(sectionData))
 
-      this.finalSave('personal', formData);
+      this.finalSave('emergency', formData);
     }
-    if (Action === 'emergencyDetails') {
+    if (Action === 'emergency') {
       const personalFields = [
         'relation', 'firstName', 'lastName',
         'contactNumber', 'emergencyAddress', 'emergencyMail',
@@ -255,7 +336,7 @@ export class EmployeeProfileComponent implements OnInit {
       formData.append('moduleId', '1');
       console.log("form alue : ", JSON.stringify(sectionData))
 
-      this.finalSave('emergencyDetails', formData);
+      this.finalSave('bank', formData);
     }
     if (Action === 'bank') {
       const personalFields = [
@@ -287,38 +368,7 @@ export class EmployeeProfileComponent implements OnInit {
       formData.append('moduleId', '1');
       console.log("form alue : ", JSON.stringify(sectionData))
 
-      this.finalSave('bank', formData);
-    }
-    if (Action === 'medical') {
-      const personalFields = [
-        'height', 'descriptionForMedical', 'weight',
-      ];
-
-      let sectionData: any = {};
-      let isValid = true;
-
-      personalFields.forEach((field) => {
-        const control = this.registrationForm.get(field);
-        if (control?.invalid) {
-          control.markAsTouched();
-          isValid = false;
-        } else {
-          sectionData[field] = control?.value;
-        }
-      });
-
-      if (!isValid) {
-        this.showAlert('Please fill all required fields!', 'danger')
-        console.log("Fill data: ", sectionData);
-        return;
-      }
-
-      let formData = new FormData();
-      formData.append('personalInfo', JSON.stringify(sectionData));
-      formData.append('moduleId', '1');
-      console.log("form alue : ", JSON.stringify(sectionData))
-
-      this.finalSave('medical', formData);
+      this.finalSave('family', formData);
     }
     if (Action === 'family') {
       const personalFields = [
@@ -352,7 +402,7 @@ export class EmployeeProfileComponent implements OnInit {
       formData.append('moduleId', '1');
       console.log("form alue : ", JSON.stringify(sectionData))
 
-      this.finalSave('family', formData);
+      this.finalSave('agreement', formData);
     }
     if (Action === 'agreement') {
       const control = this.registrationForm.get('agreementDocument');
@@ -373,7 +423,38 @@ export class EmployeeProfileComponent implements OnInit {
 
       console.log("Uploading files:", this.selectedAgreementDocs);
 
-      this.finalSave('agreement', formData);
+      this.finalSave('medical', formData);
+    }
+    if (Action === 'medical') {
+      const personalFields = [
+        'height', 'descriptionForMedical', 'weight',
+      ];
+
+      let sectionData: any = {};
+      let isValid = true;
+
+      personalFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          sectionData[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert('Please fill all required fields!', 'danger')
+        console.log("Fill data: ", sectionData);
+        return;
+      }
+
+      let formData = new FormData();
+      formData.append('personalInfo', JSON.stringify(sectionData));
+      formData.append('moduleId', '1');
+      console.log("form alue : ", JSON.stringify(sectionData))
+
+      this.finalSave('medical', formData);
     }
 
 
@@ -384,27 +465,81 @@ export class EmployeeProfileComponent implements OnInit {
     console.log("final save clicked");
     this.isEmergency = true;
     this.showAlert('Data saved successfully!', 'success');
-    if (action === 'personal') {
-      this.setActiveSection('emergency');
-    }
-    if (action === 'emergencyDetails') {
-      this.setActiveSection('bank');
-    }
-    if (action === 'bank') {
-      this.setActiveSection('medical');
-    }
+    // this.authService.hiringRegister(formData).subscribe({
+    //   next: (res: any) => {
+    //     console.log("Save response:", res);
+    //     if (res && res.success) {
+    //       this.showAlert('Data saved successfully!', 'success');
+    //     } else {
+    //       this.showAlert(res.message || 'Error saving data. Please try again.', 'danger');
+    //     }
+    //   },
+    //   error: (err: HttpErrorResponse) => {
+    //     console.error("Error saving data:", err);
+    //     this.showAlert('Error saving data. Please try again later.', 'danger');
+    //   }
+    // });
+    this.setActiveSection(action);
     if (action === 'medical') {
-      this.setActiveSection('family');
+
+      Swal.fire({
+        html: `
+        <div class="mb-3">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZM9W5m85CN4_xgg6D1yEnJKLArugi2Hx-cA&s" alt="delete" style="width:60px; height:60px; border-radius: 15px;" />
+        </div>
+        <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to move this Candidate?</h5>
+        <p class="text-muted mb-0" style="font-size: 14px;">
+          This will complete the Hiring process and moving to HRMS.
+        </p>
+      `,
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Move',
+        reverseButtons: true,
+        customClass: {
+          popup: 'p-3 rounded-4',
+          htmlContainer: 'text-center',
+          actions: 'd-flex justify-content-center',
+          cancelButton: 'btn btn-danger btn-sm shadow-none mr-2',
+          confirmButton: 'btn btn-success btn-sm shadow-none'
+        },
+        buttonsStyling: false,
+        width: '550px',
+        backdrop: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const base64Once = btoa(this.empId.toString());
+          const base64Twice = btoa(base64Once);
+          this.router.navigate(['/employee-code', base64Twice]);
+        }
+      })
+
     }
-    if (action === 'family') {
-      this.setActiveSection('agreement');
-    }
-    if (action === 'agreement') {
-      this.setActiveSection('professional');
-    }
-    if (action === 'professional') {
-      this.setActiveSection('employee');
-    }
+    // if (action === 'personal') {
+    //   this.setActiveSection('emergency');
+    //   console.log("form value : ", formData);
+    // }
+    // if (action === 'emergency') {
+    //   this.setActiveSection('bank');
+    // }
+    // if (action === 'bank') {
+    //   this.setActiveSection('medical');
+    // }
+    // if (action === 'medical') {
+    //   this.setActiveSection('family');
+    //   const base64Once = btoa(this.empId.toString());
+    //   const base64Twice = btoa(base64Once);
+    //   this.router.navigate(['/employee-code', base64Twice]);
+    // }
+    // if (action === 'family') {
+    //   this.setActiveSection('agreement');
+    // }
+    // if (action === 'agreement') {
+    //   this.setActiveSection('professional');
+    // }
+    // if (action === 'professional') {
+    //   this.setActiveSection('employee');
+    // }
   }
 
   edit(value: string) {
@@ -445,9 +580,91 @@ export class EmployeeProfileComponent implements OnInit {
     this.isEmergency = true;
   }
 
-  submit2(section: any) {
-    console.log("rajender")
-    this.setActiveSection(section);
+  loadUserData(empId: number) {
+    this.isLoading = true;
+    this.authService.registeredData(empId).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        console.log("User data:", res);
+        this.candidateData = res;
+        // if (res) {
+        //   // Patch form values
+        //   this.registrationForm.patchValue({
+        //     whatsappNumber: res.whatsappNumber || '',
+        //     alternateNumber: res.alternateNumber || '',
+        //     Nationality: res.Nationality || 'Indian',
+        //     religion: res.religion || '',
+        //     motherTongue: res.motherTongue || '',
+        //     knownLanguage: res.knownLanguage || '',
+        //     alternateMobile: res.alternateMobile || '',
+        //     sourceOfReference: res.sourceOfReference || '',
+
+        //     relation: res.relation || '',
+        //     firstName: res.firstName || '',
+        //     lastName: res.lastName || '',
+        //     contactNumber: res.contactNumber || '',
+        //     emergencyAddress: res.emergencyAddress || '',
+        //     emergencyMail: res.emergencyMail || '',
+
+        //     bankName: res.bankName || '',
+        //     ifsc: res.ifsc || '',
+        //     accNumber: res.accNumber || '',
+        //     confirmAccNumber: res.confirmAccNumber || '',
+        //     identificationMarks1: res.identificationMarks1 || '',
+        //     identificationMarks2: res.identificationMarks2 || '',
+
+        //     height: res.height || '',
+        //     weight: res.weight || '',
+        //     descriptionForMedical: res.descriptionForMedical || '',
+
+        //     // family details
+        //     // familyFirstName: res.familyFirstName || '',
+        //     // familyLastName: res.familyLastName || '',
+        //     // familyRelation: res.familyRelation || '',
+        //     // familyContactNumber: res.familyContactNumber || '',
+        //     // familyPhoto: res.familyPhoto || '',
+        //     // familyAadhar: res.familyAadhar || '',
+        //     // familyGender: res.familyGender || '',
+        //     // familyBloodGroup: res.familyBloodGroup || '',
+        //     // familydob: res.familydob || '',
+        //     // familyAge: res.familyAge || '',
+        //     // familyExpired: res.familyExpired || '',
+        //     // familyDependent: res.familyDependent || '',
+        //     // familyOccupation: res.familyOccupation || '',
+        //     // familyIsPfNominee: res.familyIsPfNominee || '',
+        //     // familyIsGraduityNominee: res.familyIsGraduityNominee || '',
+        //     // familyStatus: res.familyStatus || '',
+
+        //     // Agreement Documens
+        //     // agreementDocument: res.agreementDocument || '',
+
+        //     department: res.department || '',
+        //     designation: res.designation || '',
+        //     dateOfJoining: res.dateOfJoining || '',
+        //     HQ: res.HQ || '',
+        //     ishod: res.ishod || '',
+        //     firstDay: res.firstDay || '',
+        //     reportingManager: res.reportingManager || '',
+        //     isExperienced: res.isExperienced || '',
+        //     increamentType: res.increamentType || '',
+        //   });
+
+        //   // If there are family details as an array, set it to familyData
+        //   if (Array.isArray(res.familyDetails) && res.familyDetails.length > 0) {
+        //     this.familyData = res.familyDetails;
+        //   }
+
+        //   // If there are agreement documents, handle them accordingly
+        //   // Assuming res.agreementDocuments is an array of file metadata
+        //   // this.selectedAgreementDocs = res.agreementDocuments || [];
+        // }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
+        console.error("Error fetching user data:", err);
+        this.showAlert('Error fetching user data. Please try again later.', 'danger');
+      }
+    });
   }
 
   sidebarOpen = false;
@@ -569,7 +786,7 @@ export class EmployeeProfileComponent implements OnInit {
 
   saveFamily() {
     if (this.familyForm.valid && this.selectedMemberIndex !== null) {
-      console.log('Form Values:', this.familyForm.value); 
+      console.log('Form Values:', this.familyForm.value);
 
       this.familyData[this.selectedMemberIndex] = {
         ...this.familyData[this.selectedMemberIndex],

@@ -118,6 +118,13 @@ export class LeaveCalenderComponent implements OnInit {
           leaves: [
             { jan: '3', feb: '3', mar: '1', apr: '0', may: '1', jun: '2', jul: '4', aug: '1', sep: '4', oct: '1', nov: '1', dec: '4', tot: '45', used: '30', remaining: '15' }
           ]
+        },
+        {
+          id: 23,
+          name: 'Arthi',
+          leaves: [
+            { jan: '0', feb: '0', mar: '0', apr: '0', may: '0', jun: '0', jul: '0', aug: '0', sep: '0', oct: '0', nov: '0', dec: '0', tot: '4', used: '0', remaining: '4' }
+          ]
         }
       ]
     },

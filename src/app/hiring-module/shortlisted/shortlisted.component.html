@@ -572,6 +572,109 @@
   </div>
 </ng-template>
 
+
+<ng-template #aboutFieldCandidateDialog>
+  <div class="animate-zoom modal-body">
+    <div class="container">
+      <div class="row mb-2 align-items-center">
+        <div class="col-md-10">
+          <div class="d-flex" *ngIf="candidateData?.candidateTrackingDTO?.totalPercentage !== '0.00'">
+            <!-- <span class="fw-bold custom-text mr-3"
+              *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">Candidate Details </span> -->
+            <span class="small text-uppercase mr-2">
+              Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName ||'NA' }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <!-- <span class="small text-uppercase mr-2">
+              Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}
+            </span>
+            <span class="small text-muted mr-2">|</span> -->
+
+            <span class="small text-uppercase mr-2">
+              Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId || 'NA' }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase">
+              Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName || 'NA'}}
+            </span>
+
+
+          </div>
+
+          <span *ngIf="candidateData?.candidateTrackingDTO?.totalPercentage == '0.00'"
+            class="fw-bold custom-text">Details</span>
+        </div>
+        <div class="col-md-2 d-flex justify-content-end align-items-center">
+          <button type="button" class="btn btn-sm shadow-none " (click)="close()">
+            <i class="bi bi-x-circle fs-5 text-danger" (click)="close()"></i>
+          </button>
+        </div>
+      </div>
+      <hr class="m-0 p-0 text-dark border mb-2">
+
+      <div *ngIf="candidateData?.candidateTrackingDTO?.totalPercentage !== '0.00'; else noCandidateData"
+        class="scroll-container container">
+
+        <div class="card p-3 mb-3 shadow-sm border-0" *ngIf="candidateData?.candidateTrackingDTO?.personalInfo !== '0'">
+
+          <!-- <h6 class="mb-3 fw-bold text-primary border-bottom pb-2">Basic Details</h6> -->
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle">
+              <tbody>
+                <tr>
+                  <td><strong>Name</strong></td>
+                  <td>{{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+                    {{ candidateData?.candidatePersonalInformationDetails?.lastName }}</td>
+                  <td><strong>Mobile</strong></td>
+                  <td>{{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}</td>
+                </tr>
+                <tr>
+                  <td><strong>DOB</strong></td>
+                  <td>{{ candidateData?.candidatePersonalInformationDetails?.dob }}</td>
+                  <td><strong>Email</strong></td>
+                  <td>{{ candidateData?.candidatePersonalInformationDetails?.email }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Aadhar</strong></td>
+                  <td>{{ candidateData?.candidatePersonalInformationDetails?.adhar }}</td>
+                  <td><strong>Resume</strong></td>
+                  <td>
+                    <ng-container *ngIf="resumeFile">
+                      <button class="btn btn-outline-primary btn-sm shadow-none" (click)="viewFile(resumeFile)">
+                        📄 View Resume
+                      </button>
+                    </ng-container>
+                  </td>
+                </tr>
+                <tr *ngIf="!candidateData?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher">
+                  <td><strong>Company Name</strong></td>
+                  <td>{{ candidateData?.candidateExperienceDetails?.candidateCompanyDetails[0]?.companyName || 'N/A' }}
+                  </td>
+                  <td><strong>Experience</strong></td>
+                  <td>{{ candidateData?.candidateExperienceDetails?.candidateCompanyDetails[0]?.totalExp || 'N/A' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <ng-template #noCandidateData>
+        <div class="alert alert-warning text-center">
+          No Candidate data available.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
 <div *ngIf="showPDF" class="overlay">
   <div class="pdf-container">
     <button class="close-btn" (click)="closePDF()">✖</button>

@@ -12,8 +12,9 @@ export class AuthService {
 
   // production public path 
   // new URL    
-  // baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
-  baseUrl: any = "http://192.168.30.107:8000/stageheteroiconnect/";
+  baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
+  // baseUrl: any = "http://192.168.30.107:8000/stageheteroiconnect/";
+  // baseUrl: any = "http://192.168.213.2:8094/";
   imgbase: any = "https://sso.heterohcl.com/";
 
 
@@ -892,7 +893,7 @@ export class AuthService {
     };
   }
 
-  private jobCodeUrls: string = "http://192.168.212.135:2025/";
+  private jobCodeUrls: string = "http://192.168.215.112:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)

@@ -95,6 +95,7 @@ import { LeaveCalenderComponent } from './HR/leave-calender/leave-calender.compo
 import { EmployeeProfileComponent } from './hiring-module/employee-profile/employee-profile.component';
 import { CardTemplateComponent } from './HR/card-template/card-template.component';
 import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
+import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -183,6 +184,7 @@ const routes: Routes = [
   {path:'employee-profile/:id', component:EmployeeProfileComponent},
   {path:'id-card-template', component:CardTemplateComponent, canActivate: [AuthGuard]},
   {path:'testing', component:TestingPurposeComponent},
+  {path:'set-password', component:SetPasswordComponent},
 
 
   // Manager 

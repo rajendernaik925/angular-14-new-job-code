@@ -196,6 +196,15 @@ export class LoginComponent implements OnInit {
           // this.router.navigate(['/dashboard'], { replaceUrl: true });
           // this.sessionService.saveUserSession(res, 60);
 
+
+
+          // Check if 'newUser' exists in localStorage
+          // const newUser = localStorage.getItem('newUser');
+
+          // if (newUser === null) {
+          //   localStorage.setItem('newUser', 'true');
+          // }
+
           this.router.navigate(['/home'], { replaceUrl: true });
 
           // console.log(localStorage.getItem('userData'));
@@ -221,7 +230,7 @@ export class LoginComponent implements OnInit {
         if (err.status == 401) {
           console.log('Unauthorised Access - Invalid Credentials');
           // this.router.navigate(['/errorPage', {errorType: err.status}]);
-          window.open('http://192.168.213.191:4200/#/login' , '_self');
+          window.open('http://192.168.213.191:4200/#/login', '_self');
           Swal.fire({
             icon: 'error',
             title: 'Server Down',
@@ -230,12 +239,8 @@ export class LoginComponent implements OnInit {
             confirmButtonColor: '#d33'
           });
         }
-
-
       });
   }
-
-
 
   empVerify() {
     this.authService.empverify(this.frgtPswdForm.value).subscribe(

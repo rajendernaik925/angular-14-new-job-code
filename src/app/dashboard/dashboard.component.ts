@@ -396,6 +396,7 @@ export class DashboardComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    localStorage.removeItem('newUser');
 
     //this.handleNoticeAndRefresh();
 

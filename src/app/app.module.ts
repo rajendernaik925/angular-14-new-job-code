@@ -138,6 +138,7 @@ import { LeaveCalenderComponent } from './HR/leave-calender/leave-calender.compo
 import { EmployeeProfileComponent } from './hiring-module/employee-profile/employee-profile.component';
 import { CardTemplateComponent } from './HR/card-template/card-template.component';
 import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
+import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 
 
 
@@ -222,7 +223,8 @@ import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.co
     LeaveCalenderComponent,
     EmployeeProfileComponent,
     CardTemplateComponent,
-    TestingPurposeComponent
+    TestingPurposeComponent,
+    SetPasswordComponent
   ],
   imports: [
     BrowserModule,

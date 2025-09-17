@@ -378,28 +378,43 @@ export class RegistrationComponent implements OnInit {
       }
 
       // Build final JSON
+      // const experienceData: any = {
+      //   candidateId: this.jobCodeData.candidateId,
+      //   firstName: formValues.firstName || null,
+      //   lastName: formValues.lastName || null,
+      //   email: formValues.email || null,
+      //   mobile: formValues.mobileNumber || null,
+      //   dob: formValues.dob || null,
+      //   aadhar: formValues.adhar || null,
+      //   isFresher: formValues.isFresher === 'fresher',
+      //   company: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
+      //   experience: formValues.isFresher === 'fresher' ? 0.0 : formValues.totalExperience || 0.0,
+      //   highestDegree: formValues.highestDegree || null,
+      //   // resume: formValues.resume || null,
+      // };
+
       const experienceData: any = {
         candidateId: this.jobCodeData.candidateId,
+        email: formValues.email || null,
+        mobileNumber: formValues.mobileNumber || null,
+        dob: formValues.dob || null,
         firstName: formValues.firstName || null,
         lastName: formValues.lastName || null,
-        email: formValues.email || null,
-        mobile: formValues.mobileNumber || null,
-        dob: formValues.dob || null,
-        aadhar: formValues.adhar || null,
-        isFresher: formValues.isFresher === 'fresher',
-        company: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
-        experience: formValues.isFresher === 'fresher' ? 0.0 : formValues.totalExperience || 0.0,
         highestDegree: formValues.highestDegree || null,
-        // resume: formValues.resume || null,
+        aadharNumber: formValues.adhar || null,
+        isFresherFlag: formValues.isFresher === 'fresher' ? 1 : 0,   // 1 = Fresher, 0 = Experienced
+        companyName: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
+        totalExperience: formValues.isFresher === 'fresher' ? null : formValues.totalExperience || null,
       };
+
 
       console.log("DOB for backend:", formValues.dob);
       console.log("Experience Data:", experienceData);
 
       const formData = new FormData();
-      formData.append('candidateInfo', JSON.stringify(experienceData));
+      formData.append('personalInfo', JSON.stringify(experienceData));
       if (!this.resumeFile) {
-        formData.append('resume', this.selectedFiles['resume'] || new File([], ''));
+        formData.append('personalResumeFile', this.selectedFiles['resume'] || new File([], ''));
       }
       this.finalSave('experience', formData);
     }

@@ -42,8 +42,8 @@ export class VacancyComponent implements OnInit {
   isEmployeeTypeInvalid = false;
   selectedEmployeeType: string = '';
   employeeTypes = [
-    { id: '1', name: 'Office Candidate' },
-    { id: '2', name: 'Field Candidate' }
+    { id: 1, name: 'Office Candidate' },
+    { id: 2, name: 'Field Candidate' }
   ];
 
 
@@ -61,7 +61,7 @@ export class VacancyComponent implements OnInit {
       emailAddress: ['', [Validators.required, Validators.email]],
       workExperience: ['', [Validators.required]],
       jobCodeId: ['', Validators.required],
-      employeeTypeId: ['', Validators.required],
+      employeeType: [2, Validators.required],
       resume: [{ value: null, disabled: false }],
     });
   }
@@ -83,6 +83,8 @@ export class VacancyComponent implements OnInit {
         row.job_reportingManager?.toString().toLowerCase().includes(lowerCaseValue)
       );
     });
+
+    this.onEmployeeTypeChange();
   }
 
   totalJobCodes() {
@@ -149,8 +151,11 @@ export class VacancyComponent implements OnInit {
     });
     this.uploadedFile = null;
     this.addCandidateForm.patchValue({
-      jobCodeId: this.candidateId
+      jobCodeId: this.candidateId,
+      employeeType: 2
     });
+
+    this.onEmployeeTypeChange();
   }
 
   // onFileSelect(event: Event): void {
@@ -364,7 +369,7 @@ export class VacancyComponent implements OnInit {
       workExp: formValues.workExperience,
       createdBy: this.userData.user.empID,
       jobCodeId: this.candidateId,
-      employeeTypeId: formValues.employeeTypeId,
+      employeeType: formValues.employeeType,
     };
 
     const formData = new FormData();
@@ -525,14 +530,24 @@ export class VacancyComponent implements OnInit {
 
   oisEmployeeTypeInvalid = false;
 
-  onEmployeeTypeChange(event: Event): void {
-    const selectedType = (event.target as HTMLSelectElement).value;
-    this.addCandidateForm.get('employeeTypeId')?.setValue(selectedType);
+  onEmployeeTypeChange(event?: Event): void {
+    let selectedType: number;
+
+    if (event) {
+      // when user changes
+      selectedType = +(event.target as HTMLInputElement).value;
+    } else {
+      // initial load → set to 2
+      selectedType = 2;
+    }
+
+    this.addCandidateForm.get('employeeType')?.setValue(selectedType);
     console.log('Selected Employee Type:', selectedType);
 
     // validation
     this.isEmployeeTypeInvalid = !selectedType;
   }
+
 
 
 }

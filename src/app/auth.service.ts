@@ -1305,10 +1305,7 @@ export class AuthService {
   // }
   registration(formData: FormData) {
     return this.http.post(
-      `${this.jobCodeUrls}hiring/fieldcandidate/upload`,
-      formData,
-      { responseType: 'text' }   
-    ).pipe(
+      `${this.jobCodeUrls}hiring/uploadfieldemployee`, formData).pipe(
       catchError(this.handleError)
     );
   }

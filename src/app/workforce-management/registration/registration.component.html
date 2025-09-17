@@ -59,15 +59,19 @@
                       }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" /> -->
                     <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
-                      formControlName="dob" autocomplete="off" [bsConfig]="{
-                          adaptivePosition: true,
-                          showWeekNumbers: false,
-                          isAnimated: true,
-                          containerClass: colorTheme,
-                          customTodayClass: 'custom-today-class',
-                          dateInputFormat: 'DD-MMM-YYYY',
-                          maxDate: maxDob  
-                        }" bsDatepicker required readonly
+                      formControlName="dob" autocomplete="off"
+                      [bsConfig]="{
+                        adaptivePosition: true,
+                        showWeekNumbers: false,
+                        isAnimated: true,
+                        containerClass: colorTheme,
+                        customTodayClass: 'custom-today-class',
+                        dateInputFormat: 'DD-MMM-YYYY',
+                        maxDate: maxDob  
+                      }"
+                      bsDatepicker
+                      required
+                      readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" />
 
                   </div>

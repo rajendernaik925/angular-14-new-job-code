@@ -64,7 +64,7 @@ export class FieldEmployeesComponent implements OnInit {
       const pageSize = this.pageSize || 10;
       const searchQuery = this.searchQueryText?.trim() || '';
   
-      this.authService.shortlistedCandidates(pageNo, pageSize, searchQuery).subscribe({
+      this.authService.shortlistedCandidates().subscribe({
         next: (res: any) => {
           this.isLoading = false;
   

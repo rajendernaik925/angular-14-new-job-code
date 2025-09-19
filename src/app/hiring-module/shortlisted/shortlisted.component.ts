@@ -26,6 +26,7 @@ export class ProfileListComponent implements OnInit {
   ];
 
   rows: any[] = [];
+  allCandidates: any[] = []; 
   searchQuery = new FormControl();
   isOpen = false;
   employeeId: string | null = null;
@@ -33,7 +34,7 @@ export class ProfileListComponent implements OnInit {
   isLoading = false;
   candidateData: any = {};
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 9;
   userData: any;
   searchQueryText: string = '';
   totalRecords: number = 0;
@@ -68,18 +69,13 @@ export class ProfileListComponent implements OnInit {
 
   ngOnInit() {
     this.currentPage = 1;
-    this.pageSize = 10;
+    // this.pageSize = 10;
     this.fetchShortlistedCandidates();
     this.searchQuery.valueChanges.subscribe(value => {
-      // this.currentPage = 1;
-      // this.searchQueryText = value.trim();
-      // this.fetchShortlistedCandidates();
-      if (value?.length >= 3) {
-        this.currentPage = 1;
-        this.searchQueryText = value.trim();
-        this.fetchShortlistedCandidates();
-      }
-    });
+    this.searchQueryText = value?.trim() || '';
+    this.currentPage = 1;
+    this.updateRows();
+  });
 
 
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
@@ -89,31 +85,32 @@ export class ProfileListComponent implements OnInit {
 
   fetchShortlistedCandidates() {
     this.isLoading = true;
-    const pageNo = this.currentPage || 1;
-    const pageSize = this.pageSize || 10;
-    const searchQuery = this.searchQueryText?.trim() || '';
 
-    this.authService.shortlistedCandidates(pageNo, pageSize, searchQuery).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
+     this.authService.shortlistedCandidates().subscribe({
+    next: (res: any) => {
+      this.isLoading = false;
 
-        this.rows = res.list?.map((item: any) => ({
-          job_code: item.jcReferanceId || '--',
-          email: item.email || '--',
-          firstname: item.name || '--',
-          mobilenumber: item.mobileNumber || '--',
-          job_title: item.jobTitleName || '--',
-          employeeid: item.candidateId || '--',
-          status: item.status || '--',
-        })) || [];
-        this.totalRecords = Number(res.totalCount) || 0;
-        this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
-        if (this.currentPage > this.totalPages) {
-          this.currentPage = this.totalPages;
-        }
-      },
-      error: () => (this.isLoading = false)
-    });
+      this.allCandidates = res?.map((item: any) => ({
+        job_code: item.jcReferanceId || '--',
+        email: item.email || '--',
+        // firstname: item.name || '--',
+         firstname: item.name 
+             ? (item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name)
+             : '--',
+        mobilenumber: item.mobileNumber || '--',
+        job_title: item.jobTitleName || '--',
+        employeeid: item.candidateId || '--',
+        status: item.status || '--',
+      })) || [];
+
+      this.totalRecords = this.allCandidates.length;
+      this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+      this.updateRows();
+    },
+    error: () => (this.isLoading = false)
+  });
+
+
   }
 
   highlightMatch(text: any): SafeHtml {
@@ -409,18 +406,44 @@ export class ProfileListComponent implements OnInit {
     })
   }
 
-  changePage(newPage: number) {
-    if (newPage >= 1 && newPage <= this.totalPages) {
-      this.currentPage = newPage;
-      this.fetchShortlistedCandidates();
-    }
+  reset() {
+    this.searchQueryText = ''
   }
 
-  get startIndex(): number {
-    return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  updateRows() {
+  // Filter by search query
+  let filtered = this.allCandidates;
+  if (this.searchQueryText.length >= 3) {
+    const query = this.searchQueryText.toLowerCase();
+    filtered = filtered.filter(item =>
+      Object.values(item).some(val =>
+        String(val).toLowerCase().includes(query)
+      )
+    );
   }
 
-  get endIndex(): number {
-    return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+  // Update total records & pages
+  this.totalRecords = filtered.length;
+  this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+
+  // Paginate
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  this.rows = filtered.slice(start, end);
+}
+
+changePage(newPage: number) {
+  if (newPage >= 1 && newPage <= this.totalPages) {
+    this.currentPage = newPage;
+    this.updateRows();
   }
+}
+
+get startIndex(): number {
+  return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+}
+
+get endIndex(): number {
+  return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+}
 }

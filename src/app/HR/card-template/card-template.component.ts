@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,14 +13,27 @@ export class CardTemplateComponent implements OnInit {
   myDate: any;
 
   downloadIcon = 'assets/img/idcard/download.svg';
+  companiesImage: any[] = [];
+  baseUrl = 'https://raw.githubusercontent.com/rajendernaik925/companies-data/main/';
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(this.loggedUser);
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate')));
-  }
-  
 
+    this.http.get<any[]>(this.baseUrl + 'companies.json')
+      .subscribe(data => {
+        this.companiesImage = data.map(company => ({
+          ...company,
+          images: company.images.map(img => ({
+            ...img,
+            url: this.baseUrl + encodeURIComponent(img.url)
+          }))
+        }));
+      });
+  }
 
   companies = [
     {

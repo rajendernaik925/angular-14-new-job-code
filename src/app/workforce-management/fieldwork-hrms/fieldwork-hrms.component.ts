@@ -41,7 +41,7 @@ export class FieldworkHrmsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.shortlistedCandidates();
+    // this.shortlistedCandidates();
     this.generateColumns();
     // this.generateRows();
 
@@ -57,7 +57,7 @@ export class FieldworkHrmsComponent implements OnInit {
 
   shortlistedCandidates() {
     this.isLoading = true
-    this.authService.shortlistedCandidates(1,10,'').subscribe({
+    this.authService.shortlistedCandidates().subscribe({
       next: (res: any) => {
         this.isLoading = false;
         console.log("resss : ",res)

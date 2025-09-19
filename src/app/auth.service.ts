@@ -1095,12 +1095,8 @@ export class AuthService {
     )
   }
 
-  shortlistedCandidates(pageNo: number, pageSize: number, searchData: string) {
-    const params = new HttpParams()
-      .set('pageNo', pageNo.toString())
-      .set('pageSize', pageSize.toString())
-      .set('search', searchData.toString());
-    return this.http.get(`${this.jobCodeUrls}hiring/shortlisted`, { params }).pipe(
+  shortlistedCandidates() {
+    return this.http.get(`${this.jobCodeUrls}hiring/fieldempshortlisted`).pipe(
       catchError(this.handleError)
     )
   }

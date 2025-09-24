@@ -481,13 +481,17 @@ export class NavComponent implements OnInit {
   }
   notifications: any[] = [];
   fetchNotifications() {
-    const empId = this.userData?.user?.empID;
-    if (!empId) {
-      console.log('No empID available to fetch notifications.');
+    // const empId = this.userData?.user?.empID;
+    // if (!empId) {
+    //   console.log('No empID available to fetch notifications.');
+    //   return;
+    // }
+    if(!this.userData?.user?.empID) {
+      console.warn("emp ID is not availabe...!");
       return;
     }
     const formData = new FormData();
-    formData.append('empId', this.userData.user.empID.toString());
+    formData.append('empId', this.userData.user.empID);
     // console.log("test",this.userData.user.empID);
     this.authService.getNotifications(formData).subscribe(
       (response: any) => {

@@ -59,8 +59,7 @@
                       }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" /> -->
                     <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
-                      formControlName="dob" autocomplete="off"
-                      [bsConfig]="{
+                      formControlName="dob" autocomplete="off" [bsConfig]="{
                         adaptivePosition: true,
                         showWeekNumbers: false,
                         isAnimated: true,
@@ -68,17 +67,15 @@
                         customTodayClass: 'custom-today-class',
                         dateInputFormat: 'DD-MMM-YYYY',
                         maxDate: maxDob  
-                      }"
-                      bsDatepicker
-                      required
-                      readonly
+                      }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" />
 
                   </div>
                   <div class="col-md-3">
                     <label for="highestDegree">Highest Degree <span class="text-danger">*</span></label>
                     <input type="text" [readOnly]="isAllDataPresent" formControlName="highestDegree"
-                      placeholder="Enter Highest Degree" class="form-control form-control-sm" maxlength="25" noFirstSpace
+                      placeholder="Enter Highest Degree" class="form-control form-control-sm" maxlength="25"
+                      noFirstSpace
                       [ngClass]="{ 'is-invalid': registrationForm.get('highestDegree')?.invalid && registrationForm.get('highestDegree')?.touched }" />
                   </div>
                   <div class="col-md-3">
@@ -94,20 +91,18 @@
                       <ng-container *ngIf="resumeFile; else resumeFileInput">
                         <!-- <i class="bi bi-eye-fill text-success mr-3 cursor-pointer" (click)="viewFile(resumeFile)"></i>
                         <i class="bi bi-pencil-square text-info cursor-pointer" (click)="openResumeFileInput()"></i> -->
-                        <button class="btn btn-sm btn-success mr-2" (click)="viewFile(resumeFile)">
-                          <i class="bi bi-eye-fill"></i>
+                        <button class="btn btn-sm btn-secondary mr-2 w-100" (click)="viewFile(resumeFile)">
+                          <i class="bi bi-eye-fill"></i> view Resume
                         </button>
 
-                        <button class="btn btn-sm btn-info" (click)="openResumeFileInput()">
+
+
+                        <!-- <button class="btn btn-sm btn-info" (click)="openResumeFileInput()">
                           <i class="bi bi-pencil-square"></i>
-                        </button>
-
-                        <input type="file" accept=".pdf" #hiddenResumeInput (change)="onFileSelect($event, 'panFile')"
-                          class="d-none" />
-                        <!-- <button class="btn btn-info badge badge-pill badge-info py-2  btn-sm shadow-none border-0 w-100"
-                          (click)="viewFile(resumeFile)">
-                          <i class="bi bi-eye-fill"></i>
                         </button> -->
+
+                        <!-- <input type="file" accept=".pdf" #hiddenResumeInput (change)="onFileSelect($event, 'panFile')"
+                          class="d-none" /> -->
                       </ng-container>
                       <ng-template #resumeFileInput>
                         <input type="file" formControlName="resume" id="resume" #resumeFileInput
@@ -134,19 +129,20 @@
                       <label class="d-block custom-text">Are you a Fresher or Experienced?</label>
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="fresher"
-                          value="fresher" (change)="handleExperienceToggle('fresher')" />
+                          value="fresher" [readOnly]="isAllDataPresent" (change)="handleExperienceToggle('fresher')" />
                         <label class="form-check-label" for="fresher">Fresher</label>
                       </div>
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="experienced"
-                          value="experienced" (change)="handleExperienceToggle('experienced')" />
+                          value="experienced" [readOnly]="isAllDataPresent"
+                          (change)="handleExperienceToggle('experienced')" />
                         <label class="form-check-label" for="experienced">Experienced</label>
                       </div>
                     </div>
                   </div>
 
                 </div>
-                <div class="row">
+                <div *ngIf="!isAllDataPresent" class="row">
                   <div *ngIf="isFresher" class="col">
                     <div class="">
                       <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
@@ -161,21 +157,20 @@
                   <div class="row mb-2 scale-in-ver-top">
                     <div class="col-md-3">
                       <label>Company Name <span class="text-danger">*</span></label>
-                      <input type="text" formControlName="companyName" placeholder="Company Name" stringOnly noFirstSpace
-                        maxlength="50"
-                        class="form-control form-control-sm"
+                      <input type="text" formControlName="companyName" placeholder="Company Name" stringOnly
+                        noFirstSpace maxlength="50" [readOnly]="isAllDataPresent" class="form-control form-control-sm"
                         [ngClass]="{ 'is-invalid': registrationForm.get('companyName')?.invalid && registrationForm.get('companyName')?.touched }" />
                     </div>
 
                     <div class="col-md-3">
                       <label>Total Experience <span class="text-danger">*</span></label>
-                      <input type="text" formControlName="totalExperience"
+                      <input type="text" formControlName="totalExperience" [readOnly]="isAllDataPresent"
                         placeholder="Enter Total Year's of experience" maxlength="6"
                         (keydown)="onlyNumbersWithDot($event)" maxlength="3" class="form-control form-control-sm"
                         [ngClass]="{ 'is-invalid': registrationForm.get('totalExperience')?.invalid && registrationForm.get('totalExperience')?.touched }" />
                     </div>
 
-                    <div class="col-md-2 mt-3">
+                    <div *ngIf="!isAllDataPresent" class="col-md-2 mt-3">
                       <div class="">
                         <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0  mt-2"
                           (click)="setValidation('experience')">
@@ -185,6 +180,102 @@
                     </div>
                   </div>
                 </div>
+                <hr *ngIf="isAllDataPresent" class="custom- mt-2 scale-in-hor-left" />
+                <div *ngIf="isAllDataPresent && !loadedData?.candidateInterviewDetails?.length" class="alert alert-dark text-center mt-3 fw-bold">
+                  <!-- ⚠️ Once submitting the data, no edit option for this form ❗ -->
+                  ⚠️ No changes can be made after submission ❗
+                </div>
+
+                <div *ngIf="loadedData?.candidateInterviewDetails?.length" >
+                  <!-- <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name | uppercase }})</h6> -->
+
+                  <!-- <div class="scroll-container mb-0"> -->
+                  <!-- Headings for Desktop -->
+                  <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">
+                    <div class="col-md-1">Status</div>
+                    <div class="col-md-2">Round Title</div>
+                    <div class="col-md-2">Date</div>
+                    <div class="col-md-2">Time</div>
+                    <div class="col-md-3">Location</div>
+                    <div class="col-md-2">Status</div>
+                  </div>
+
+                  <!-- Interview Loop -->
+                  <div *ngFor="let interview of loadedData.candidateInterviewDetails"
+                    class="rounded mb-3 p-3 p-md-2 border interview-card" [ngClass]="{
+                        'filled-bg': interview.candidateInterviewFeedBackDTO?.length,
+                        'custom-bg text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }">
+
+                    <!-- Desktop Layout -->
+                    <div class="row align-items-center p-0 d-none d-md-flex">
+                      <div class="col-md-1 text-center">
+                        <i [ngClass]="{
+                            'bi bi-check-circle-fill text-success': interview.candidateInterviewFeedBackDTO?.length,
+                            'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                          }" style="font-size: 1.5rem;"></i>
+                      </div>
+                      <div class="col-md-2 fw-semibold">
+                        {{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : '' }}
+                      </div>
+                      <div class="col-md-2">{{ formatFullDateForInterview(interview.interviewDate) }}</div>
+                      <div class="col-md-2">{{ interview.interviewTime || '--' }}</div>
+                      <div class="col-md-3 text-truncate" [attr.title]="interview.locationName || '--'"
+                        style="max-width: 100%;">
+                        {{ interview.locationName?.length > 25 ? (interview.locationName | slice: 0:25) + '...' :
+                        (interview.locationName || '--') }}
+                      </div>
+                      <div class="col-md-2 fw-medium" [ngClass]="{
+                          'text-success': interview.status === 1004,
+                          'text-warning': interview.status === 1001,
+                          'text-danger': interview.status === 1002 || interview.status === 1005,
+                          'text-primary': interview.status === 1006
+                        }">
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
+                      </div>
+                    </div>
+
+                    <!-- Mobile Layout -->
+                    <div class="d-flex d-md-none flex-column gap-1">
+                      <div class="d-flex align-items-center gap-2">
+                        <i [ngClass]="{
+                        'bi bi-check-circle-fill text-success mr-1': interview.candidateInterviewFeedBackDTO?.length,
+                        'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }" style="font-size: 1.3rem;"></i>
+                        <strong>{{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')'
+                          :
+                          ''
+                          }}</strong>
+                      </div>
+                      <div><strong>Date:</strong> {{ interview.interviewDate || '--' }}</div>
+                      <div><strong>Time:</strong> {{ interview.interviewTime || '--' }}</div>
+                      <!-- <div><strong>Location:</strong> {{ interview.locationName || '--' }}</div> -->
+                      <div [ngClass]="{
+                          'text-success': interview.status === 1004,
+                          'text-warning': interview.status === 1001,
+                          'text-danger': interview.status === 1002 || interview.status === 1005,
+                          'text-primary': interview.status === 1006
+                        }"><strong>Status:</strong>
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- </div> -->
+                </div>
+
+
               </div>
             </div>
           </form>

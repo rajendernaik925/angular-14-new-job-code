@@ -3,7 +3,6 @@ import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/c
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { error } from 'console';
 import { debounceTime } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';

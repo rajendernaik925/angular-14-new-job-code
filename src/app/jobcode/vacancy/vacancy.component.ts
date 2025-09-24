@@ -6,6 +6,18 @@ import Swal from 'sweetalert2';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import * as XLSX from 'xlsx';
+
+
+interface Candidate {
+  fullName: string;
+  email: string;
+  mobileNumber: string;
+  workExp: number;
+  resume?: string;
+  employeeType: string;
+}
+
 
 
 @Component({
@@ -45,6 +57,7 @@ export class VacancyComponent implements OnInit {
     { id: 1, name: 'Office Candidate' },
     { id: 2, name: 'Field Candidate' }
   ];
+  candidates: Candidate[] = [];
 
 
   constructor(
@@ -547,7 +560,144 @@ export class VacancyComponent implements OnInit {
     // validation
     this.isEmployeeTypeInvalid = !selectedType;
   }
+  addBulk() {
+    const fileInput = document.getElementById('bulkFileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+      fileInput.click();
+    }
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      Swal.fire('Error', 'No file selected.', 'error');
+      return;
+    }
+
+    const file = input.files[0];
+    const allowedExtensions = ['xls', 'xlsx'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      // Show Swal alert for invalid file
+      Swal.fire('Error', 'Please upload an Excel file (.xls or .xlsx) only.', 'error');
+      input.value = ''; // reset file input
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const bstr = e.target?.result;
+      if (!bstr) {
+        Swal.fire('Error', 'Failed to read file.', 'error');
+        return;
+      }
+
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      const rawData: any[] = XLSX.utils.sheet_to_json(ws, { defval: '' });
+      const formValues = this.addCandidateForm.value;
+
+      // Map Excel rows to Candidate objects
+      // this.candidates = rawData.map((row: any) => ({
+      //   fullName: row['Name'] || '',
+      //   email: row['Email'] || '',
+      //   mobileNumber: row['Mobile Number'] || '',
+      //   workExp: Number(row['Total Years of Experience'] || 0),
+      //   resume: row['Resume (Optional)'] || '',
+      //   employeeType: formValues.employeeType,
+      // }));
+      this.candidates = rawData
+        .filter((row: any) => row['Name'] && row['Email'] && row['Mobile Number'])
+        .map((row: any) => ({
+          fullName: row['Name'],
+          email: row['Email'],
+          mobileNumber: row['Mobile Number'],
+          workExp: Number(row['Total Years of Experience'] || 0),
+          resume: row['Resume (Optional)'] || '',
+          employeeType: formValues.employeeType,
+        }));
+
+
+      console.log('Candidates loaded:', this.candidates);
+      this.submitCandidatesIndividually();
+    };
+
+    reader.readAsBinaryString(file);
+  }
+
+
+  submitCandidatesIndividually() {
+    if (!this.candidates.length) {
+      Swal.fire('Warning', 'No candidates to submit.', 'warning');
+      return;
+    }
+
+    // this.isLoading = true;
+
+    const submitNext = (index: number) => {
+      if (index >= this.candidates.length) {
+        this.isLoading = false;
+        Swal.fire('Success', 'Done the Bulk Upload Operation successfully 🎉', 'success');
+        this.viewMore(this.candidateId, this.referenceJobCode);
+        this.candidates = [];
+        this.uploadedFile = null;
+        return;
+      }
+
+      const candidate = this.candidates[index];
+
+      const data = {
+        fullName: candidate.fullName,
+        mobileNumber: candidate.mobileNumber,
+        email: candidate.email,
+        workExp: candidate.workExp,
+        createdBy: this.userData.user.empID,
+        jobCodeId: this.candidateId,
+        employeeType: candidate.employeeType
+      };
+
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(data));
+      formData.append(
+        'file',
+        this.uploadedFile ?? new File([], 'empty.txt', { type: 'text/plain' })
+      );
+
+      this.authService.CreateJobCandidate(formData).subscribe({
+        next: () => {
+          console.log(`✅ Candidate ${candidate.fullName} submitted successfully`);
+          submitNext(index + 1); // continue automatically
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(`❌ Error submitting candidate ${candidate.fullName}:`, error);
+
+          Swal.fire({
+            title: 'Error',
+            text: ` ${error?.error?.message}: ${candidate.fullName}`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            // only move to next AFTER user clicks OK
+            submitNext(index + 1);
+          });
+        }
+      });
+    };
+
+    // start with first candidate
+    submitNext(0);
+  }
 
 
 
 }
+
+
+
+
+
+

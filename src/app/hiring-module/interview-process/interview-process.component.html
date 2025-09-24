@@ -271,7 +271,7 @@
             </div>
           </div>
         </div>
-        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
+        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
           <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
 
           <!-- Salary details in the same line -->
@@ -329,18 +329,18 @@
           <div class="row mb-2">
             <div class="col-md-6">
               <strong>Experience Type:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' : 'Experienced'
               }}
             </div>
             <div class="col-md-6">
               <strong>Notice Period:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.joiningName }}
             </div>
           </div>
 
           <!-- Show Table Only if NOT Fresher -->
           <table class="table table-bordered"
-            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
+            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
             <thead class="table-dark">
               <tr class="small-header">
                 <th>Company</th>
@@ -349,7 +349,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let exp of candidateData.candidateExperienceDetails.candidateCompanyDetails">
+              <tr *ngFor="let exp of candidateData.candidateExperienceDetails?.candidateCompanyDetails">
                 <td class="small-header">{{ exp.companyName }}</td>
                 <td class="small-header">{{ exp.totalExp }}</td>
                 <td class="small-header">{{ exp.lastWorkingDate }}</td>

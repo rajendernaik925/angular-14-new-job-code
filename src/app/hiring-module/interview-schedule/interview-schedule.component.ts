@@ -18,6 +18,7 @@ export class InterviewScheduleComponent implements OnInit {
   userData: any;
   searchQuery: FormControl = new FormControl();
   filteredRows: any[] = [];
+  allCandidates: any[] = [];
   filterOffcanvas: any;
   isOpen = false;
   private dialogRef: any;
@@ -35,7 +36,7 @@ export class InterviewScheduleComponent implements OnInit {
   showDropdown: boolean = false;
   selectedInterviewerName: any;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 9;
   @ViewChild('interviewDialog', { static: true }) interviewDialog!: TemplateRef<any>;
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   addNewRoundForm: FormGroup;
@@ -100,9 +101,9 @@ export class InterviewScheduleComponent implements OnInit {
 
 
     this.searchQuery.valueChanges.subscribe((value: string) => {
-      this.currentPage = 1;
-      this.searchQueryText = value.trim().toLowerCase();
-      this.scheduleCandidates();
+      this.searchQueryText = (value || '').trim();
+      this.currentPage = 1; // reset to first page when search changes
+      this.updateRows();
     });
   }
 
@@ -132,62 +133,66 @@ export class InterviewScheduleComponent implements OnInit {
 
   scheduleCandidates() {
     this.isLoading = true;
-    const pageNo = this.currentPage || 1;
-    const pageSize = this.pageSize || 10;
-    const searchQuery = this.searchQueryText?.trim() || '';
+    // const pageNo = this.currentPage || 1;
+    // const pageSize = this.pageSize || 10;
+    // const searchQuery = this.searchQueryText?.trim() || '';
 
-    this.authService.scheduleCandidates(pageNo, pageSize, searchQuery).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
-        // this.rows = res.list?.map((item: any) => ({
-        //   job_code: item.jcReferanceId || '--',
-        //   email: item.email || '--',
-        //   firstname: item.name || '--',
-        //   mobilenumber: item.mobileNumber || '--',
-        //   job_title: item.jobTitleName || '--',
-        //   employeeid: item.candidateId || '--',
-        //   status: item.status || '--',
-        // })) || [];
+   this.authService.scheduleCandidates().subscribe({
+  next: (res: any) => {
+    this.isLoading = false;
 
-        this.rows = res.list?.map((item: any) => {
-  let statusText = item.status || '--';
+    // map API data
+    this.allCandidates = (res?.list || res || []).map((item: any) => {
+      let statusText = item.status || '--';
 
-  const round = item.interviewRoundInfo?.interviewRound;
+      const round = item.interviewRoundInfo?.interviewRound;
+      if (round !== undefined && round !== null) {
+        let roundText = '';
+        if (round === 0 || round === 1) roundText = 'interviewer';
+        else if (round === 2) roundText = 'manager';
+        else if (round === 3) roundText = 'HR';
+        if (roundText) statusText += ` (${roundText})`;
+      }
 
-  if (round !== undefined && round !== null) {
-    let roundText = '';
-    if (round === 0 || round === 1) {
-      roundText = 'interviewer';
-    } else if (round === 2) {
-      roundText = 'manager';
-    } else if (round === 3) {
-      roundText = 'HR';
-    }
-
-    if (roundText) {
-      statusText += ` (${roundText})`;
-    }
-  }
-
-  return {
-    job_code: item.jcReferanceId || '--',
-    email: item.email || '--',
-    firstname: item.name || '--',
-    mobilenumber: item.mobileNumber || '--',
-    job_title: item.jobTitleName || '--',
-    employeeid: item.candidateId || '--',
-    status: statusText,
-  };
-}) || [];
-
-        this.totalRecords = Number(res.totalCount) || 0;
-        this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
-        if (this.currentPage > this.totalPages) {
-          this.currentPage = this.totalPages;
-        }
-      },
-      error: () => (this.isLoading = false)
+      return {
+        job_code: item.jcReferanceId || '--',
+        email: item.email || '--',
+        firstname: item.name || '--',
+        mobilenumber: item.mobileNumber || '--',
+        job_title: item.jobTitleName || '--',
+        employeeid: item.candidateId || '--',
+        status: statusText,
+      };
     });
+
+    // 👉 Add 100 fake rows
+    // let i = 101;
+    // while (i <= 100) {
+    //   this.allCandidates.push({
+    //     job_code: `JC-${1000 + i}`,
+    //     email: `fake${i}@example.com`,
+    //     firstname: `Fake Candidate ${i}`,
+    //     mobilenumber: `99999${i.toString().padStart(5, '0')}`,
+    //     job_title: `Job Title ${i}`,
+    //     employeeid: `FAKE-${i}`,
+    //     status: i % 2 === 0 ? 'Active (interviewer)' : 'Inactive (HR)',
+    //   });
+    //   i++;
+    // }
+
+    // set pagination defaults before updateRows
+    this.currentPage = 1;
+    this.pageSize = this.pageSize || 10; // fallback if not already set
+
+    this.updateRows(); // apply filter + pagination
+  },
+  error: () => {
+    this.isLoading = false;
+    this.allCandidates = [];
+    this.updateRows();
+  }
+});
+
   }
 
   generateColumns() {
@@ -477,20 +482,7 @@ export class InterviewScheduleComponent implements OnInit {
     }, 200); // Delay to allow item selection before hiding
   }
 
-  changePage(newPage: number) {
-    if (newPage >= 1 && newPage <= this.totalPages) {
-      this.currentPage = newPage;
-      this.scheduleCandidates();
-    }
-  }
 
-  get startIndex(): number {
-    return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
-  }
-
-  get endIndex(): number {
-    return Math.min(this.currentPage * this.pageSize, this.totalRecords);
-  }
 
 
   viewAction(id: string) {
@@ -803,27 +795,67 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
   onLocationChange(event: Event): void {
-  const selectedId = (event.target as HTMLSelectElement).value;
+    const selectedId = (event.target as HTMLSelectElement).value;
 
-  // Find corresponding location object by ID
-  const selectedItem = this.interviewLocationData.find(item => item.id == selectedId);
+    // Find corresponding location object by ID
+    const selectedItem = this.interviewLocationData.find(item => item.id == selectedId);
 
-  if (selectedItem) {
-    // Set the ID (for backend) -- this happens via formControlName, but we ensure it manually too
-    this.addNewRoundForm.get('locationId')?.setValue(selectedId);
+    if (selectedItem) {
+      // Set the ID (for backend) -- this happens via formControlName, but we ensure it manually too
+      this.addNewRoundForm.get('locationId')?.setValue(selectedId);
 
-    // Set the name (for UI display)
-    this.addNewRoundForm.get('locationName')?.setValue(selectedItem.name);
+      // Set the name (for UI display)
+      this.addNewRoundForm.get('locationName')?.setValue(selectedItem.name);
 
-    console.log('Selected Location ID:', selectedId);
-    console.log('Selected Location Name:', selectedItem.name);
-  } else {
-    // If 'Select' option is picked
-    this.addNewRoundForm.get('locationName')?.setValue('');
+      console.log('Selected Location ID:', selectedId);
+      console.log('Selected Location Name:', selectedItem.name);
+    } else {
+      // If 'Select' option is picked
+      this.addNewRoundForm.get('locationName')?.setValue('');
+    }
   }
-}
 
+  updateRows(): void {
+    // 🔍 Filter by search query (only when length >= 3)
+    let filtered = this.allCandidates;
+    if (this.searchQueryText?.length >= 3) {
+      const query = this.searchQueryText.toLowerCase();
+      filtered = filtered.filter(item =>
+        Object.values(item).some(val =>
+          String(val).toLowerCase().includes(query)
+        )
+      );
+    }
 
+    // 📊 Update total records & total pages
+    this.totalRecords = filtered.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+
+    // Adjust current page if it goes beyond available pages
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages || 1;
+    }
+
+    // 📌 Paginate
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    this.rows = filtered.slice(start, end);
+  }
+
+  changePage(newPage: number): void {
+    if (newPage >= 1 && newPage <= this.totalPages) {
+      this.currentPage = newPage;
+      this.updateRows();
+    }
+  }
+
+  get startIndex(): number {
+    return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get endIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+  }
 
 
 

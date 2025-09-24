@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
   deviceInfo = null;
   private inactivityTime = 60 * 1000; // default: 1 min
   private timeoutId: any;
+  loginRepeated: number = 1;
 
   @ViewChild('ngOtpInput', { static: false }) ngOtpInput: any;
   config = {
@@ -227,7 +228,10 @@ export class LoginComponent implements OnInit {
         }
       }, err => {
         console.log(err.status);
-        if (err.status == 401) {
+        if (err.status == 401 && this.loginRepeated === 1) {
+          this.loginRepeated++;
+          this.login();
+        } else if (err.status == 401 && this.loginRepeated !== 1) {
           console.log('Unauthorised Access - Invalid Credentials');
           // this.router.navigate(['/errorPage', {errorType: err.status}]);
           window.open('http://192.168.213.191:4200/#/login', '_self');

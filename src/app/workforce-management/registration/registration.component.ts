@@ -34,6 +34,7 @@ export class RegistrationComponent implements OnInit {
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
   maxDob!: Date;
+  loadedData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -87,6 +88,7 @@ export class RegistrationComponent implements OnInit {
     this.authService.registeredData(this.jobCodeData.candidateId).subscribe({
       next: (res: any) => {
         this.isLoading = false;
+        this.loadedData = res;
         if (
           res?.candidatePersonalInformationDetails ||
           res?.candidateCommunicationAddressDetails ||
@@ -111,20 +113,17 @@ export class RegistrationComponent implements OnInit {
             dob: res?.candidatePersonalInformationDetails?.dob || '',
             highestDegree: res?.candidatePersonalInformationDetails?.highestDegree || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
-            companyName: res?.candidateExperienceDetails?.candidateCompanyDetails[0]?.companyName || '',
-            totalExperience: res?.candidateExperienceDetails?.candidateCompanyDetails[0]?.totalExp || '',
+            companyName: res?.candidatePersonalInformationDetails?.companyName || '',
+            totalExperience: res?.candidatePersonalInformationDetails?.totalExperience || '',
 
             // Experience Details
             isFresher: isFresher,
             // resume: res?.candidatePersonalInformationDetails?.resume || '',
           });
 
-          console.log("Father Name:", res?.candidatePersonalInformationDetails?.fatherName);
+          console.log("Father Name:", res?.candidatePersonalInformationDetails?.firstName);
 
-          this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.fatherName]
-            .every(field => typeof field === 'string' && field.trim() !== '');
-
-          this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
+          this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.firstName]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.handleExperienceToggle(isFresher);
@@ -486,6 +485,24 @@ export class RegistrationComponent implements OnInit {
         this.router.navigate(['/hiring-login']);
       }
     });
+  }
+
+  formatFullDateForInterview(dateStr: string): string {
+    if (!dateStr) return '';
+
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return '';
+
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+
+    const date = new Date(year, month, day);
+
+    const dayStr = day.toString().padStart(2, '0');
+    const monthName = date.toLocaleString('default', { month: 'long' });
+
+    return `${dayStr} ${monthName} ${year}`;
   }
 
 

@@ -47,6 +47,11 @@ export class assetManagerSideBarComponent implements OnInit {
       label: 'Employee Onboarding',
       route: '/employee-code',
     },
+    {
+      // label: 'Telephonic Interviews',
+      label: 'Voice Interviews',
+      route: '/telephonic'
+    }
   ];
 
   constructor(

@@ -96,6 +96,7 @@ import { EmployeeProfileComponent } from './hiring-module/employee-profile/emplo
 import { CardTemplateComponent } from './HR/card-template/card-template.component';
 import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
 import { SetPasswordComponent } from './homepage/set-password/set-password.component';
+import { TelephonicListComponent } from './hiring-module/telephonic-list/telephonic-list.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -171,6 +172,7 @@ const routes: Routes = [
   { path: 'employee-code', component: EmployeeCodeComponent },
   { path: 'rejected', component: RejectedComponent },
   { path: 'hold', component: HoldComponent },
+  { path: 'telephonic', component: TelephonicListComponent },
   { path: 'registration', component: RegistrationComponent },
   { path: 'field-employees', component: FieldEmployeesComponent },
   { path: 'fieldwork-dashboard', component: FieldworkDashboardComponent },

@@ -893,7 +893,7 @@ export class AuthService {
     };
   }
 
-  private jobCodeUrls: string = "http://192.168.215.112:2025/";
+  private jobCodeUrls: string = "http://192.168.214.127:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -1123,12 +1123,8 @@ export class AuthService {
     )
   }
 
-  scheduleCandidates(pageNo: number, pageSize: number, searchData: string) {
-    const params = new HttpParams()
-      .set('pageNo', pageNo.toString())
-      .set('pageSize', pageSize.toString())
-      .set('search', searchData.toString());
-    return this.http.get(`${this.jobCodeUrls}hiring/schedule`, { params }).pipe(
+  scheduleCandidates() {
+    return this.http.get(`${this.jobCodeUrls}hiring/fieldempschedule`).pipe(
       catchError(this.handleError)
     )
   }
@@ -1193,6 +1189,12 @@ export class AuthService {
 
   holdCandidates() {
     return this.http.get(`${this.jobCodeUrls}hiring/hold`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  telephonicCandidates() {
+    return this.http.get(`${this.jobCodeUrls}hiring/telephoniccandidates`).pipe(
       catchError(this.handleError)
     )
   }

@@ -456,41 +456,98 @@ export class OfferLetterComponent implements OnInit {
   }
 
 
-  updateJoiningDate(employeeId: string, joiningDate: string): void {
-    console.log(employeeId)
-    this.isLoading = true;
-    const formData = new FormData();
-    formData.append('employeeId', employeeId);
-    formData.append('doj', joiningDate);
+  // updateJoiningDate(employeeId: string, joiningDate: string): void {
 
-    this.authService.updateJoingDate(formData).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
-        console.log('Updated successfully');
-        // Swal.fire({
-        //   title: 'Success',
-        //   text: 'Date Updated Successfully!',
-        //   icon: 'success',
-        //   showConfirmButton: false,
-        //   timer: 1000,
-        //   timerProgressBar: true,
-        // });
-        this.showInvalidPanAlert('Date Updated Successfully!');
-        this.offerCandidates();
+  //   console.log(employeeId)
+  //   this.isLoading = true;
+  //   const formData = new FormData();
+  //   formData.append('employeeId', employeeId);
+  //   formData.append('doj', joiningDate);
+
+  //   this.authService.updateJoingDate(formData).subscribe({
+  //     next: (res: any) => {
+  //       this.isLoading = false;
+  //       console.log('Updated successfully');
+  //       // Swal.fire({
+  //       //   title: 'Success',
+  //       //   text: 'Date Updated Successfully!',
+  //       //   icon: 'success',
+  //       //   showConfirmButton: false,
+  //       //   timer: 1000,
+  //       //   timerProgressBar: true,
+  //       // });
+  //       this.showInvalidPanAlert('Date Updated Successfully!');
+  //       this.offerCandidates();
+  //     },
+  //     error: (err: HttpErrorResponse) => {
+  //       this.isLoading = false;
+  //       Swal.fire({
+  //         title: 'OOPS',
+  //         text: 'Date Is not updated',
+  //         icon: 'warning',
+  //         showConfirmButton: false,
+  //         timer: 1000,
+  //         timerProgressBar: true,
+  //       });
+  //     }
+  //   });
+  // }
+  updateJoiningDate(employeeId: string, joiningDate: string): void {
+    Swal.fire({
+      title: 'Update Joining Date',
+      input: 'textarea',
+      inputLabel: 'Reason for changing date',
+      inputPlaceholder: 'Enter your comments here...',
+      inputAttributes: {
+        'aria-label': 'Enter your comments here'
       },
-      error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        Swal.fire({
-          title: 'OOPS',
-          text: 'Date Is not updated',
-          icon: 'warning',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
+      confirmButtonText: 'Submit',
+      allowOutsideClick: false,  // prevent closing without input
+      allowEscapeKey: false,     // prevent closing with ESC
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Comments are required!';
+        }
+        return null;
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        this.isLoading = true;
+
+        const formData = new FormData();
+        formData.append('employeeId', employeeId);
+        formData.append('doj', joiningDate);
+        formData.append('comments', result.value);
+
+        console.log("Payload:", {
+          employeeId: employeeId,
+          doj: joiningDate,
+          comments: result.value
+        });
+
+        this.authService.updateJoingDate(formData).subscribe({
+          next: (res: any) => {
+            this.isLoading = false;
+            this.showInvalidPanAlert('Date Updated Successfully!');
+            this.offerCandidates();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isLoading = false;
+            Swal.fire({
+              title: 'OOPS',
+              text: 'Date is not updated',
+              icon: 'warning',
+              showConfirmButton: false,
+              timer: 1000,
+              timerProgressBar: true,
+            });
+          }
         });
       }
     });
   }
+
+
 
   private showInvalidPanAlert(message: string): void {
     this.panAlertMessage = message;

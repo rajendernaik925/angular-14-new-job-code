@@ -21,12 +21,12 @@ export class ProfileListComponent implements OnInit {
     { key: 'firstname', label: 'Full Name', uppercase: true },
     { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
     { key: 'job_title', label: 'Designation', uppercase: true },
-    { key: 'status', label: 'Status', uppercase: true },
+    // { key: 'status', label: 'Status', uppercase: true },
     { key: 'employeeid', label: 'Action', center: true, clickable: true }
   ];
 
   rows: any[] = [];
-  allCandidates: any[] = []; 
+  allCandidates: any[] = [];
   searchQuery = new FormControl();
   isOpen = false;
   employeeId: string | null = null;
@@ -72,10 +72,10 @@ export class ProfileListComponent implements OnInit {
     // this.pageSize = 10;
     this.fetchShortlistedCandidates();
     this.searchQuery.valueChanges.subscribe(value => {
-    this.searchQueryText = value?.trim() || '';
-    this.currentPage = 1;
-    this.updateRows();
-  });
+      this.searchQueryText = value?.trim() || '';
+      this.currentPage = 1;
+      this.updateRows();
+    });
 
 
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
@@ -86,29 +86,29 @@ export class ProfileListComponent implements OnInit {
   fetchShortlistedCandidates() {
     this.isLoading = true;
 
-     this.authService.shortlistedCandidates().subscribe({
-    next: (res: any) => {
-      this.isLoading = false;
+    this.authService.shortlistedCandidates().subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
 
-      this.allCandidates = res?.map((item: any) => ({
-        job_code: item.jcReferanceId || '--',
-        email: item.email || '--',
-        // firstname: item.name || '--',
-         firstname: item.name 
-             ? (item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name)
-             : '--',
-        mobilenumber: item.mobileNumber || '--',
-        job_title: item.jobTitleName || '--',
-        employeeid: item.candidateId || '--',
-        status: item.status || '--',
-      })) || [];
+        this.allCandidates = res?.map((item: any) => ({
+          job_code: item.jcReferanceId || '--',
+          email: item.email || '--',
+          // firstname: item.name || '--',
+          firstname: item.name
+            ? (item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name)
+            : '--',
+          mobilenumber: item.mobileNumber || '--',
+          job_title: item.jobTitleName || '--',
+          employeeid: item.candidateId || '--',
+          // status: item.status || '--',
+        })) || [];
 
-      this.totalRecords = this.allCandidates.length;
-      this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
-      this.updateRows();
-    },
-    error: () => (this.isLoading = false)
-  });
+        this.totalRecords = this.allCandidates.length;
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+        this.updateRows();
+      },
+      error: () => (this.isLoading = false)
+    });
 
 
   }
@@ -406,44 +406,61 @@ export class ProfileListComponent implements OnInit {
     })
   }
 
+  copyAndOpen() {
+  const link = 'http://192.168.214.47:4200/#/hiring-login';
+
+  const textarea = document.createElement('textarea');
+  textarea.value = link;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+
+  console.log('Copied with fallback:', link);
+
+  window.open(link, '_blank');
+}
+
+
+
   reset() {
     this.searchQueryText = ''
   }
 
   updateRows() {
-  // Filter by search query
-  let filtered = this.allCandidates;
-  if (this.searchQueryText.length >= 3) {
-    const query = this.searchQueryText.toLowerCase();
-    filtered = filtered.filter(item =>
-      Object.values(item).some(val =>
-        String(val).toLowerCase().includes(query)
-      )
-    );
+    // Filter by search query
+    let filtered = this.allCandidates;
+    if (this.searchQueryText.length >= 3) {
+      const query = this.searchQueryText.toLowerCase();
+      filtered = filtered.filter(item =>
+        Object.values(item).some(val =>
+          String(val).toLowerCase().includes(query)
+        )
+      );
+    }
+
+    // Update total records & pages
+    this.totalRecords = filtered.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+
+    // Paginate
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    this.rows = filtered.slice(start, end);
   }
 
-  // Update total records & pages
-  this.totalRecords = filtered.length;
-  this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
-
-  // Paginate
-  const start = (this.currentPage - 1) * this.pageSize;
-  const end = start + this.pageSize;
-  this.rows = filtered.slice(start, end);
-}
-
-changePage(newPage: number) {
-  if (newPage >= 1 && newPage <= this.totalPages) {
-    this.currentPage = newPage;
-    this.updateRows();
+  changePage(newPage: number) {
+    if (newPage >= 1 && newPage <= this.totalPages) {
+      this.currentPage = newPage;
+      this.updateRows();
+    }
   }
-}
 
-get startIndex(): number {
-  return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
-}
+  get startIndex(): number {
+    return this.totalRecords > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
 
-get endIndex(): number {
-  return Math.min(this.currentPage * this.pageSize, this.totalRecords);
-}
+  get endIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+  }
 }

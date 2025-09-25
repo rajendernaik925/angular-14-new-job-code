@@ -59,7 +59,7 @@
                                                     Approve
                                                 </button>
                                                 <button class="border-none bg-danger text-white custom-action-btn px-2"
-                                                    (click)="rejectHrCandidate(row.candidateId,row.interviewRound)">
+                                                    (click)="rejectHrCandidate(row.candidateId,row.interviewScheduledId)">
                                                     Reject
                                                 </button>
                                             </ng-container>
@@ -133,25 +133,8 @@
     </div>
 </div>
 
-
-
-
-
-
 <ng-template #reprocess>
-    <div class="" style="max-width: 600px; width: 100%; overflow: hidden;">
-
-        <!-- Header -->
-        <!-- <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="mb-0">Reprocess</h5>
-            <button type="button" class="btn btn-sm shadow-none " (click)="close()">
-                <i class="bi bi-x-circle fs-5 text-danger" (click)="close()"></i>
-            </button>
-        </div> -->
-
-        <!-- <hr class="p-0 m-0 mb-2" /> -->
-
-        <!-- Form -->
+    <!-- <div class="" style="max-width: 600px; width: 100%; overflow: hidden;">
         <form [formGroup]="reprocessForm" (ngSubmit)="submitFeedback()">
             <div class="table-responsive">
                 <table class="table table-bordered text-center table-sm small-table">
@@ -187,8 +170,6 @@
 
 
             <div class="row g-3">
-
-                <!-- Dropdown -->
                 <div class="col-md-6">
                     <label class="form-label">Assign Next Round <span class="text-danger">*</span></label>
                     <select class="form-select form-select-sm w-100" formControlName="interviewRound">
@@ -200,48 +181,27 @@
                         Next round option is required.
                     </div>
                 </div>
-
-                <!-- Search Field with Scrollable Dropdown -->
                 <div class="col-md-6 position-relative">
                     <label class="form-label">Interviewer <span class="text-danger">*</span></label>
 
-                    <ul *ngIf="showDropdown && interviewedByList.length > 0"
-                        class="dropdown-menu show w-100 position-absolute p-0"
-                        style="z-index: 1050; max-height: 80px; overflow-y: auto; top: 100%; font-size: 0.85rem;">
-                        <li *ngFor="let item of interviewedByList" (mousedown)="selectInterviewer(item)"
-                            class="dropdown-item py-1 px-2">
-                            {{ item?.id }} - {{ item?.name }}
-                        </li>
-                    </ul>
+                    <input type="text" class="form-control form-control-sm" formControlName="interviewBy"
+                        placeholder="Search interviewer" autocomplete="off">
 
-                    <input type="search" class="form-control form-control-sm" formControlName="interviewBy"
-                        placeholder="Search interviewer" [value]="selectedInterviewerName || ''"
-                        (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true"
-                        (blur)="hideDropdown()" autocomplete="off">
-
-                    <div *ngIf="reprocessForm.get('interviewBy')?.invalid && reprocessForm.get('interviewBy')?.touched"
+                    <div *ngIf="reprocessForm.get('comments')?.invalid && reprocessForm.get('comments')?.touched"
                         class="text-danger small mt-1">
-                        Interviewer is required.
+                        Comments is required.
                     </div>
                 </div>
 
             </div>
-
-            <!-- Buttons -->
             <div class="d-flex justify-content-center gap-2 mt-4">
                 <button type="button" class="btn btn-sm btn-danger mr-2 shadow-none" (click)="close()">Cancel</button>
                 <button type="submit" class="btn btn-sm custom-bg text-white shadow-none">Submit</button>
             </div>
         </form>
-    </div>
+    </div> -->
+    <span>need to be implement</span>
 </ng-template>
-
-
-
-
-
-
-
 
 <div class="loader attDnceLoadr" *ngIf="isLoading">
     <div class="spinner">

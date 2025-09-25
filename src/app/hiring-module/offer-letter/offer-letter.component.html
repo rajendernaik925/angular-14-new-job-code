@@ -45,7 +45,7 @@
               <tbody *ngIf="paginatedRows.length > 0; else noData">
                 <tr *ngFor="let row of paginatedRows" class="table-hoverr">
                   <td *ngFor="let col of columns" class="small-header"
-                    [ngClass]="{ 'text-uppercase': col.uppercase, 'text-center': col.center }"
+                    [ngClass]="{ 'text-uppercas': col.uppercase, 'text-center': col.center }"
                     [hidden]="col.key === 'status' && row['status'] === '1001'">
 
                     <!-- Action button cell -->

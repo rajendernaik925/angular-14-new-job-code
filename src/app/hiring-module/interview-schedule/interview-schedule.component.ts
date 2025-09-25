@@ -47,6 +47,7 @@ export class InterviewScheduleComponent implements OnInit {
   roundNo: number | null = null;
   interviewScheduleTo: string | null = null;
   isMeetingLinkDisabled = false;
+  isTelephonicMode = true;
   InterviewerError: string = ''
   // isSidebarOpen = true;
   // closeButton: boolean = true;
@@ -137,61 +138,61 @@ export class InterviewScheduleComponent implements OnInit {
     // const pageSize = this.pageSize || 10;
     // const searchQuery = this.searchQueryText?.trim() || '';
 
-   this.authService.scheduleCandidates().subscribe({
-  next: (res: any) => {
-    this.isLoading = false;
+    this.authService.scheduleCandidates().subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
 
-    // map API data
-    this.allCandidates = (res?.list || res || []).map((item: any) => {
-      let statusText = item.status || '--';
+        // map API data
+        this.allCandidates = (res?.list || res || []).map((item: any) => {
+          let statusText = item.status || '--';
 
-      const round = item.interviewRoundInfo?.interviewRound;
-      if (round !== undefined && round !== null) {
-        let roundText = '';
-        if (round === 0 || round === 1) roundText = 'interviewer';
-        else if (round === 2) roundText = 'manager';
-        else if (round === 3) roundText = 'HR';
-        if (roundText) statusText += ` (${roundText})`;
+          const round = item.interviewRoundInfo?.interviewRound;
+          if (round !== undefined && round !== null) {
+            let roundText = '';
+            if (round === 0 || round === 1) roundText = 'interviewer';
+            else if (round === 2) roundText = 'manager';
+            else if (round === 3) roundText = 'HR';
+            if (roundText) statusText += ` (${roundText})`;
+          }
+
+          return {
+            job_code: item.jcReferanceId || '--',
+            email: item.email || '--',
+            firstname: item.name || '--',
+            mobilenumber: item.mobileNumber || '--',
+            job_title: item.jobTitleName || '--',
+            employeeid: item.candidateId || '--',
+            status: statusText,
+          };
+        });
+
+        // 👉 Add 100 fake rows
+        // let i = 101;
+        // while (i <= 100) {
+        //   this.allCandidates.push({
+        //     job_code: `JC-${1000 + i}`,
+        //     email: `fake${i}@example.com`,
+        //     firstname: `Fake Candidate ${i}`,
+        //     mobilenumber: `99999${i.toString().padStart(5, '0')}`,
+        //     job_title: `Job Title ${i}`,
+        //     employeeid: `FAKE-${i}`,
+        //     status: i % 2 === 0 ? 'Active (interviewer)' : 'Inactive (HR)',
+        //   });
+        //   i++;
+        // }
+
+        // set pagination defaults before updateRows
+        this.currentPage = 1;
+        this.pageSize = this.pageSize || 10; // fallback if not already set
+
+        this.updateRows(); // apply filter + pagination
+      },
+      error: () => {
+        this.isLoading = false;
+        this.allCandidates = [];
+        this.updateRows();
       }
-
-      return {
-        job_code: item.jcReferanceId || '--',
-        email: item.email || '--',
-        firstname: item.name || '--',
-        mobilenumber: item.mobileNumber || '--',
-        job_title: item.jobTitleName || '--',
-        employeeid: item.candidateId || '--',
-        status: statusText,
-      };
     });
-
-    // 👉 Add 100 fake rows
-    // let i = 101;
-    // while (i <= 100) {
-    //   this.allCandidates.push({
-    //     job_code: `JC-${1000 + i}`,
-    //     email: `fake${i}@example.com`,
-    //     firstname: `Fake Candidate ${i}`,
-    //     mobilenumber: `99999${i.toString().padStart(5, '0')}`,
-    //     job_title: `Job Title ${i}`,
-    //     employeeid: `FAKE-${i}`,
-    //     status: i % 2 === 0 ? 'Active (interviewer)' : 'Inactive (HR)',
-    //   });
-    //   i++;
-    // }
-
-    // set pagination defaults before updateRows
-    this.currentPage = 1;
-    this.pageSize = this.pageSize || 10; // fallback if not already set
-
-    this.updateRows(); // apply filter + pagination
-  },
-  error: () => {
-    this.isLoading = false;
-    this.allCandidates = [];
-    this.updateRows();
-  }
-});
 
   }
 
@@ -245,6 +246,7 @@ export class InterviewScheduleComponent implements OnInit {
     }
     if (selectedValue === '1') {
       this.isMeetingLinkDisabled = true;
+      this.isTelephonicMode = true;
       if (this.addNewRoundForm.contains('link')) {
         this.addNewRoundForm.removeControl('link');
       }
@@ -259,6 +261,7 @@ export class InterviewScheduleComponent implements OnInit {
 
     } else if (selectedValue === '2') {
       this.isMeetingLinkDisabled = false;
+      this.isTelephonicMode = true;
 
       // Remove 'locationId' if exists
       if (this.addNewRoundForm.contains('locationId')) {
@@ -275,6 +278,14 @@ export class InterviewScheduleComponent implements OnInit {
           ])
         );
       }
+    } else if (selectedValue === '3') {
+      ['link', 'locationId'].forEach(control => {
+        if (this.addNewRoundForm.contains(control)) {
+          this.addNewRoundForm.removeControl(control);
+          this.isTelephonicMode = false;
+        }
+      });
+
     }
   }
 
@@ -341,8 +352,10 @@ export class InterviewScheduleComponent implements OnInit {
       ...formData,
       candidateId: this.employeeId,
       interviewScheduledBy: this.userData.user.empID,
-      roundNo: this.roundNo || 1
+      roundNo: this.roundNo || 1,
+      ...(this.isTelephonicMode ? {} : { interviewRound: 3 })
     };
+    console.log(payload , " payload");
 
     this.isLoading = true;
     this.authService.addInterviewRound(payload).subscribe({

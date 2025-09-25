@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -103,7 +103,7 @@ export class RegistrationComponent implements OnInit {
           this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
           this.resumePath = res?.candidatePersonalInformationDetails?.resume || null;
 
-          const isFresher = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced';
+          const isFresher = res?.candidatePersonalInformationDetails?.isFresher ? 'fresher' : 'experienced';
 
           // Patch form data
           this.registrationForm.patchValue({
@@ -120,8 +120,6 @@ export class RegistrationComponent implements OnInit {
             isFresher: isFresher,
             // resume: res?.candidatePersonalInformationDetails?.resume || '',
           });
-
-          console.log("Father Name:", res?.candidatePersonalInformationDetails?.firstName);
 
           this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.firstName]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -241,22 +239,9 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
-
-
-
-
-
-
-
-
-
-
-
   handleExperienceToggle(value: string): void {
     this.isFresher = value === 'fresher';
-
     if (this.isFresher) {
-      // Clear validators for experience-related fields
       ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary',
         'suitableJobDescription'].forEach(field => {
           this.registrationForm.get(field)?.clearValidators();
@@ -325,11 +310,6 @@ export class RegistrationComponent implements OnInit {
     } else {
       console.log(`No file selected for ${fieldName}`);
     }
-  }
-
-  openResumeFileInput(): void {
-    // this.hiddenResumeInput.nativeElement.click();
-    this.resumeFile = null;
   }
 
   setValidation(Action: string) {

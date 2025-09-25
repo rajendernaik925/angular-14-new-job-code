@@ -67,10 +67,15 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
-                        <button class="border-none custom-bg text-white custom-action-btn px-2 mr-2"
+                        <!-- <button class="border-none custom-bg text-white custom-action-btn px-2 mr-2"
                           [disabled]="isLoading" (click)="handleAction(row.employeeid,row.interviewStatus)">
                           View
+                        </button> -->
+                        <button class="border-none custom-bg text-white custom-action-btn px-2 mr-2"
+                          (click)="copyAndOpen()">
+                          Go Link
                         </button>
+
                         <button class="border-none bg-info text-white custom-action-btn px-2"
                           (click)="sendRemainder(row.employeeid)">
                           Send Reminder

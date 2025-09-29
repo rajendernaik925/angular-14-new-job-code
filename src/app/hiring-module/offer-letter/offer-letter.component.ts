@@ -21,14 +21,12 @@ export class OfferLetterComponent implements OnInit {
   filteredRows: any[] = [];
   filterOffcanvas: any;
   isOpen = false;
-  private dialogRef: any;
   candidateData: any = null;
   isLoading: boolean = false;
   audio: any;
   currentPage = 1;
   pageSize = 10;
-  comapnyLogo: string = 'assets/img/icons/company-name.png'
-  @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
+  comapnyLogo: string = 'assets/img/icons/company-name.png';
   searchQueryText: string;
   colorTheme = 'theme-dark-blue';
   fileURL: SafeResourceUrl | null = null;
@@ -38,10 +36,9 @@ export class OfferLetterComponent implements OnInit {
   panAlertMessage: string | null = null;
   private panAlertTimeout: any;
   userData: any;
-  loginId: number | null = null;
+  loginId: string | null = null;
 
-
-
+  @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
 
   constructor(
     private render: Renderer2,
@@ -51,18 +48,13 @@ export class OfferLetterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(loggedUser);
     this.loginId = this.userData.user.empID;
-
-
     this.offerCandidates();
     this.generateColumns();
     // this.generateRows();
-
     // this.filteredRows = [...this.rows];
-
     this.searchQuery.valueChanges.subscribe((value: string) => {
       console.log(value);
       this.currentPage = 1;
@@ -82,7 +74,6 @@ export class OfferLetterComponent implements OnInit {
       next: (res: any) => {
         console.log("hold candidates : ", res);
         this.isLoading = false;
-
         this.rows = res.map((item: any, index: number) => ({
           jobcodeId: item.jobcodeId || 'N/A',
           jcReferanceId: item.jcReferanceId || 'N/A',
@@ -247,7 +238,6 @@ export class OfferLetterComponent implements OnInit {
     });
   }
 
-
   // viewFile(file: any) {
   //   if (!file) {
   //     console.error("No file available for download.");
@@ -265,7 +255,6 @@ export class OfferLetterComponent implements OnInit {
   //   this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
   //   this.showPDF = true;
   // }
-
 
   viewFile(file: any, candidateId: any, viewFlagValue: any) {
     console.log("view value ", viewFlagValue)
@@ -449,12 +438,10 @@ export class OfferLetterComponent implements OnInit {
       });
       return;
     }
-
     // this.GenerateOffer(row.employeeId);
     this.updateJoiningDate(row.employeeId, formattedDate);
     console.log(row.employeeId)
   }
-
 
   // updateJoiningDate(employeeId: string, joiningDate: string): void {
 
@@ -518,11 +505,13 @@ export class OfferLetterComponent implements OnInit {
         formData.append('employeeId', employeeId);
         formData.append('doj', joiningDate);
         formData.append('comments', result.value);
+        formData.append('loginId', this.loginId);
 
         console.log("Payload:", {
           employeeId: employeeId,
           doj: joiningDate,
-          comments: result.value
+          comments: result.value,
+          loginId: this.loginId
         });
 
         this.authService.updateJoingDate(formData).subscribe({
@@ -547,8 +536,6 @@ export class OfferLetterComponent implements OnInit {
     });
   }
 
-
-
   private showInvalidPanAlert(message: string): void {
     this.panAlertMessage = message;
 
@@ -558,14 +545,9 @@ export class OfferLetterComponent implements OnInit {
     }, 2000); // alert visible for 2 seconds
   }
 
-
-
-
   closeAlert() {
     this.panAlertMessage = null;
   }
-
-
 }
 
 

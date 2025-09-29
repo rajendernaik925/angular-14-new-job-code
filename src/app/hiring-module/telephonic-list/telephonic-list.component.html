@@ -133,9 +133,9 @@
     </div>
 </div>
 
-<ng-template #reprocess>
-    <!-- <div class="" style="max-width: 600px; width: 100%; overflow: hidden;">
-        <form [formGroup]="reprocessForm" (ngSubmit)="submitFeedback()">
+<ng-template #approve>
+    <div class="" style="max-width: 700px; width: 100%; overflow: hidden;">
+        <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()">
             <div class="table-responsive">
                 <table class="table table-bordered text-center table-sm small-table">
                     <thead class="table-primary">
@@ -167,31 +167,152 @@
                 Please select at least one option
             </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea id="comments" class="form-control" rows="1" formControlName="comments"
+                            placeholder="Enter your comments"></textarea>
+
+                        <!-- Validation message -->
+                        <div *ngIf="feedbackForm.get('comments')?.invalid && feedbackForm.get('comments')?.touched"
+                            class="text-danger small mt-1">
+                            Comments are required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
 
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Assign Next Round <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-sm w-100" formControlName="interviewRound">
+
+
+
+                <div class="col-md-3">
+                    <label>Joining Date:</label>
+                    <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="DD-MM-YYYY"
+                        formControlName="joiningDate" autocomplete="off" [bsConfig]="{
+                      adaptivePosition: true,
+                      showWeekNumbers: false,
+                      isAnimated: true,
+                      containerClass: colorTheme,
+                      customTodayClass: 'custom-today-class',
+                      dateInputFormat: 'DD-MM-YYYY'
+                    }" [minDate]="minDate" [maxDate]="maxDate" bsDatepicker required readonly />
+
+                    <div *ngIf="feedbackForm.controls['joiningDate'].invalid && feedbackForm.controls['joiningDate'].touched"
+                        class="text-danger fs-custom">
+                        Join Date is required.
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Proposed CTC:</label>
+                    <input type="text" formControlName="expectedCTC" class="form-control" placeholder="₹ amount"
+                        (keypress)="allowNumericWithDot($event)" maxlength="8">
+                    <div *ngIf="feedbackForm.controls['expectedCTC'].invalid && feedbackForm.controls['expectedCTC'].touched"
+                        class="text-danger fs-custom">
+                        Expected CTC is required.
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Division:</label>
+                    <select class="form-control form-control-sm" [value]="feedbackForm.get('division')?.value"
+                        (change)="onDivisionChange($event.target.value)">
                         <option value="">Select</option>
-                        <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>
+                        <option *ngFor="let state of totalDivisionsList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
                     </select>
-                    <div *ngIf="reprocessForm.get('interviewRound')?.invalid && reprocessForm.get('interviewRound')?.touched"
-                        class="text-danger small mt-1">
-                        Next round option is required.
+
+                    <div *ngIf="feedbackForm.get('division')?.invalid && feedbackForm.get('division')?.touched"
+                        class="text-danger fs-custom">
+                        Division is required.
                     </div>
                 </div>
-                <div class="col-md-6 position-relative">
-                    <label class="form-label">Interviewer <span class="text-danger">*</span></label>
 
-                    <input type="text" class="form-control form-control-sm" formControlName="interviewBy"
-                        placeholder="Search interviewer" autocomplete="off">
 
-                    <div *ngIf="reprocessForm.get('comments')?.invalid && reprocessForm.get('comments')?.touched"
-                        class="text-danger small mt-1">
-                        Comments is required.
+                <div class="col-md-3">
+                    <label>Designation:</label>
+                    <select formControlName="designation" class="form-control form-control-sm">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of totalDesignationsList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="feedbackForm.controls['designation'].invalid && feedbackForm.controls['designation'].touched"
+                        class="text-danger fs-custom">
+                        Designation is required.
                     </div>
                 </div>
+
+
+                <div class="col-md-3">
+                    <label>Department:</label>
+                    <select formControlName="department" class="form-control form-control-sm">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of totalDepartmentsList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="feedbackForm.controls['department'].invalid && feedbackForm.controls['department'].touched"
+                        class="text-danger fs-custom">
+                        Department is required.
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label>State:</label>
+                    <select class="form-control form-control-sm" [value]="feedbackForm.get('state')?.value"
+                        (change)="onStateChange($event)">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of totalStatesList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+
+                    <div *ngIf="feedbackForm.get('state')?.invalid && feedbackForm.get('state')?.touched"
+                        class="text-danger fs-custom">
+                        State is required.
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <label>HQ:</label>
+                    <select class="form-control form-control-sm" (change)="onHqChange($event)">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of totalCitiesList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="feedbackForm.get('hq')?.invalid && feedbackForm.get('hq')?.touched"
+                        class="text-danger fs-custom">
+                        HQ is required.
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <label>Region:</label>
+                    <select class="form-control form-control-sm" [value]="feedbackForm.get('region')?.value"
+                        (change)="onRegionChange($event)">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of totalRegionsList" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+
+                    <div *ngIf="feedbackForm.get('region')?.invalid && feedbackForm.get('region')?.touched"
+                        class="text-danger fs-custom">
+                        Region is required.
+                    </div>
+                </div>
+
+
 
             </div>
             <div class="d-flex justify-content-center gap-2 mt-4">
@@ -199,8 +320,7 @@
                 <button type="submit" class="btn btn-sm custom-bg text-white shadow-none">Submit</button>
             </div>
         </form>
-    </div> -->
-    <span>need to be implement</span>
+    </div>
 </ng-template>
 
 <div class="loader attDnceLoadr" *ngIf="isLoading">

@@ -169,7 +169,7 @@ export class EmployeeCodeComponent implements OnInit {
         const base64Twice = btoa(base64Once); // double encoding
 
         // this.router.navigate(['/employee-code', base64Twice]);
-        this.router.navigate(['/employee-profile', base64Twice]);
+        this.router.navigate(['/employee-code', base64Twice]);
 
 
         // this.router.navigate(['/employee-code', id]);

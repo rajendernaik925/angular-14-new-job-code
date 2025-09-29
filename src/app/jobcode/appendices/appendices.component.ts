@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
@@ -45,6 +45,7 @@ export class AppendicesComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router
   ) {
     this.employeeForm = this.fb.group({
       // employeeIdType: ['system', Validators.required],
@@ -87,8 +88,8 @@ export class AppendicesComponent implements OnInit {
       const encodedId = params.get('id');
       if (encodedId) {
         try {
-          const firstDecode = atob(encodedId);       
-          const secondDecode = atob(firstDecode);    
+          const firstDecode = atob(encodedId);
+          const secondDecode = atob(firstDecode);
           this.empId = Number(secondDecode) || null;
           console.log('Decoded Job Code ID:', this.empId);
         } catch (error) {
@@ -242,7 +243,6 @@ export class AppendicesComponent implements OnInit {
         backdrop: true
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log(result);
           Swal.fire({
             html: `
               <div class="mb-3">
@@ -266,7 +266,6 @@ export class AppendicesComponent implements OnInit {
             backdrop: true
           }).then((result) => {
             if (result.isConfirmed) {
-              console.log(result);
               this.showAlert('Successfully completed submission', 'success');
               this.showEmployeeCodeHighlight = true;
               this.employeeForm.patchValue({
@@ -275,6 +274,9 @@ export class AppendicesComponent implements OnInit {
               setTimeout(() => {
                 this.employeeForm.patchValue({ employeeCode: '13431' });
                 this.showEmployeeCodeHighlight = false;
+                const base64Once = btoa(this.empId.toString());
+                const base64Twice = btoa(base64Once); 
+                this.router.navigate(['/onboarding-data', base64Twice]);
               }, 3000);
             }
           });

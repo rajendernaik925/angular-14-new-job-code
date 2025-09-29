@@ -1,0 +1,2266 @@
+<!-- <div class="container-fluid p-0">
+  <app-nav></app-nav>
+</div> -->
+<div class="container-flui">
+  <!-- <div class="card border-0 p-0">
+  <div class="card-body"> -->
+  <div class="container-fluid">
+    <div class="row">
+      <!-- DESKTOP SIDEBAR -->
+      <div class="col-md-2 d-none d-md-flex flex-column justify-content-betwen card border-0 py-3 px-2"
+        style="min-height: 90vh; background-color: #F8F8F8;">
+
+        <!-- Logo -->
+        <div class="text-center mb-3">
+          <img [src]="logo" alt="Logo" class="img-fluid cursor-pointer" style="max-height: 35px;"
+            [routerLink]="['/dashboard']">
+        </div>
+        <hr class="mt-2">
+
+        <!-- Section: Candidate Info -->
+        <div class="">
+          <!-- <h6 class="fw-bold text-dark ps-2 mb-3">Candidate Info</h6> -->
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white ': activeTab === 'personal',
+               'btn-light text-dark': activeTab !== 'personal'
+             }" (click)="setActiveSection('personal')">
+            <i class="bi bi-person mr-2"></i> Personal Info
+          </button>
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white shadow-none': activeTab === 'address',
+               'btn-light text-dark': activeTab !== 'address'
+             }" (click)="setActiveSection('address')">
+            <i class="bi bi-geo-alt mr-2"></i> Address
+          </button>
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white shadow-none': activeTab === 'education',
+               'btn-light text-dark': activeTab !== 'education'
+             }" (click)="setActiveSection('education')">
+            <i class="bi bi-mortarboard mr-2"></i> Education
+          </button>
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white shadow-none': activeTab === 'documents',
+               'btn-light text-dark': activeTab !== 'documents'
+             }" (click)="setActiveSection('documents')">
+            <i class="bi bi-file-earmark-text mr-2"></i> Documents
+          </button>
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white shadow-none': activeTab === 'experience',
+               'btn-light text-dark': activeTab !== 'experience'
+             }" (click)="setActiveSection('experience')">
+            <i class="bi bi-people mr-2"></i> Working Experience
+          </button>
+        </div>
+        <!-- Section: Profile and Account -->
+        <hr class="mt-2">
+        <div>
+          <h6 class="fw-bold text-dark ps-2 mb-3">Profile and Hiring Status</h6>
+
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-3 rounded ps-2" [ngClass]="{
+            'bg-dark shadow-none text-white': activeTab === 'status',
+            'btn-light text-dark': activeTab !== 'status'
+            }" (click)="setActiveSection('status')">
+            <i class="bi bi-clock mr-2"></i> Status
+          </button>
+          <hr>
+          <h6 class="fw-bold text-dark ps-2 mb-2">Account</h6>
+          <div class="px-2 small text-uppercase">
+            <i class="bi bi-person-circle mr-1"></i> {{ jobCodeData?.name || 'Candidate Details' }}
+            <br>
+            <a class="text-danger small mt-2" role="button" (click)="logout()">
+              <i class="bi bi-box-arrow-right mr-1"></i> Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- Mobile Top Bar -->
+      <div class="d-flex d-md-none justify-content-between align-items-center p-2 bg-light w-100 border-bottom">
+        <img [src]="logo" alt="Logo" style="height: 30px;" class="cursor-pointer" [routerLink]="['/dashboard']">
+        <button class="btn btn-sm btn-outline-dark" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i> Menu
+          <!-- {{ jobCodeData?.name || 'Menu' }} -->
+        </button>
+      </div>
+
+      <!-- Mobile Sidebar Overlay -->
+      <div class="mobile-sidebar-overlay" *ngIf="showSidebar" (click)="toggleSidebar()"></div>
+
+      <!-- Mobile Sidebar -->
+      <div class="mobile-sidebar bg-white p-3 border-end" [class.open]="showSidebar">
+        <ul class="list-unstyled">
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'personal' }"
+            (click)="setActiveSection('personal'); toggleSidebar()">
+            <i class="bi bi-person me-1"></i> Personal Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'address' }"
+            (click)="setActiveSection('address'); toggleSidebar()">
+            <i class="bi bi-geo-alt me-1"></i> Address
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'education' }"
+            (click)="setActiveSection('education'); toggleSidebar()">
+            <i class="bi bi-mortarboard me-1"></i> Education
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'documents' }"
+            (click)="setActiveSection('documents'); toggleSidebar()">
+            <i class="bi bi-file-earmark-text me-1"></i> Documents
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('experience'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Working Experience
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'status' }"
+            (click)="setActiveSection('status'); toggleSidebar()">
+            <i class="bi bi-clock me-1"></i> Status
+          </li>
+          <li class="mobile-nav-item py-2 text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-1"></i> Log Out
+          </li>
+        </ul>
+      </div>
+
+
+      <!-- Main Content -->
+      <div class="col-12 col-md-10">
+        <div class="card border-0 pb-1 pt-1">
+          <div class="card-body pb-1 pt-5">
+            <form [formGroup]="registrationForm">
+
+              <div *ngIf="activeTab === 'personal'">
+
+
+
+
+
+                <!-- personal updated design -->
+
+                <div class="container-fluid border-0 pt-4 card ">
+                  <!-- <h5 class="mb-4 fw-bold">Personal Info</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Personal Info</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+                  <div class="scroll-container container-fluid">
+                    <div class="row mb-4">
+                      <div class="col-md-3 fw-bold-d">Job Code and Email Address</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small ">Jobcode Id</label>
+                          <input type="text" formControlName="jobCodeId" class="form-control form-control-sm"
+                            [value]="jobCodeData.jobCodeRefId" readonly />
+                          <div
+                            *ngIf="registrationForm.get('jobCodeId')?.touched && registrationForm.get('jobCodeId')?.invalid"
+                            class="text-danger fs-custom">
+                            Jobcode Id is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small ">Email Address</label>
+                          <input type="email" [value]="jobCodeData.email" readonly formControlName="email"
+                            class="form-control form-control-sm" />
+                          <div *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid"
+                            class="text-danger fs-custom">
+                            <div *ngIf="registrationForm.get('email').errors?.required">Email is required</div>
+                            <div *ngIf="registrationForm.get('email').errors?.email">Enter a valid email</div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+
+                          <label class="form-label form-label-small">Mobile Number</label>
+                          <input type="text" [value]="jobCodeData.email" formControlName="mobileNumber"
+                            placeholder="9876543210" class="form-control form-control-sm"
+                            (keydown)="onlyNumbers($event)" maxlength="10" readonly />
+                          <div
+                            *ngIf="registrationForm.get('mobileNumber')?.touched && registrationForm.get('mobileNumber')?.invalid"
+                            class="text-danger fs-custom">
+                            <div *ngIf="registrationForm.get('mobileNumber').errors?.required">Mobile number is required
+                            </div>
+                            <div *ngIf="registrationForm.get('mobileNumber').errors?.pattern">Enter a valid 10-digit
+                              mobile
+                              number</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-4">
+                      <div class="col-md-3 fw-bold-d">Personal Details</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Title</label>
+                            <select formControlName="titleId" [attr.disabled]="isAllDataPresent ? true : null"
+                              class="form-control form-control-sm">
+                              <option value="">Select</option>
+                              <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            </select>
+                            <div
+                              *ngIf="registrationForm.get('titleId')?.touched && registrationForm.get('titleId')?.invalid"
+                              class="text-danger fs-custom">
+                              Title is required
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">First Name</label>
+                          <input type="text" [value]="jobCodeData.name" [readOnly]="isAllDataPresent" noFirstSpace
+                            formControlName="firstName" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
+                          <div
+                            *ngIf="registrationForm.get('firstName')?.touched && registrationForm.get('firstName')?.invalid"
+                            class="text-danger fs-custom">
+                            First name is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Middle Name</label>
+                          <input type="text" noFirstSpace [readOnly]="isAllDataPresent" formControlName="middleName"
+                            placeholder="Middle Name" class="form-control form-control-sm" />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Last Name</label>
+                          <input type="text" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
+                            formControlName="lastName" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
+                          <div
+                            *ngIf="registrationForm.get('lastName')?.touched && registrationForm.get('lastName')?.invalid"
+                            class="text-danger fs-custom">
+                            Last name is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Date of Birth</label>
+                          <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                            formControlName="dob" autocomplete="off" [bsConfig]="{
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MMM-YYYY'
+                            }" [maxDate]="maxDate" bsDatepicker required readonly />
+                          <div *ngIf="registrationForm.get('dob')?.touched && registrationForm.get('dob')?.invalid"
+                            class="text-danger fs-custom">
+                            Date of Birth is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Father's Name</label>
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="fatherName"
+                            placeholder="Father's Name" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
+                          <div
+                            *ngIf="registrationForm.get('fatherName')?.touched && registrationForm.get('fatherName')?.invalid"
+                            class="text-danger fs-custom">
+                            Father's name is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Gender</label>
+                          <select formControlName="genderId" [attr.disabled]="isAllDataPresent ? true : null"
+                            class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let gender of genderOptions" [value]="gender?.id">{{ gender?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('genderId')?.touched && registrationForm.get('genderId')?.invalid"
+                            class="text-danger fs-custom">
+                            Gender is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Marital Status</label>
+                          <select formControlName="maritalStatusId" [attr.disabled]="isAllDataPresent ? true : null"
+                            class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let status of marriatalStatusOptions" [value]="status.id">
+                              {{ status.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('maritalStatusId')?.touched && registrationForm.get('maritalStatusId')?.invalid"
+                            class="text-danger fs-custom">
+                            Marital status is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Blood Group</label>
+                          <select formControlName="bloodGroupId" [attr.disabled]="isAllDataPresent ? true : null"
+                            class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let status of bloodGroupOptions" [value]="status.id">
+                              {{ status.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('bloodGroupId')?.touched && registrationForm.get('bloodGroupId')?.invalid"
+                            class="text-danger fs-custom">
+                            Blood Group is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-4">
+                      <div class="col-md-3 fw-bold-d">Identification Numbers</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">UAN Number (Optional)</label>
+                          <input type="text" [readOnly]="isAllDataPresent" formControlName="uan"
+                            (keydown)="onlyNumbers($event)" placeholder="UAN Number"
+                            class="form-control form-control-sm" maxlength="12" />
+                          <div *ngIf="registrationForm.get('uan')?.touched && registrationForm.get('uan')?.invalid"
+                            class="text-danger fs-custom">
+                            Valid UAN Number is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Passport Number (Optional)</label>
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="passport"
+                            placeholder="A1234567" class="form-control form-control-sm" maxlength="8" />
+                          <div
+                            *ngIf="registrationForm.get('passport')?.touched && registrationForm.get('passport')?.invalid"
+                            class="text-danger fs-custom">
+                            Valid Passport Number is required (A1234567)
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">DL Number (Optional)</label>
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="licence"
+                            placeholder="AP0123456789012" class="form-control form-control-sm" maxlength="16"
+                            (input)="toUppercase($event)" />
+                          <div
+                            *ngIf="registrationForm.get('licence')?.hasError('invalidLicence') && registrationForm.get('licence')?.touched"
+                            class="text-danger fs-custom">
+                            enter valid DL Number (AP0123456789012)
+                          </div>
+
+                        </div>
+                        <!-- <div class="col-md-4">
+                          <label class="form-label form-label-small">PAN Number</label>
+                          <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"
+                            placeholder="ABCDE1234F" maxlength="10" minlength="10"
+                            class="form-control form-control-sm text-uppercase" (keydown)="panCardKeydown($event)"
+                            (input)="registrationForm.get('pan')?.setValue($event.target.value.toUpperCase())" />
+
+                          <div
+                            *ngIf="registrationForm.get('pan')?.hasError('pattern') && registrationForm.get('pan')?.touched"
+                            class="text-danger fs-custom">
+                            Enter a valid PAN (e.g., ABCDE1234F)
+                          </div>
+                        </div> -->
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">PAN Number</label>
+                          <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"
+                            placeholder="ABCDE1234F" maxlength="10" minlength="10"
+                            class="form-control form-control-sm text-uppercase" (keydown)="panCardKeydown($event)"
+                            (input)="registrationForm.get('pan')?.setValue($event.target.value.toUpperCase())" />
+                          <div
+                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.hasError('required')"
+                            class="text-danger fs-custom">
+                            PAN number is required.
+                          </div>
+                          <div
+                            *ngIf="registrationForm.get('pan')?.touched && (registrationForm.get('pan')?.hasError('minlength') || registrationForm.get('pan')?.hasError('maxlength'))"
+                            class="text-danger fs-custom">
+                            PAN must be exactly 10 characters long.
+                          </div>
+                          <div
+                            *ngIf="registrationForm.get('pan')?.touched && registrationForm.get('pan')?.hasError('pattern')"
+                            class="text-danger fs-custom">
+                            Enter a valid PAN (e.g., ABCDE1234F)
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Aadhar Number</label>
+                          <input type="text" [readOnly]="isAllDataPresent" formControlName="adhar"
+                            placeholder="12 Digit Aadhar Number" class="form-control form-control-sm"
+                            (keydown)="onlyNumbers($event)" maxlength="12" />
+                          <div *ngIf="registrationForm.get('adhar')?.touched && registrationForm.get('adhar')?.invalid"
+                            class="text-danger fs-custom">
+                            Enter valid 12-digit number
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">District</label>
+                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="district"
+                            maxlength="100" placeholder="District" class="form-control form-control-sm"
+                            (keypress)="allowOnlyLetters($event)" />
+                          <div
+                            *ngIf="registrationForm.get('district')?.touched && registrationForm.get('district')?.invalid"
+                            class="text-danger fs-custom">
+                            District is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- <div class="row mb-4">
+                      <div class="col-md-3 ">
+                        <span class="fw-bold-d">Resume</span>
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-9">
+                        <div class="mb-3">
+                          <label class="form-label text-muted small">Resume</label>
+
+                          <div class="file-upload rounded-4">
+                            <ng-container *ngIf="resumeFile && isAllDataPresent; else resumeFileInput">
+                              <div class="d-flex align-items-center gap-2">
+                                <span class="text-decoration-underline custom-text cursor-pointer fst-italic"
+                                  (click)="viewFile(resumeFile)">
+                                  View Resume
+                                </span>
+                              </div>
+                            </ng-container>
+
+                            <ng-template #resumeFileInput>
+                              <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                                <label for="resumeUpload"
+                                  class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                                  style="cursor: pointer;">
+                                  <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                                  <span>
+                                    {{uploadResume }}
+                                  </span>
+                                </label>
+                                <input type="file" id="resumeUpload" accept=".pdf" class="d-none"
+                                [ngClass]="{ 'is-invalid': registrationForm.get('resume')?.invalid && registrationForm.get('resume')?.touched }"
+                                  (change)="onFileSelect($event, 'resume')" />
+                              </div>
+                            </ng-template>
+                          </div>
+                          <div
+                            *ngIf="registrationForm.get('resume')?.touched && registrationForm.get('resume')?.invalid"
+                            class="text-danger fs-custom mt-1">
+                            Resume is required
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row mb-4">
+                      <div class="col-md-3">
+                        <span class=" fw-bold-d">Photo (Optional)</span>
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-9">
+                        <div class="mb-3">
+                          <label class="form-label text-muted small">Photo</label>
+
+                          <div class="file-upload rounded-4">
+                            <ng-container *ngIf="photoFile && isAllDataPresent; else photoFileInput">
+                              <div class="d-flex align-items-center gap-2">
+                                <span class="text-decoration-underline custom-text cursor-pointer fst-italic"
+                                  (click)="viewFile(photoFile)">
+                                  View Photo
+                                </span>
+                              </div>
+                            </ng-container>
+
+                            <ng-template #photoFileInput>
+                              <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                                <label for="photoUpload"
+                                  class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                                  style="cursor: pointer;">
+                                  <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                                  <span>
+                                    {{ uploadPhoto }}
+                                  </span>
+                                </label>
+                                <input type="file" id="photoUpload" accept=".pdf" class="d-none"
+                                  (change)="onFileSelect($event, 'photo')" />
+                              </div>
+                            </ng-template>
+                          </div>
+                          <div *ngIf="registrationForm.get('photo')?.touched && registrationForm.get('photo')?.invalid"
+                            class="text-danger fs-custom mt-1">
+                            Photo is required
+                          </div>
+                        </div>
+                      </div>
+
+                    </div> -->
+
+                    <div class="d-flex justify-content-end mr-4">
+                      <button *ngIf="!isAllDataPresent && !personalUpdate" type="submit"
+                        class="btn custom-bg text-white btn-sm shadow-none border-0"
+                        (click)="setValidation('personal')">
+                        Save & Next
+                      </button>
+                      <button *ngIf="isAllDataPresent && editButtonDisplay" type="submit"
+                        class="btn btn-info btn-sm shadow-none border-0 ms-2" (click)="edit('personal')">
+                        Edit Data
+                      </button>
+                      <button *ngIf="personalUpdate" type="submit" class="btn btn-dark btn-sm shadow-none border-0"
+                        (click)="setValidation('personal')">
+                        Update & Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="activeTab === 'address'">
+                <div class="container-fluid border-0 pt-4 card ">
+                  <!-- <h5 class="mb-4 fw-bold">Address</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Address</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+                  <div class="scroll-container container-fluid">
+                    <div class="row mb-2">
+                      <div class="col-md-3 fw-bold-d">Communication address</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Address1</label>
+                            <textarea formControlName="addressA" placeholder="Address1" noFirstSpace maxlength="100"
+                              [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm" [ngClass]="{
+                                'is-invalid': registrationForm.get('addressA')?.touched && registrationForm.get('addressA')?.invalid
+                              }" rows="1">
+                            </textarea>
+
+                            <!-- <div
+                              *ngIf="registrationForm.get('addressA')?.touched && registrationForm.get('addressA')?.invalid"
+                              class="text-danger fs-custom">
+                              Address1 is required
+                            </div> -->
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Address2</label>
+                          <textarea formControlName="addressB" placeholder="Address2" noFirstSpace
+                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm" maxlength="100"
+                            [ngClass]="{'is-invalid': registrationForm.get('addressB')?.touched && registrationForm.get('addressB')?.invalid }"
+                            rows="1"></textarea>
+                          <!-- <div
+                            *ngIf="registrationForm.get('addressB')?.touched && registrationForm.get('addressB')?.invalid"
+                            class="text-danger fs-custom">
+                            Address2 is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Address3</label>
+                          <textarea formControlName="addressC" placeholder="Address3" maxlength="100" noFirstSpace
+                            [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                            [ngClass]="{'is-invalid': registrationForm.get('addressC')?.touched && registrationForm.get('addressC')?.invalid }"
+                            rows="1"></textarea>
+                          <!-- <div *ngIf="registrationForm.get('addressC')?.touched && registrationForm.get('3')?.invalid"
+                            class="text-danger fs-custom">
+                            Address3 is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">State</label>
+                          <select formControlName="stateId" [attr.disabled]="isAllAddressDataPresent ? true : null"
+                            class="form-control form-control-sm" (change)="onStateChange($event,'communication')"
+                            [ngClass]="{'is-invalid': registrationForm.get('stateId')?.touched && registrationForm.get('stateId')?.invalid }">
+                            <option value="">Select</option>
+                            <option *ngFor="let state of indianStates" [value]="state.id">
+                              {{ state.name }}
+                            </option>
+                          </select>
+
+                          <!-- <div
+                            *ngIf="registrationForm.get('stateId')?.touched && registrationForm.get('stateId')?.invalid"
+                            class="text-danger fs-custom">
+                            State is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">City</label>
+                          <select formControlName="cityId" [attr.disabled]="isAllAddressDataPresent ? true : null"
+                            class="form-control form-control-sm"
+                            [ngClass]="{'is-invalid': registrationForm.get('cityId')?.touched && registrationForm.get('cityId')?.invalid }">
+                            <option value="">Select</option>
+                            <option *ngFor="let district of communicationCities" [value]="district.id">
+                              {{ district.name }}
+                            </option>
+                          </select>
+
+                          <div
+                            *ngIf="!communicationCities || communicationCities.length === 0 && registrationForm.get('cityId')?.touched"
+                            class="text-danger fs-custom">
+                            No cities available. Please select a state first.
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Postal Code</label>
+                          <input type="text" formControlName="postalCode" placeholder="Postal Code" minlength="6"
+                            [readOnly]="isAllAddressDataPresent" (keydown)="onlyNumbers($event)" maxlength="6"
+                            [ngClass]="{'is-invalid': registrationForm.get('postalCode')?.touched && registrationForm.get('postalCode')?.invalid }"
+                            class="form-control form-control-sm" />
+                          <!-- <div
+                            *ngIf="registrationForm.get('postalCode')?.touched && registrationForm.get('postalCode')?.invalid"
+                            class="text-danger fs-custom">
+                            Postal Code is required
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-md-3"></div>
+                      <div class="col-md-9">
+                        <label class="mr-3">permanent Address same as Communication address? </label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" formControlName="addressFlag" id="yes"
+                            value="yes" (change)="onCommunicationAddressChange('yes')"
+                            [attr.disabled]="isAllAddressDataPresent ? true : null" />
+                          <label class="form-check-label" for="yes">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" formControlName="addressFlag" id="no" value="no"
+                            (change)="onCommunicationAddressChange('no')"
+                            [attr.disabled]="isAllAddressDataPresent ? true : null" />
+                          <label class="form-check-label" for="no">No</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2 mt-2">
+                      <div class="col-md-3 fw-bold-d">Permanent address</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Address1</label>
+                            <textarea formControlName="permanentAddressA" placeholder="Address1" maxlength="100"
+                              noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                              [ngClass]="{'is-invalid': registrationForm.get('permanentAddressA')?.touched && registrationForm.get('permanentAddressA')?.invalid }"
+                              rows="1"></textarea>
+                            <!-- <div
+                              *ngIf="registrationForm.get('permanentAddressA')?.touched && registrationForm.get('permanentAddressA')?.invalid"
+                              class="text-danger fs-custom">
+                              permanent Address1 is required
+                            </div> -->
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Address2</label>
+                          <textarea formControlName="permanentAddressB" placeholder="Address2" maxlength="100"
+                            noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                            [ngClass]="{'is-invalid': registrationForm.get('permanentAddressB')?.touched && registrationForm.get('permanentAddressB')?.invalid }"
+                            rows="1"></textarea>
+                          <!-- <div
+                            *ngIf="registrationForm.get('permanentAddressB')?.touched && registrationForm.get('permanentAddressB')?.invalid"
+                            class="text-danger fs-custom">
+                            permanent Address2 is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Address3</label>
+                          <textarea formControlName="permanentAddressC" placeholder="Address3" maxlength="100"
+                            noFirstSpace [readOnly]="isAllAddressDataPresent" class="form-control form-control-sm"
+                            [ngClass]="{'is-invalid': registrationForm.get('permanentAddressC')?.touched && registrationForm.get('permanentAddressC')?.invalid }"
+                            rows="1"></textarea>
+                          <!-- <div
+                            *ngIf="registrationForm.get('permanentAddressC')?.touched && registrationForm.get('permanentAddressC')?.invalid"
+                            class="text-danger fs-custom">
+                            permanent Address3 is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">State</label>
+                          <select formControlName="permanentStateId"
+                            [attr.disabled]="isAllAddressDataPresent ? true : null" class="form-control form-control-sm"
+                            [ngClass]="{'is-invalid': registrationForm.get('permanentStateId')?.touched && registrationForm.get('permanentStateId')?.invalid }"
+                            (change)="onStateChange($event,'permanent')">
+                            <option value="">Select</option>
+                            <option *ngFor="let district of indianStates" [value]="district.id">
+                              {{ district.name }}
+                            </option>
+                          </select>
+
+                          <!-- <div
+                            *ngIf="registrationForm.get('permanentStateId')?.touched && registrationForm.get('permanentStateId')?.invalid"
+                            class="text-danger fs-custom">
+                            permanent State is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">City</label>
+                          <select formControlName="permanentCityId" class="form-control form-control-sm"
+                            [attr.disabled]="isAllAddressDataPresent ? true : null"
+                            [ngClass]="{'is-invalid': registrationForm.get('permanentCityId')?.touched && registrationForm.get('permanentCityId')?.invalid }">
+                            <option value="">Select</option>
+                            <option *ngFor="let district of permanentCities" [value]="district.id">
+                              {{ district.name }}
+                            </option>
+                          </select>
+
+                          <div *ngIf="!permanentCities?.length && registrationForm.get('permanentCityId')?.touched"
+                            class="text-danger fs-custom">
+                            No cities available. Please select a state first.
+                          </div>
+
+                          <!-- <div
+                            *ngIf="permanentCities?.length > 0 && registrationForm.get('permanentCityId')?.touched && registrationForm.get('permanentCityId')?.invalid"
+                            class="text-danger fs-custom">
+                            City is required
+                          </div> -->
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Postal Code</label>
+                          <input type="text" formControlName="permanentPostalCode" placeholder="Postal Code"
+                            [ngClass]="{'is-invalid': registrationForm.get('permanentPostalCode')?.touched && registrationForm.get('permanentPostalCode')?.invalid }"
+                            [readOnly]="isAllAddressDataPresent" maxlength="6" minlength="6"
+                            (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
+                          <!-- <div
+                            *ngIf="registrationForm.get('permanentPostalCode')?.touched && registrationForm.get('permanentPostalCode')?.invalid"
+                            class="text-danger fs-custom">
+                            permanent Postal Code is required
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end mr-4">
+                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
+                        class="btn custom-bg text-white  btn-sm shadow-none border-0"
+                        (click)="setValidation('address')">
+                        Save & Next
+                      </button>
+
+                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
+                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('address')">
+                        Edit Data
+                      </button>
+
+                      <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
+                        (click)="setValidation('address')">
+                        Update & Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+              <div *ngIf="activeTab === 'education'">
+
+                <div class="container-fluid border-0 pt-4 card ">
+                  <!-- <h5 class="mb-4 fw-bold">Education</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Education</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                                                <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+
+                  <div class="scroll-container container-fluid">
+
+                    <div *ngIf="editButtonDisplay" class="row mt-2">
+                      <div class="col-md-3 fw-semibold">
+                        Education Details
+                        <p class="mb-1 text-muted">Minimum 3 Qualification are Required.</p>
+                      </div>
+                      <div class="col-md-9 row g-3">
+
+
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Education level</label>
+                          <select formControlName="educationLevelId" class="form-control form-control-sm"
+                            (change)="onEducationLevelChange($event.target.value)">
+                            <option value="">Select</option>
+                            <option *ngFor="let level of educationLevelOptions" [value]="level.id">
+                              {{ level.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('educationLevelId')?.touched && registrationForm.get('educationLevelId')?.invalid"
+                            class="text-danger fs-custom">
+                            Education level is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Qualification</label>
+                          <select formControlName="qualification" class="form-control form-control-sm"
+                            (change)="onQualificationChange($event)">
+                            <option value="">Select</option>
+                            <option *ngFor="let qualItem of qualificationOptions" [value]="qualItem.name">
+                              {{ qualItem.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('qualification')?.touched && registrationForm.get('qualification')?.invalid"
+                            class="text-danger fs-custom">
+                            Qualification is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Branch</label>
+                          <select formControlName="branch" class="form-control form-control-sm py-1">
+                            <ng-container *ngIf="branchOptions.length > 0; else noOptions">
+                              <option value="">Select</option>
+                              <option *ngFor="let branch of branchOptions" [value]="branch.name">
+                                {{ branch.name }}
+                              </option>
+                            </ng-container>
+                            <ng-template #noOptions>
+                              <option value="">N/A</option>
+                            </ng-template>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('branch')?.touched && registrationForm.get('branch')?.invalid"
+                            class="text-danger fs-custom">
+                            Branch is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">University/Institute</label>
+                          <select formControlName="universityId"
+                            class="form-control form-control-sm py-1 custom-select-box">
+                            <option value="">Select</option>
+                            <option *ngFor="let university of universityOptions" [value]="university.id">
+                              {{ university.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('universityId')?.touched && registrationForm.get('universityId')?.invalid"
+                            class="text-danger fs-custom">
+                            University/Institute is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Education type</label>
+                          <select formControlName="educationTypeId" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option value="1">Regular</option>
+                            <option value="2">Correspondence</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('educationTypeId')?.touched && registrationForm.get('educationTypeId')?.invalid"
+                            class="text-danger fs-custom">
+                            Education type is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Year of passing</label>
+                          <select formControlName="yearOfPassing" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('yearOfPassing')?.touched && registrationForm.get('yearOfPassing')?.invalid"
+                            class="text-danger fs-custom">
+                            Year of passing is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">percentage</label>
+                          <input type="text" formControlName="percentage" maxlength="2" (keydown)="onlyNumbers($event)"
+                            placeholder="Percentage %" class="form-control form-control-sm" />
+                          <div
+                            *ngIf="registrationForm.get('percentage')?.touched && registrationForm.get('percentage')?.invalid"
+                            class="text-danger fs-custom">
+                            Percentage is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">College Name</label>
+                          <input type="text" formControlName="college" placeholder="College name" maxlength="100"
+                            noFirstSpace class="form-control form-control-sm" />
+                          <div
+                            *ngIf="registrationForm.get('college')?.touched && registrationForm.get('college')?.invalid"
+                            class="text-danger fs-custom">
+                            College name is required
+                          </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center" *ngIf="editButtonDisplay">
+                          <button class="btn custom-bg text-white btn-sm mt-1 shadow-none" type="button"
+                            (click)="setValidation('education')">Save & Add</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="existingEducationList?.length && editButtonDisplay" class="row">
+                      <div class="col-md-3"></div>
+                      <div class="col-md-9">
+                        <hr class="mt-0 pt-0">
+                      </div>
+                    </div>
+
+                    <div class="row mb-4" *ngFor="let edu of existingEducationList; let i = index let isLast = last">
+                      <div class="col-md-3 fw-semibold">
+                        Education Summary {{i + 1}}
+                        <!-- <p class="mb-1 text-muted">Minimum 3 Qualification are Required.</p> -->
+                      </div>
+                      <div class="col-md-9 row g-3">
+
+
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Education level</label>
+                          <input class="form-control form-control-sm" [value]="edu.educationLevelName" readonly />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Qualification</label>
+                          <input class="form-control form-control-sm" [value]="edu.qualificationName" readonly />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Branch</label>
+                          <input class="form-control form-control-sm" [value]="edu.branch || 'N/A'" readonly />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">University/Institute</label>
+                          <input class="form-control form-control-sm" [value]="edu.universityName" readonly />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Education type</label>
+                          <input class="form-control form-control-sm" [value]="edu.educationTypeName" readonly />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Year of passing</label>
+                          <input class="form-control form-control-sm" [value]="edu.yearOfPassing" readonly />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">percentage</label>
+                          <input class="form-control form-control-sm" [value]="edu.percentage + '%'" readonly />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">College Name</label>
+                          <input class="form-control form-control-sm" [value]="edu.collegeName" readonly />
+                        </div>
+                        <!-- <div class="col-md-2 d-flex align-items-end ">
+                          <button class="btn btn-danger btn-sm w-100" (click)="removeEducation(edu.educationId)">
+                            Delete
+                          </button>
+                        </div> -->
+                        <div *ngIf="editButtonDisplay" class="col-md-2 d-flex align-items-center">
+                          <button class="btn bg-danger text-white btn-sm mt-1 shadow-none" type="button"
+                            (click)="removeEducation(edu.educationId)">Delete</button>
+                        </div>
+                      </div>
+                      <div class="col-md-3"></div>
+                      <div class="col-md-9" *ngIf="!isLast">
+                        <hr class="m-0 p-0">
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                </div>
+
+
+
+
+
+
+                <!-- <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="fw-bold text-start custom-text">{{ 'Education Details' | uppercase }}
+                  </div>
+                  <span class="fs-custom rounded-pill text-danger ml-2 d-none d-md-block"
+                    aria-label="Fields marked with asterisk are required">(Minimum 3 Qualification are Required)
+                  </span>
+                  <div class="text-end mt-0 align-items-center">
+                    <span class="fs-custom rounded-pill text-danger"
+                      aria-label="Fields marked with asterisk are required">(*) Required Fields
+                    </span>
+                  </div>
+                </div>
+                <hr class="custom-hr mb-2 mt-1" />
+                <div class="container scroll-container">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label>Education Type <span class="text-danger">*</span></label>
+                      <select formControlName="educationTypeId" class="form-control form-control-sm">
+                        <option value="">Select</option>
+                        <option value="1">Regular</option>
+                        <option value="2">Correspondence</option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('educationTypeId')?.touched && registrationForm.get('educationTypeId')?.invalid"
+                        class="text-danger fs-custom">
+                        Education type is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Education Level <span class="text-danger">*</span></label>
+                      <select formControlName="educationLevelId" class="form-control form-control-sm"
+                        (change)="onEducationLevelChange($event.target.value)">
+                        <option value="">Select</option>
+                        <option *ngFor="let level of educationLevelOptions" [value]="level.id">
+                          {{ level.name }}
+                        </option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('educationLevelId')?.touched && registrationForm.get('educationLevelId')?.invalid"
+                        class="text-danger fs-custom">
+                        Education level is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Qualification <span class="text-danger">*</span></label>
+                      <select formControlName="qualification" class="form-control form-control-sm"
+                        (change)="onQualificationChange($event)">
+                        <option value="">Select</option>
+                        <option *ngFor="let qualItem of qualificationOptions" [value]="qualItem.name">
+                          {{ qualItem.name }}
+                        </option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('qualification')?.touched && registrationForm.get('qualification')?.invalid"
+                        class="text-danger fs-custom">
+                        Qualification is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Branch</label>
+                      <select formControlName="branch" class="form-control form-control-sm py-1">
+                        <ng-container *ngIf="branchOptions.length > 0; else noOptions">
+                          <option value="">Select</option>
+                          <option *ngFor="let branch of branchOptions" [value]="branch.id">
+                            {{ branch.name }}
+                          </option>
+                        </ng-container>
+                        <ng-template #noOptions>
+                          <option value="">N/A</option>
+                        </ng-template>
+                      </select>
+                      <div *ngIf="registrationForm.get('branch')?.touched && registrationForm.get('branch')?.invalid"
+                        class="text-danger fs-custom">
+                        Branch is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>University/Institute <span class="text-danger">*</span></label>
+                      <select formControlName="universityId" class="form-control form-control-sm py-1">
+                        <option value="">Select</option>
+                        <option *ngFor="let university of universityOptions" [value]="university.id">
+                          {{ university.name }}
+                        </option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('universityId')?.touched && registrationForm.get('universityId')?.invalid"
+                        class="text-danger fs-custom">
+                        University/Institute is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Year of Passing <span class="text-danger">*</span></label>
+                      <select formControlName="yearOfPassing" class="form-control form-control-sm">
+                        <option value="">Select</option>
+                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('yearOfPassing')?.touched && registrationForm.get('yearOfPassing')?.invalid"
+                        class="text-danger fs-custom">
+                        Year of passing is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Percentage <span class="text-danger">*</span></label>
+                      <input type="text" formControlName="percentage" maxlength="2" (keydown)="onlyNumbers($event)"
+                        placeholder="Percentage %" class="form-control form-control-sm" />
+                      <div
+                        *ngIf="registrationForm.get('percentage')?.touched && registrationForm.get('percentage')?.invalid"
+                        class="text-danger fs-custom">
+                        Percentage is required
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <label>College <span class="text-danger">*</span></label>
+                      <input type="text" formControlName="college" placeholder="College name"
+                        class="form-control form-control-sm" />
+                      <div *ngIf="registrationForm.get('college')?.touched && registrationForm.get('college')?.invalid"
+                        class="text-danger fs-custom">
+                        College name is required
+                      </div>
+                    </div>
+                    <div class="col-md-2 mt-4 d-flex align-items-center" *ngIf="editButtonDisplay">
+                      <button class="btn custom-bg text-white btn-sm mt-1 shadow-none" type="button"
+                        (click)="setValidation('education')">Save & Add</button>
+                    </div>
+                  </div>
+                  <hr *ngIf="existingEducationList?.length">
+                  <div class="row" *ngFor="let edu of existingEducationList">
+                    <div class="col-md-2">
+                      <label>Education Type</label>
+                      <input class="form-control form-control-sm" [value]="edu.educationTypeName" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>Education Level</label>
+                      <input class="form-control form-control-sm" [value]="edu.educationLevelName" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>Qualification</label>
+                      <input class="form-control form-control-sm" [value]="edu.qualificationName" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>University</label>
+                      <input class="form-control form-control-sm" [value]="edu.universityName" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>College</label>
+                      <input class="form-control form-control-sm" [value]="edu.collegeName" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>Branch</label>
+                      <input class="form-control form-control-sm" [value]="edu.branch || 'N/A'" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>Year of Passing</label>
+                      <input class="form-control form-control-sm" [value]="edu.yearOfPassing" readonly />
+                    </div>
+                    <div class="col-md-2">
+                      <label>Percentage</label>
+                      <input class="form-control form-control-sm" [value]="edu.percentage + '%'" readonly />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end mt-2">
+                      <button class="btn btn-danger btn-sm w-100" (click)="removeEducation(edu.educationId)">
+                        Delete
+                      </button>
+                    </div>
+                    <hr>
+                  </div>
+
+                </div> -->
+              </div>
+
+              <div *ngIf="activeTab === 'documents'">
+                <div class="container-fluid border-0 pt-4 card ">
+                  <!-- <h5 class="mb-4 fw-bold">Documents</h5> -->
+
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Documents</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                        <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+
+                  <div class="scroll-container container-fluid">
+
+                    <!-- aadhaar card -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        Aadhaar Identification
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!aadharFile; else aadharFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none ">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload Aadhaar</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonBlurFileInput>
+                          <div class="mb-3">
+                            <label for="aadharFile"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload aadhar</span>
+                              <input type="file" id="aadharFile" accept=".pdf" #aadharFileInput
+                                (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #aadharFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(aadharFile)">
+                            aadhaar file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenAadharInput
+                            (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('6')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openAadharFileInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <!-- pan card -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        Pan card
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!panFile; else panFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurPanInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload pancard</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurPanInput>
+                          <div class="mb-3">
+                            <label for="panFile"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload pancard</span>
+                              <input type="file" id="panFile" accept=".pdf" #panFileInput
+                                (change)="onFileSelect($event, 'panFile')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #panFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(panFile)">
+                            pancard file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenPanInput (change)="onFileSelect($event, 'panFile')"
+                            class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('7')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openPanFileInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+
+                    <!-- 10th -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        SSC (10th)
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!tenthFile; else tenthFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurSSCInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload ssc</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurSSCInput>
+                          <div class="mb-3">
+                            <label for="tenth"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload ssc</span>
+                              <input type="file" id="tenth" accept=".pdf" #tenthFileInput
+                                (change)="onFileSelect($event, 'tenth')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #tenthFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(tenthFile)">
+                            ssc file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenTenthInput (change)="onFileSelect($event, 'tenth')"
+                            class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('1')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openTenthFileInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+
+                    <!-- intermediate -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        Intermediate
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!twelthFile; else twelthFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurIntermediateInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload intermediate</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurIntermediateInput>
+                          <div class="mb-3">
+                            <label for="twelth"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload intermediate</span>
+                              <input type="file" id="twelth" accept=".pdf" #twelthFileInput
+                                (change)="onFileSelect($event, 'twelth')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #twelthFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(twelthFile)">
+                            intermediate file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenTwelthInput (change)="onFileSelect($event, 'twelth')"
+                            class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('2')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openTwelthFileInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <!-- b.tech -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        Degree/B.Tech
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!degreeOrBTechFile; else degreeOrBTechFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurDegreeInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload degree</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurDegreeInput>
+                          <div class="mb-3">
+                            <label for="degreeOrBTech"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload degree/b.tech</span>
+                              <input type="file" id="degreeOrBTech" accept=".pdf" #hiddenDegreeOrBTechInput
+                                (change)="onFileSelect($event, 'degreeOrBTech')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #degreeOrBTechFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(degreeOrBTechFile)">
+                            Degree/B.Tech file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenDegreeOrBTechInput
+                            (change)="onFileSelect($event, 'degreeOrBTech')" class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('3')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openDegreeOrBTechInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <!-- m.tech -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        M.Tech/PG (Optional)
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!deplomaFile; else deplomaFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurBtechInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload master's</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurBtechInput>
+                          <div class="mb-3">
+                            <label for="deploma"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload PG/m.tech</span>
+                              <input type="file" id="deploma" accept=".pdf" #deplomaFileInput
+                                (change)="onFileSelect($event, 'deploma')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #deplomaFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(deplomaFile)">
+                            PG/M.Tech file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenDeplomaInput
+                            (change)="onFileSelect($event, 'deploma')" class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('4')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openDeplomaInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <!-- others -->
+                    <div class="row mb-4 shadow-sm">
+                      <div class="col-md-4 fw-semibold">
+                        Other's (Optional)
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-8" *ngIf="!othersFile; else othersFileInput">
+                        <div *ngIf="!editButtonDisplay; else nonblurOthersInput" class="mb-3">
+                          <div class="mb-3 opacity-50 pointer-events-none cursor-blocked">
+                            <label class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload other's</span>
+                            </label>
+                          </div>
+                        </div>
+                        <ng-template #nonblurOthersInput>
+                          <div class="mb-3">
+                            <label for="others"
+                              class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
+                              <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
+                              <span class="text-primary fw-semibold">Upload other's</span>
+                              <input type="file" id="others" accept=".pdf" #othersFileInput
+                                (change)="onFileSelect($event, 'others')" class="d-none" />
+                            </label>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                      <ng-template #othersFileInput>
+                        <div class="col-md-8 d-flex align-items-center">
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(othersFile)">
+                            Others file
+                          </span>
+                          <input type="file" accept=".pdf" #hiddenOthersInput (change)="onFileSelect($event, 'others')"
+                            class="d-none" />
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteFile('5')"></i>
+                          <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
+                            (click)="openOthersInput()"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                  </div>
+                </div>
+
+
+
+
+              </div>
+
+
+              <!-- Experience -->
+
+              <div *ngIf="activeTab === 'experience'">
+
+
+
+                <div class="container-fluid border-0 pt-4 card ">
+                  <!-- <h5 class="mb-4 fw-bold">Working Experience</h5> -->
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Working Experience</h5>
+                    <div class="text-end mr-5">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                        <!-- <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ loadedData?.candidateTrackingDTO?.totalPercentage }} %
+                          Completed
+                        </span> -->
+                      </ng-container>
+
+                      <ng-template #allDone>
+                        <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+                      </ng-template>
+
+
+                      <!-- <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div> -->
+                    </div>
+                  </div>
+
+
+                  <div class="scroll-container container-fluid">
+
+
+                    <div class="row mb-1">
+                      <div class="col-md-3 fw-bold-d">Working Experience details</div>
+                      <div class="col-md-9 row g-3">
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <!-- <label for="isFresher" class="">Fresher/Experienced?</label> -->
+                            <label class="form-label form-label-small">Fresher/Experienced?</label>
+                            <select id="isFresher" formControlName="isFresher"
+                              class="w-100 form-control form-control-sm"
+                              (change)="handleExperienceToggle($event.target.value)"
+                              [attr.disabled]="!editButtonDisplay ? true : null"
+                              [attr.disabled]="isExperienceBoolean ? true : null">
+                              <!-- <option value="">Select option</option> -->
+                              <option value="fresher">Fresher</option>
+                              <option value="experienced">Experienced</option>
+                            </select>
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Tentative Joining Date</label>
+                            <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="joiningTime"
+                              [attr.disabled]="isExperienceBoolean ? true : null" class="form-control form-control-sm">
+                              <option value="">Select</option>
+                              <option *ngFor="let joining of joiningOptions" [value]="joining.id">
+                                {{ joining.name }}
+                              </option>
+                            </select>
+                            <div
+                              *ngIf="registrationForm.get('joiningTime')?.touched && registrationForm.get('joiningTime')?.invalid"
+                              class="text-danger fs-custom">
+                              Joining Time is required
+                            </div>
+                          </div>
+                        </div>
+
+                        <div *ngIf="isFresher; else notFresher"
+                          class="col-md-2 d-flex align-items-center justify-content-center mt-1">
+                          <!-- <button class="btn custom-bg text-white btn-sm">Add & Save</button> -->
+                          <div class="">
+                            <button *ngIf="isFresher && !isExperienceBoolean" type="submit"
+                              class="btn custom-bg text-white btn-sm shadow-none border-0"
+                              (click)="setValidation('experienceWithCtc')">
+                              Add & Save
+                            </button>
+
+                            <button *ngIf="isExperienceBoolean && isFresher && editButtonDisplay" type="submit"
+                              class="btn bg-info text-white btn-sm shadow-none border-0" (click)="edit('experience')">
+                              Edit Data
+                            </button>
+                          </div>
+                        </div>
+                        <ng-template #notFresher>
+                          <div class="col-md-4">
+                            <label class="form-label form-label-small">Job Responsibilities</label>
+                            <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="500"
+                              noFirstSpace formControlName="suitableJobDescription" class="form-control form-control-sm"
+                              [readOnly]="isExperienceBoolean" placeholder="Description"></textarea>
+                            <div
+                              *ngIf="registrationForm.get('suitableJobDescription')?.touched && registrationForm.get('suitableJobDescription')?.invalid"
+                              class="text-danger fs-custom">
+                              job description is required
+                            </div>
+                          </div>
+                        </ng-template>
+                      </div>
+
+                    </div>
+
+                    <div *ngIf="!isFresher" class="row mb-4">
+                      <div class="col-md-3"></div>
+                      <div class="col-md-9 row g-3 align-items-center">
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Current Salary</label>
+                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" maxlength="8"
+                            [readOnly]="isExperienceBoolean" formControlName="currentSalary" placeholder="₹"
+                            (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
+                          <div
+                            *ngIf="registrationForm.get('currentSalary')?.touched && registrationForm.get('currentSalary')?.invalid"
+                            class="text-danger fs-custom">
+                            Current Salary is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Expected Salary</label>
+                          <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" maxlength="8"
+                            [readOnly]="isExperienceBoolean" formControlName="expectedSalary" placeholder="₹"
+                            (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
+                          <div
+                            *ngIf="registrationForm.get('expectedSalary')?.touched && registrationForm.get('expectedSalary')?.invalid"
+                            class="text-danger fs-custom">
+                            Expected Salary is required
+                          </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center mt-3">
+                          <div class="">
+                            <button *ngIf="!isFresher && !isExperienceBoolean" type="submit"
+                              class="btn custom-bg text-white btn-sm shadow-none border-0"
+                              (click)="setValidation('experienceWithCtc')">
+                              Add & Save
+                            </button>
+
+                            <button *ngIf="isExperienceBoolean && !isFresher && editButtonDisplay" type="submit"
+                              class="btn bg-info text-white btn-sm shadow-none border-0" (click)="edit('experience')">
+                              Edit Data
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3"></div>
+                      <div class="col-md-9">
+                        <hr class="mt-0 pt-0">
+                      </div>
+                    </div>
+                    <div *ngIf="!isFresher && hasExperince && experienceId" class="row mb-4">
+                      <div class="col-md-3 fw-semibold">
+                        Payslip's
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-3 d-flex align-items-center">
+                        <ng-container *ngIf="!paySlipFilePath1; else viewPayslip1">
+                          <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                            <label for="payslipFile1"
+                              class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                              style="cursor: pointer;">
+                              <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                              <span>{{ selectedPayslip1FileName }}</span>
+                            </label>
+                            <input type="file" id="payslipFile1" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile1','1')" />
+                          </div>
+                        </ng-container>
+
+                        <ng-template #viewPayslip1>
+                          <span
+                            class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic d-flex align-items-center"
+                            (click)="viewFile(paySlipFilePath1)">
+                            Payslip 1 file
+                          </span>
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteExpericeFile('1')"></i>
+
+                          <label *ngIf="editButtonDisplay" style="cursor: pointer;" class="mb-0">
+                            <i class="bi bi-pencil-square text-info cursor-pointer"></i>
+                            <input type="file" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile1','1')" />
+                          </label>
+                        </ng-template>
+
+                      </div>
+
+                      <div class="col-md-3 d-flex align-items-center">
+                        <ng-container *ngIf="!paySlipFilePath2; else viewPayslip2">
+                          <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                            <label for="payslipFile2"
+                              class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                              style="cursor: pointer;">
+                              <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                              <span>upload payslip 2</span>
+                            </label>
+                            <input type="file" id="payslipFile2" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile2','2')" />
+                          </div>
+                        </ng-container>
+
+                        <ng-template #viewPayslip2>
+                          <span
+                            class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic d-flex align-items-center"
+                            (click)="viewFile(paySlipFilePath2)">
+                            Payslip 2 file
+                          </span>
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteExpericeFile('2')"></i>
+                          <label *ngIf="editButtonDisplay" style="cursor: pointer;" class="mb-0">
+                            <i class="bi bi-pencil-square text-info cursor-pointer"></i>
+                            <input type="file" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile2','2')" />
+                          </label>
+                        </ng-template>
+                      </div>
+                      <div class="col-md-3 d-flex align-items-center">
+                        <ng-container *ngIf="!paySlipFilePath3; else viewPayslip3">
+                          <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                            <label for="payslipFile3"
+                              class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                              style="cursor: pointer;">
+                              <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                              <span>upload payslip 3</span>
+                            </label>
+                            <input type="file" id="payslipFile3" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile3','3')" />
+                          </div>
+                        </ng-container>
+
+                        <ng-template #viewPayslip3>
+                          <span
+                            class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic d-flex align-items-center"
+                            (click)="viewFile(paySlipFilePath3)">
+                            Payslip 3 file
+                          </span>
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteExpericeFile('3')"></i>
+                          <label *ngIf="editButtonDisplay" style="cursor: pointer;" class="mb-0">
+                            <i class="bi bi-pencil-square text-info cursor-pointer"></i>
+                            <input type="file" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'payslipFile3','3')" />
+                          </label>
+                        </ng-template>
+                      </div>
+                    </div>
+
+                    <div *ngIf="!isFresher && hasExperince && experienceId" class="row mb-4">
+                      <div class="col-md-3 fw-semibold">
+                        Service Letter (Optional)
+                        <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
+                      </div>
+                      <div class="col-md-9 d-flex align-items-center">
+                        <ng-container *ngIf="!serviceFilePath; else viewServiceLetter">
+                          <div *ngIf="editButtonDisplay" class="mb-2 w-100">
+                            <label for="serviceLetterUpload"
+                              class="d-block border rounded text-center p-2 bg-file border-primary text-primary"
+                              style="cursor: pointer;">
+                              <i class="bi bi-file-earmark-arrow-up fs-3 d-block mb-2"></i>
+                              <span>{{selectedServiceLetterFileName}}</span>
+                            </label>
+                            <input type="file" id="serviceLetterUpload" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'serviceLetterFile','4')" />
+                          </div>
+                        </ng-container>
+                        <ng-template #viewServiceLetter>
+                          <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                            (click)="viewFile(serviceFilePath)">
+                            service Letter file
+                          </span>
+                          <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
+                            (click)="deleteExpericeFile('4')"></i>
+                          <label *ngIf="editButtonDisplay" style="cursor: pointer;" class="mb-0">
+                            <i class="bi bi-pencil-square text-info cursor-pointer"></i>
+                            <input type="file" accept=".pdf" class="d-none"
+                              (change)="onFileChange($event, 'serviceLetterFile','4')" />
+                          </label>
+                        </ng-template>
+                      </div>
+                    </div>
+
+                    <div *ngIf="!isFresher && editButtonDisplay && hasExperince  && experienceId" class="row mb-2">
+                      <div class="col-md-3 fw-semibold">
+                        Add Your Work History
+                        <p class="mb-1 text-muted">Past working Company Details are mondatory.</p>
+                      </div>
+                      <div class="col-md-9 row g-3">
+
+
+                        <div class="col-md-4 mb-3">
+                          <label class="form-label form-label-small">Company Name</label>
+                          <input *ngIf="editButtonDisplay" type="text" formControlName="companyName" maxlength="100"
+                            noFirstSpace placeholder="Company Name" class="form-control form-control-sm"
+                            (blur)="checkDuplicateCompanyName()" />
+
+                          <div
+                            *ngIf="registrationForm.get('companyName')?.touched && registrationForm.get('companyName')?.invalid"
+                            class="text-danger fs-custom">
+                            Company Name is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Total Experience</label>
+                          <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience"
+                            placeholder="Experience" maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
+                            class="form-control form-control-sm" />
+                          <div
+                            *ngIf="registrationForm.get('totalExperience')?.touched && registrationForm.get('totalExperience')?.invalid"
+                            class="text-danger fs-custom">
+                            Total Experience is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Last Date</label>
+                          <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
+                            class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                            formControlName="LastOrStill_Working_Date" autocomplete="off" [bsConfig]="{
+                          adaptivePosition: true,
+                          showWeekNumbers: false,
+                          isAnimated: true,
+                          containerClass: colorTheme,
+                          customTodayClass: 'custom-today-class',
+                          dateInputFormat: 'DD-MM-YYYY',
+                          maxDate: today
+                        }" bsDatepicker required readonly />
+
+
+
+                          <div
+                            *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
+                            class="text-danger fs-custom">
+                            Last Date is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0  mt-2"
+                            (click)="setValidation('experienceWithCompany')">
+                            Add & Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="experienceArray?.length > 0 && !isFresher" class="row">
+                      <div class="col-md-3">
+                      </div>
+                      <div class="col-md-9">
+                        <hr>
+                      </div>
+                    </div>
+
+                    <div *ngIf="experienceArray?.length > 0 && !isFresher" class="row">
+                      <div class="col-md-3 fw-semibold">
+                        Previous Experience
+                      </div>
+                      <div class="col-md-9 mt-3" *ngIf="experienceArray?.length > 0 && !isFresher">
+
+                        <div class="mb-2" *ngFor="let exp of experienceArray; let i = index let isFirst = first">
+
+                          <div class="row d-none d-md-flex mb-2">
+                            <div class="col-md-3">
+                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Company Name</label> -->
+                              <input type="text" class="form-control" [value]="exp.companyName" readonly>
+                            </div>
+                            <div class="col-md-3">
+                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Total Experience</label> -->
+                              <input type="text" class="form-control" [value]="exp.totalExp + ' Years'" readonly>
+                            </div>
+                            <div class="col-md-3">
+                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Last Date</label> -->
+                              <input type="text" class="form-control" [value]="exp.lastWorkingDate | date:'dd-MMM-yyyy'"
+                                readonly>
+                            </div>
+                            <div class="col-md-3 d-flex flex-column justify-content-between" *ngIf="editButtonDisplay">
+                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Action</label> -->
+                              <i class="bi bi-trash3-fill cursor-pointer align-self-start"
+                                [class.text-muted]="experienceArray.length <= 1"
+                                [class.text-danger]="experienceArray.length > 1"
+                                [class.cursor-blocked]="experienceArray.length <= 1"
+                                (click)="experienceArray.length > 1 && deleteExperience(exp.experienceMapId, i)">
+                              </i>
+                            </div>
+
+                          </div>
+
+                          <!-- Mobile Card  -->
+                          <div class="border rounded p-3 d-flex flex-column gap-2 d-md-none">
+                            <div>
+                              <strong>Company Name:</strong><br>
+                              <input type="text" class="form-control mt-1" [value]="exp.companyName" readonly>
+                            </div>
+                            <div>
+                              <strong>Total Experience:</strong><br>
+                              <input type="text" class="form-control mt-1" [value]="exp.totalExp + ' Years'" readonly>
+                            </div>
+                            <div>
+                              <strong>Last Working Date:</strong><br>
+                              <input type="text" class="form-control mt-1"
+                                [value]="exp.lastWorkingDate | date:'dd-MMM-yyyy'" readonly>
+                            </div>
+                            <div *ngIf="editButtonDisplay">
+                              <button class="btn btn-light btn-sm w-100 mt-2"
+                                (click)="deleteExperience(exp.experienceMapId, i)">
+                                <i class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"></i>
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+              <!-- status -->
+
+              <div *ngIf="activeTab === 'status'">
+                <div *ngIf="!loadedData?.candidateInterviewDetails?.length">
+                  <div class="d-flex justify-content-between align-items-center mb-2 ">
+                    <div class="fw-bold text-start custom-text">
+                      {{ 'Status' | uppercase }}
+                    </div>
+
+                    <div class="text-end w-25">
+                      <small class="text-muted d-none d-md-block"
+                        *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                        Complete
+                      </small>
+
+                      <ng-template #allDone>
+                        <small class="text-success fw-semibold d-none d-md-block">
+                          ✅ All sections completed
+                        </small>
+                      </ng-template>
+
+                      <div class="progress mt-1" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <hr class="custom-hr mb-2 mt-1" /> -->
+                  <div class="scroll-container">
+
+                    <!-- Personal Info -->
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-dark': loadedData?.candidateTrackingDTO?.personalInfo === '20',
+                            'bi bi-info-circle-fill text-dark': loadedData?.candidateTrackingDTO?.personalInfo !== '20'
+                          }"></i>
+                          Personal Info
+                        </div>
+                        <a (click)="setActiveSection('personal')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.personalInfo === '20',
+                          'text-white btn btn-sm custom-bg': loadedData?.candidateTrackingDTO?.personalInfo !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.personalInfo === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-dark': loadedData?.candidateTrackingDTO?.address === '20',
+                            'bi bi-info-circle-fill text-dark': loadedData?.candidateTrackingDTO?.address !== '20'
+                          }"></i>
+                          Address
+                        </div>
+                        <a (click)="setActiveSection('address')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.address === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.address !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.address === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-dark': loadedData?.candidateTrackingDTO?.education === '20.00',
+                            'bi bi-info-circle-fill text-dark': loadedData?.candidateTrackingDTO?.education !== '20.00'
+                          }"></i>
+                          Education
+                        </div>
+                        <a (click)="setActiveSection('education')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.education === '20.00',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.education !== '20.00'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.education === '20.00' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-dark': loadedData?.candidateTrackingDTO?.document === '20',
+                            'bi bi-info-circle-fill text-dark': loadedData?.candidateTrackingDTO?.document !== '20'
+                          }"></i>
+                          Documents
+                        </div>
+                        <a (click)="setActiveSection('documents')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.document === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.document !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.document === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-dark': loadedData?.candidateTrackingDTO?.experience === '20',
+                            'bi bi-info-circle-fill text-dark': loadedData?.candidateTrackingDTO?.experience !== '20'
+                          }"></i>
+                          Working Experience
+                        </div>
+                        <a (click)="setActiveSection('experience')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.experience === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.experience !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.experience === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                      class="alert alert-success text-center mt-3">
+                      ✅ All sections are completed 🎉. Please wait while we schedule your interview. You will be
+                      notified
+                      shortly.
+                    </div>
+
+
+
+                  </div>
+                </div>
+
+                <div *ngIf="loadedData?.candidateInterviewDetails?.length" class="container p-3 ">
+                  <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name | uppercase }})</h6>
+
+                  <!-- <div class="scroll-container mb-0"> -->
+                  <!-- Headings for Desktop -->
+                  <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">
+                    <div class="col-md-1">Status</div>
+                    <div class="col-md-2">Round Title</div>
+                    <div class="col-md-2">Date</div>
+                    <div class="col-md-2">Time</div>
+                    <div class="col-md-3">Location</div>
+                    <div class="col-md-2">Status</div>
+                  </div>
+
+                  <!-- Interview Loop -->
+                  <div *ngFor="let interview of loadedData.candidateInterviewDetails"
+                    class="rounded mb-3 p-3 p-md-2 border interview-card" [ngClass]="{
+                        'filled-bg': interview.candidateInterviewFeedBackDTO?.length,
+                        'custom-bg text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }">
+
+                    <!-- Desktop Layout -->
+                    <div class="row align-items-center p-0 d-none d-md-flex">
+                      <div class="col-md-1 text-center">
+                        <i [ngClass]="{
+                            'bi bi-check-circle-fill text-success': interview.candidateInterviewFeedBackDTO?.length,
+                            'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                          }" style="font-size: 1.5rem;"></i>
+                      </div>
+                      <div class="col-md-2 fw-semibold">
+                        {{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : '' }}
+                      </div>
+                      <div class="col-md-2">{{ formatFullDateForInterview(interview.interviewDate) }}</div>
+                      <div class="col-md-2">{{ interview.interviewTime || '--' }}</div>
+                      <div class="col-md-3 text-truncate" [attr.title]="interview.locationName || '--'"
+                        style="max-width: 100%;">
+                        {{ interview.locationName?.length > 25 ? (interview.locationName | slice: 0:25) + '...' :
+                        (interview.locationName || '--') }}
+                      </div>
+                      <div class="col-md-2 fw-medium" [ngClass]="{
+                          'text-success': interview.status === 1004,
+                          'text-warning': interview.status === 1001,
+                          'text-danger': interview.status === 1002 || interview.status === 1005,
+                          'text-primary': interview.status === 1006
+                        }">
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
+                      </div>
+                    </div>
+
+                    <!-- Mobile Layout -->
+                    <div class="d-flex d-md-none flex-column gap-1">
+                      <div class="d-flex align-items-center gap-2">
+                        <i [ngClass]="{
+                        'bi bi-check-circle-fill text-success mr-1': interview.candidateInterviewFeedBackDTO?.length,
+                        'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }" style="font-size: 1.3rem;"></i>
+                        <strong>{{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')'
+                          :
+                          ''
+                          }}</strong>
+                      </div>
+                      <div><strong>Date:</strong> {{ interview.interviewDate || '--' }}</div>
+                      <div><strong>Time:</strong> {{ interview.interviewTime || '--' }}</div>
+                      <!-- <div><strong>Location:</strong> {{ interview.locationName || '--' }}</div> -->
+                      <div [ngClass]="{
+                          'text-success': interview.status === 1004,
+                          'text-warning': interview.status === 1001,
+                          'text-danger': interview.status === 1002 || interview.status === 1005,
+                          'text-primary': interview.status === 1006
+                        }"><strong>Status:</strong>
+                        {{
+                        interview.status === 1001 ? 'Pending' :
+                        interview.status === 1002 ? 'Cancelled' :
+                        interview.status === 1004 ? 'Completed' :
+                        interview.status === 1005 ? 'Rejected' :
+                        interview.status === 1006 ? 'On Hold' : 'Unknown'
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loader attDnceLoadr" *ngIf="isLoading">
+    <div class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+  </div>
+
+  <!-- Modal-like Overlay -->
+  <div *ngIf="showPDF" class="overlay">
+    <div class="pdf-container">
+      <button class="close-btn" (click)="closePDF()">✖</button>
+      <iframe [src]="fileURL" width="100%" height="100%"></iframe>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="alertMessage" class="custom-alert alert alert-dismissible fade show d-flex align-items-center" [ngClass]="{
+    'slide-in': alertMessage,
+    'slide-out': !alertMessage,
+    'alert-success': alertType === 'success',
+    'alert-danger': alertType === 'danger'
+  }" role="alert">
+    <!-- Circular loader -->
+    <div class="timer-circle mr-2"></div>
+
+    <!-- Message -->
+    <div class="flex-grow-1">
+      {{ alertMessage }}
+    </div>
+
+    <!-- Close button -->
+    <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>

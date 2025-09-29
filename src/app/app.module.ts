@@ -140,6 +140,7 @@ import { CardTemplateComponent } from './HR/card-template/card-template.componen
 import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
 import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 import { TelephonicListComponent } from './hiring-module/telephonic-list/telephonic-list.component';
+import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboarding-data.component';
 
 
 
@@ -226,7 +227,8 @@ import { TelephonicListComponent } from './hiring-module/telephonic-list/telepho
     CardTemplateComponent,
     TestingPurposeComponent,
     SetPasswordComponent,
-    TelephonicListComponent
+    TelephonicListComponent,
+    OnboardingDataComponent
   ],
   imports: [
     BrowserModule,

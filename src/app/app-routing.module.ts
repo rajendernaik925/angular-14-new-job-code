@@ -97,6 +97,7 @@ import { CardTemplateComponent } from './HR/card-template/card-template.componen
 import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.component';
 import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 import { TelephonicListComponent } from './hiring-module/telephonic-list/telephonic-list.component';
+import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboarding-data.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -187,6 +188,7 @@ const routes: Routes = [
   {path:'id-card-template', component:CardTemplateComponent, canActivate: [AuthGuard]},
   {path:'testing', component:TestingPurposeComponent},
   {path:'set-password', component:SetPasswordComponent},
+  {path:'onboarding-data/:id', component:OnboardingDataComponent},
 
 
   // Manager 

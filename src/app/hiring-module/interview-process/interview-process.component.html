@@ -271,7 +271,8 @@
             </div>
           </div>
         </div>
-        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
+        <div class="card p-2 mb-3"
+          *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
           <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
 
           <!-- Salary details in the same line -->
@@ -329,7 +330,8 @@
           <div class="row mb-2">
             <div class="col-md-6">
               <strong>Experience Type:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' : 'Experienced'
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' :
+              'Experienced'
               }}
             </div>
             <div class="col-md-6">
@@ -373,7 +375,7 @@
                 </button>
               </ng-container>
             </div>
-            
+
             <div *ngIf="aadharFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="aadharFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(aadharFile)">
@@ -707,31 +709,21 @@
         class="row g-3 align-items-center mt-1">
         <div class="col-md-3">
           <label>Joining Date:</label>
-          <input type="text" id="interviewDate" class="form-control form-control-sm"
-            placeholder="DD-MM-YYYY"
-            formControlName="joiningDate"
-            autocomplete="off"
-            [bsConfig]="{
+          <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="DD-MM-YYYY"
+            formControlName="joiningDate" autocomplete="off" [bsConfig]="{
                 adaptivePosition: true,
                 showWeekNumbers: false,
                 isAnimated: true,
                 containerClass: colorTheme,
                 customTodayClass: 'custom-today-class',
                 dateInputFormat: 'DD-MM-YYYY'
-              }"
-            [minDate]="minDate"
-            [maxDate]="maxDate"
-            bsDatepicker
-            required
-            readonly />
+              }" [minDate]="minDate" [maxDate]="maxDate" bsDatepicker required readonly />
 
           <div *ngIf="feedbackForm.controls['joiningDate'].invalid && feedbackForm.controls['joiningDate'].touched"
             class="text-danger fs-custom">
             Join Date is required.
           </div>
         </div>
-
-
 
         <div class="col-md-3">
           <label>Proposed CTC:</label>

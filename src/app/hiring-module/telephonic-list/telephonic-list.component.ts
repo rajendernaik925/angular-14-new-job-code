@@ -32,7 +32,7 @@ export class TelephonicListComponent implements OnInit {
   pageSize = 9;
   comapnyLogo: string = 'assets/img/icons/company-name.png'
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
-  @ViewChild('reprocess', { static: true }) reprocess!: TemplateRef<any>;
+  @ViewChild('approve', { static: true }) approve!: TemplateRef<any>;
   // @ViewChild('reject', { static: true }) reject!: TemplateRef<any>;
   searchQueryText: string;
   selectedInterviewerId: string | null = null;
@@ -43,6 +43,15 @@ export class TelephonicListComponent implements OnInit {
   userData: any;
   UserId: number | null = null;
   commentReqValue: boolean = false;
+  colorTheme = 'theme-dark-blue';
+  minDate: Date = new Date();
+  maxDate: Date;
+  totalDivisionsList: any;
+  totalDesignationsList: any;
+  totalDepartmentsList: any;
+  totalStatesList: any;
+  totalCitiesList: any;
+  totalRegionsList: any;
 
 
 
@@ -56,9 +65,9 @@ export class TelephonicListComponent implements OnInit {
   ) {
     this.feedbackForm = this.fb.group({
       comments: ['', Validators.required],
-      status: ['', Validators.required],
-      interviewRound: [null, Validators.required],
-      interviewBy: ['', Validators.required],
+      // status: ['', Validators.required],
+      // interviewRound: [null, Validators.required],
+      // interviewBy: ['', Validators.required],
       feedbackList: this.fb.array([]),
       joiningDate: ['', Validators.required],
       expectedCTC: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
@@ -73,6 +82,13 @@ export class TelephonicListComponent implements OnInit {
     this.reprocessForm = this.fb.group({
       comments: ['', Validators.required],
     });
+
+    const today = new Date();
+    this.minDate = today;
+
+    const after90Days = new Date();
+    after90Days.setDate(today.getDate() + 90);
+    this.maxDate = after90Days;
   }
 
   ngOnInit() {
@@ -92,25 +108,67 @@ export class TelephonicListComponent implements OnInit {
       this.searchQueryText = value.trim().toLowerCase(); // Store search text
       this.filterRows(value);
     });
+
+    // master API
+    this.division();
+    this.designation();
+    this.department();
+    this.state();
+    this.region();
   }
 
   submitFeedback() {
 
-    if (!this.reprocessForm.valid) {
-      this.reprocessForm.markAllAsTouched();
+    if (!this.feedbackForm.valid) {
+      this.feedbackForm.markAllAsTouched();
       this.commentReqValue = true;
       return;
     }
+
+    // const selectedFactors = this.feedbackForm.value.feedbackList
+    //   .filter((f: any) => f.feedbackId && f.feedbackId !== ''); // only keep selected
+
+    // const payload = {
+    //   candidateId: this.candidateId,
+    //   status: 1004,
+    //   loginId: this.UserId,
+    //   interviewScheduledId: this.interviewScheduledId,
+
+    //   // take everything else from the form
+    //   comments: this.feedbackForm.value.comments,
+    //   joiningDate: this.feedbackForm.value.joiningDate,
+    //   expectedCTC: this.feedbackForm.value.expectedCTC,
+    //   division: this.feedbackForm.value.division,
+    //   designation: this.feedbackForm.value.designation,
+    //   department: this.feedbackForm.value.department,
+    //   state: this.feedbackForm.value.state,
+    //   hq: this.feedbackForm.value.hq,
+    //   region: this.feedbackForm.value.region,
+
+    //   // filtered factors
+    //   feedbackList: selectedFactors
+    // };
+    const { feedbackList, joiningDate, ...rest } = this.feedbackForm.value;
+
+    const formattedJoiningDate = joiningDate
+      ? new Date(joiningDate).toISOString().split('T')[0]
+      : null;
+
     const payload = {
       candidateId: this.candidateId,
       status: 1004,
-      comments: this.reprocessForm.value.comments,
       loginId: this.UserId,
       interviewScheduledId: this.interviewScheduledId,
+      ...rest,
+      joiningDate: formattedJoiningDate, 
+      feedbackList: feedbackList.filter((f: any) => f.feedbackId && f.feedbackId !== '')
     };
 
+
+
+
+
     console.log("voice reject payload ", payload);
-    return;
     this.authService.feedbackSubmitForm(payload).subscribe({
       next: (res: any) => {
         this.isLoading = false;
@@ -344,6 +402,7 @@ export class TelephonicListComponent implements OnInit {
         };
 
         console.log("payload : ", payload);
+        return;
 
         this.authService.feedbackSubmitForm(payload).subscribe({
           next: (res: any) => {
@@ -373,9 +432,9 @@ export class TelephonicListComponent implements OnInit {
     this.candidateId = candidateId;
     console.log("candidate id : ", candidateId);
     console.log("interview round : ", interviewRound);
-    this.dialogRef = this.dialog.open(this.reprocess, {
-      width: '600px',
-      maxWidth: '90vw',
+    this.dialogRef = this.dialog.open(this.approve, {
+      width: '700px',
+      // maxWidth: '90vw',
       height: 'auto',
       hasBackdrop: true
     });
@@ -392,7 +451,8 @@ export class TelephonicListComponent implements OnInit {
         res.forEach((factor: any) => {
           feedbackArray.push(this.fb.group({
             factorId: [factor.id, Validators.required],
-            feedbackId: ['', Validators.required]
+            feedbackId: [''],
+            // feedbackId: ['', Validators.required]
           }));
         });
       },
@@ -440,8 +500,144 @@ export class TelephonicListComponent implements OnInit {
     window.history.back();
   }
 
+  allowNumericWithDot(event: KeyboardEvent): boolean {
+    const inputChar = String.fromCharCode(event.keyCode || event.which);
+
+    // Allow navigation keys (backspace, arrow keys, delete)
+    if (
+      event.key === 'Backspace' ||
+      event.key === 'Delete' ||
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowRight' ||
+      event.key === 'Tab'
+    ) {
+      return true;
+    }
+
+    // Allow digits and one decimal point
+    const currentValue = (event.target as HTMLInputElement).value;
+    const isDigit = /^[0-9]$/.test(inputChar);
+    const isDot = inputChar === '.' && !currentValue.includes('.');
+
+    if (!isDigit && !isDot) {
+      event.preventDefault();
+      return false;
+    }
+
+    return true;
+  }
+
+  onDivisionChange(value: string | number): void {
+    const control = this.feedbackForm.get('division');
+    control?.setValue(value);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+  }
 
 
+  // master api call
+
+
+  division() {
+    this.authService.masterBu().subscribe({
+      next: (res: any) => {
+        console.log("total divisions : ", res);
+        this.totalDivisionsList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+
+  designation() {
+    this.authService.jobTitle().subscribe({
+      next: (res: any) => {
+        console.log("total designation: ", res);
+        this.totalDesignationsList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+
+  department() {
+    this.authService.totalDepartments().subscribe({
+      next: (res: any) => {
+        console.log("total designation: ", res);
+        this.totalDepartmentsList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+
+
+
+  state() {
+    this.authService.states().subscribe({
+      next: (res: any) => {
+        console.log("total designation: ", res);
+        this.totalStatesList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+  onStateChange(event: Event): void {
+    const selectedStateId = (event.target as HTMLSelectElement).value;
+
+    const control = this.feedbackForm.get('state');
+    control?.setValue(selectedStateId);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+
+    if (selectedStateId) {
+      this.totalCities(selectedStateId);
+    }
+  }
+  totalCities(id: any) {
+    this.authService.cities(id).subscribe({
+      next: (res: any) => {
+        console.log("total designation: ", res);
+        this.totalCitiesList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+
+  onHqChange(event: Event): void {
+    const selectedHqId = (event.target as HTMLSelectElement).value;
+
+    const control = this.feedbackForm.get('hq');
+    control?.setValue(selectedHqId);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+  }
+  onRegionChange(event: Event): void {
+    const selectedRegionId = (event.target as HTMLSelectElement).value;
+
+    const control = this.feedbackForm.get('region');
+    control?.setValue(selectedRegionId);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+  }
+  region() {
+    this.authService.totalRegions().subscribe({
+      next: (res: any) => {
+        console.log("total designation: ", res);
+        this.totalRegionsList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
 }
 
 

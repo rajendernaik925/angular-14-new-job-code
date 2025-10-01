@@ -406,20 +406,41 @@ export class ProfileListComponent implements OnInit {
     })
   }
 
-  copyAndOpen() {
-  const link = 'http://192.168.214.47:4200/#/hiring-login';
+  // copyAndOpen(candidateId: any) {
+  //   console.log("candidate id: ", candidateId);
+  //   const link = 'http://192.168.214.47:4200/#/hiring-login';
 
-  const textarea = document.createElement('textarea');
-  textarea.value = link;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textarea);
+  //   const textarea = document.createElement('textarea');
+  //   textarea.value = link;
+  //   document.body.appendChild(textarea);
+  //   textarea.select();
+  //   document.execCommand('copy');
+  //   document.body.removeChild(textarea);
 
-  console.log('Copied with fallback:', link);
+  //   console.log('Copied with fallback:', link);
 
-  window.open(link, '_blank');
-}
+  //   window.open(link, '_blank');
+  // }
+
+  copyAndOpen(candidateId: any) {
+    console.log("candidate id: ", candidateId);
+
+    const link = `http://192.168.213.34:4200/#/hiring-login?candidateId=${candidateId}`;
+
+    // Copy link
+    const textarea = document.createElement('textarea');
+    textarea.value = link;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    console.log('Copied with fallback:', link);
+
+    // Open in new tab
+    window.open(link, '_blank');
+  }
+
 
 
 

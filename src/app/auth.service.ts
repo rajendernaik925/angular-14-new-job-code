@@ -12,8 +12,8 @@ export class AuthService {
 
   // production public path 
   // new URL    
-  baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
-  // baseUrl: any = "http://192.168.30.107:8000/stageheteroiconnect/";
+  // baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
+  baseUrl: any = "http://192.168.30.107:8000/stageheteroiconnect/";
   // baseUrl: any = "http://192.168.213.2:8094/";
   imgbase: any = "https://sso.heterohcl.com/";
 

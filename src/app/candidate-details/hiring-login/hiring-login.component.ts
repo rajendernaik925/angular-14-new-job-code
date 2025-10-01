@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -25,13 +25,15 @@ export class HiringLoginComponent implements OnInit {
   logo: string = 'https://sso.heterohealthcare.com/iconnect/assets/img/logo.svg';
   @ViewChild('Login') Login!: TemplateRef<any>;
   private dialogRef: any;
-  bgLogo: string = 'assets/img/job-code/Rectangle 6.png'
+  bgLogo: string = 'assets/img/job-code/Rectangle 6.png';
+  candidateId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
     private dialog: MatDialog,
+    private route: ActivatedRoute,
   ) {
     this.loginForm = this.fb.group({
       email: [null, [Validators.required, Validators.email]],
@@ -42,6 +44,8 @@ export class HiringLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.candidateId = this.route.snapshot.queryParamMap.get('candidateId');
+    console.log('Candidate ID from params:', this.candidateId);
     // localStorage.removeItem('hiringLoginData');
     const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
     const fieldCandidateData = JSON.parse(localStorage.getItem('hiringFieldLoginData') || '{}');
@@ -70,7 +74,8 @@ export class HiringLoginComponent implements OnInit {
     if (this.loginForm.valid) {
       const payload = {
         email: String(this.loginForm.get('email')?.value).trim(),
-        password: this.loginForm.get('password')?.value?.trim() || ''
+        password: this.loginForm.get('password')?.value?.trim() || '',
+        candidateId: this.candidateId || ''
       };
 
       console.log("Form data to be sent:", payload);

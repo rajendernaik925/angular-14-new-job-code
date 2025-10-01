@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
@@ -187,7 +187,11 @@ export class OnboardingDataComponent implements OnInit {
       //salary
       currentSalary: ['', Validators.required],
       expectedSalary: ['', Validators.required],
-      suitableJobDescription: ['', Validators.required]
+      suitableJobDescription: ['', Validators.required],
+
+
+      // emergency
+      completeaddress:['', Validators.required],
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -211,20 +215,9 @@ export class OnboardingDataComponent implements OnInit {
         this.empId = null;
       }
     });
+    
     this.activeTab = 'personal'
     this.handleExperienceToggle('fresher');
-    const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
-    this.jobCodeData = loginData;
-    console.log("loggin data : ", this.jobCodeData);
-    // console.log("hiring login data : ", this.jobCodeData.email)
-    this.registrationForm.get('jobCodeId')?.setValue(this.jobCodeData?.jobCodeRefId);
-    this.registrationForm.get('email')?.setValue(this.jobCodeData.email);
-    this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
-    this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
-    // if (!this.jobCodeData.status) {
-    //   this.router.navigate(['/hiring-login']);
-    // }
-    // this.checkIfLoginExpired();
 
 
     if (true) {
@@ -267,6 +260,7 @@ export class OnboardingDataComponent implements OnInit {
     this.authService.registeredData(this.empId).subscribe({
       next: (res: any) => {
         this.loadedData = res;
+        this.jobCodeData = res;
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
@@ -296,15 +290,6 @@ export class OnboardingDataComponent implements OnInit {
 
           this.resumeFile = this.loadedData?.candidatePersonalInformationDetails?.resumeFile || null;
 
-          // const resumeControl = this.registrationForm.get('resume');
-
-          // if (!this.resumeFile) {
-          //   resumeControl?.setValidators(Validators.required);
-          // } else {
-          //   resumeControl?.clearValidators();
-          // }
-
-          // resumeControl?.updateValueAndValidity();
           this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
           this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
           this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
@@ -466,80 +451,6 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
-
-
-  // get educationArray(): FormArray {
-  //   return this.registrationForm.get('educationDetails') as FormArray;
-  // }
-  // get educationArray(): FormArray {
-  //   return this.registrationForm.get('educationDetails') as FormArray;
-  // }
-
-
-  // createEducationFormGroup(educationData: any = {}): FormGroup {
-  //   const formGroup = this.fb.group({
-  //     educationId: [educationData.educationId || null],
-  //     educationTypeId: [educationData.educationTypeId || '', Validators.required],
-  //     educationLevelId: [educationData.educationLevelId || '', Validators.required],
-  //     qualification: [educationData.qualificationName || '', Validators.required],
-  //     universityId: [educationData.universityId || '', Validators.required],
-  //     branch: [educationData.branch || ''], // make required later conditionally
-  //     yearOfPassing: [educationData.yearOfPassing || '', Validators.required],
-  //     percentage: [educationData.percentage || '', Validators.required],
-  //     college: [educationData.collegeName || '', Validators.required]
-  //   });
-
-  //   if (educationData.educationId) {
-  //     formGroup.disable(); // mark existing record rows as readonly
-  //   }
-
-  //   return formGroup;
-  // }
-
-
-
-
-  // deleteFile(fileId: any) {
-  //   console.log("canddd : ", this.jobCodeData?.candidateId);
-
-  //   if (!this.jobCodeData?.candidateId || !fileId) {
-  //     console.error("Missing parameters: Employee ID or File ID is undefined.");
-  //     return;
-  //   }
-
-  //   const candidateId = this.jobCodeData?.candidateId;
-  //   this.authService.deleteFile(candidateId, fileId).subscribe({
-  //     next: (res: HttpResponse<any>) => {
-  //       this.loadUserData();
-  //       if (res.status === 200) {
-  //         console.log("res delete file : ", res);
-  //         this.showAlert('Successfully Deleted','success')
-  //         // Swal.fire({
-  //         //   title: 'Success',
-  //         //   text: 'Successfully Deleted',
-  //         //   icon: 'success',
-  //         //   showConfirmButton: false,
-  //         //   timer: 1000,
-  //         //   timerProgressBar: true,
-  //         // });
-  //       } else {
-  //         // Swal.fire({
-  //         //   title: 'Error',
-  //         //   text: 'Delete Failed',
-  //         //   icon: 'error',
-  //         //   showConfirmButton: false,
-  //         //   timer: 1000,
-  //         //   timerProgressBar: true,
-  //         // });
-
-  //         this.showAlert("Delete Failed", 'danger')
-  //       }
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       console.log("error : ", err);
-  //     }
-  //   });
-  // }
   deleteFile(fileId: any): void {
     if (!this.jobCodeData?.candidateId || !fileId) {
       console.error("Missing parameters: Employee ID or File ID is undefined.");
@@ -959,150 +870,6 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
-
-  // onFileSelect(event: Event, fieldName: string): void {
-  //   console.log("file name : ", fieldName)
-  //   const fileInput = event.target as HTMLInputElement;
-  //   const file = fileInput.files?.[0];
-
-  //   if (file) {
-  //     const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
-
-  //     console.log(`Selected file for ${fieldName}:`, selectedFile);
-
-  //     this.selectedFiles[fieldName] = selectedFile;
-  //   } else {
-  //     console.log(`No file selected for ${fieldName}`);
-  //   }
-  //   let hasFile = false;
-  //   let formData = new FormData();
-  //   console.log("file array: ", this.selectedFiles);
-  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-
-  //   const documentData = {
-  //     candidateId: this.jobCodeData.candidateId
-  //   };
-  //   formData.append('document', JSON.stringify(documentData));
-  //   formData.append('moduleId', '4');
-
-  //   // Check if at least one file is present
-  //   if (this.selectedFiles['tenth']) {
-  //     formData.append('tenthFile', this.selectedFiles['tenth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['aadharFile']) {
-  //     formData.append('aadharFile', this.selectedFiles['aadharFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['panFile']) {
-  //     formData.append('panFile', this.selectedFiles['panFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['twelth']) {
-  //     formData.append('interFile', this.selectedFiles['twelth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['deploma']) {
-  //     formData.append('pgFile', this.selectedFiles['deploma']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['degreeOrBTech']) {
-  //     formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['others']) {
-  //     formData.append('otherFile', this.selectedFiles['others']);
-  //     hasFile = true;
-  //   }
-
-  //   // Only call finalSave if at least one file is selected
-  //   if (hasFile) {
-  //     this.finalSave('documents', formData);
-  //   }
-  //   // else {
-  //   //   Swal.fire({
-  //   //     title: 'warning',
-  //   //     text: 'Please upload File',
-  //   //     icon: 'warning',
-  //   //     showConfirmButton: false,
-  //   //     timer: 1000,
-  //   //     timerProgressBar: true,
-  //   //   });
-  //   // }
-  // }
-
-  // onFileSelect(event: Event, fieldName: string): void {
-  //   console.log("file name : ", fieldName);
-  //   const fileInput = event.target as HTMLInputElement;
-  //   const file = fileInput.files?.[0];
-
-  //   if (file) {
-  //     const maxSizeInMB = 5;
-  //     const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-
-  //     if (file.size > maxSizeInBytes) {
-  //       Swal.fire({
-  //         title: 'File Too Large',
-  //         text: 'File size must be less than 5 MB.',
-  //         icon: 'error',
-  //         confirmButtonText: 'OK'
-  //       });
-  //       fileInput.value = ''; // Clear the input
-  //       return;
-  //     }
-
-  //     const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
-  //     console.log(`Selected file for ${fieldName}:`, selectedFile);
-  //     this.selectedFiles[fieldName] = selectedFile;
-  //   } else {
-  //     console.log(`No file selected for ${fieldName}`);
-  //   }
-
-  //   let hasFile = false;
-  //   let formData = new FormData();
-  //   console.log("file array: ", this.selectedFiles);
-  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-
-  //   const documentData = {
-  //     candidateId: this.jobCodeData.candidateId
-  //   };
-  //   formData.append('document', JSON.stringify(documentData));
-  //   formData.append('moduleId', '4');
-
-  //   if (this.selectedFiles['tenth']) {
-  //     formData.append('tenthFile', this.selectedFiles['tenth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['aadharFile']) {
-  //     formData.append('aadharFile', this.selectedFiles['aadharFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['panFile']) {
-  //     formData.append('panFile', this.selectedFiles['panFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['twelth']) {
-  //     formData.append('interFile', this.selectedFiles['twelth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['deploma']) {
-  //     formData.append('pgFile', this.selectedFiles['deploma']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['degreeOrBTech']) {
-  //     formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['others']) {
-  //     formData.append('otherFile', this.selectedFiles['others']);
-  //     hasFile = true;
-  //   }
-
-  //   if (hasFile) {
-  //     this.finalSave('documents', formData);
-  //   }
-  // }
-
   onFileSelect(event: Event, fieldName: string): void {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
@@ -1372,88 +1139,7 @@ export class OnboardingDataComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-    // else if (Action === 'education') {
-    //   let isValid = true;
-    //   let educationData: any[] = [];
-
-    //   const newEducationControls = this.educationArray.controls.filter(ctrl => !ctrl.disabled);
-    //   const existingEducationControls = this.educationArray.controls.filter(ctrl => ctrl.disabled);
-
-    //   if (newEducationControls.length === 0) {
-    //     // this.formFillMessageAlert();
-    //     this.showAlert("Please fill required fields!", 'danger');
-    //     return;
-    //   }
-
-    //   // Collect existing qualificationIds and normalize to string
-    //   const existingQualificationIds = existingEducationControls
-    //     .map(ctrl => String(ctrl.get('qualificationId')?.value))
-    //     .filter(id => !!id); // Remove null/undefined
-
-    //   const newQualificationIds: string[] = [];
-    //   let hasDuplicate = false;
-
-    //   for (let group of newEducationControls) {
-    //     const qualificationId = String(group.get('qualificationId')?.value);
-
-    //     if (!qualificationId || qualificationId === 'null') continue;
-
-    //     if (existingQualificationIds.includes(qualificationId) || newQualificationIds.includes(qualificationId)) {
-    //       hasDuplicate = true;
-    //       break;
-    //     }
-
-    //     newQualificationIds.push(qualificationId);
-    //   }
-
-    //   if (hasDuplicate) {
-    //     // Swal.fire({
-    //     //   title: 'Duplicate Qualification',
-    //     //   text: 'You have already selected this qualification. To update, please delete the existing entry and add again.',
-    //     //   icon: 'warning',
-    //     //   confirmButtonText: 'OK'
-    //     // });
-    //     this.showAlert("Duplicate Qualification", "danger")
-    //     return;
-    //   }
-
-    //   newEducationControls.forEach((group: FormGroup) => {
-    //     let educationEntry: any = {};
-    //     const educationFields = [
-    //       'educationTypeId', 'universityId', 'qualification',
-    //       'yearOfPassing', 'percentage', 'branch', 'educationLevelId', 'college'
-    //     ];
-
-    //     educationFields.forEach((field) => {
-    //       const control = group.get(field);
-    //       if (control?.invalid) {
-    //         control.markAsTouched();
-    //         isValid = false;
-    //       } else {
-    //         educationEntry[field] = control?.value;
-    //       }
-    //     });
-
-    //     educationEntry['educationId'] = 1;
-    //     educationEntry['candidateId'] = this.jobCodeData?.candidateId;
-
-    //     educationData.push(educationEntry);
-    //   });
-
-    //   if (!isValid) {
-    //     // this.formFillMessageAlert();
-    //     this.showAlert("Please fill required fields!", 'danger');
-    //     return;
-    //   }
-
-    //   let formData = new FormData();
-    //   formData.append("education", JSON.stringify(educationData));
-    //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    //   formData.append('candidateId', this.jobCodeData?.candidateId);
-    //   formData.append('moduleId', '3');
-
-    //   this.finalSave('education', formData);
-    // } 
+    
     if (Action === 'education') {
       const educationFields = [
         'educationTypeId',
@@ -1698,6 +1384,46 @@ export class OnboardingDataComponent implements OnInit {
           console.log("error : ", err);
         }
       })
+    } if (Action === 'emergency') {
+      const educationFields = [
+        'educationTypeId',
+        'educationLevelId',
+        'qualification',
+        'universityId',
+        'branch',
+        'yearOfPassing',
+        'percentage',
+        'college'
+      ];
+
+      let educationSection: any = {};
+      let isValid = true;
+
+      educationFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          educationSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill required fields!", 'danger');
+        return;
+      }
+
+      educationSection.educationId = this.registrationForm.get('educationId')?.value || 1;
+      educationSection.candidateId = this.jobCodeData?.candidateId;
+
+      const formData = new FormData();
+      formData.append("education", JSON.stringify([educationSection]));
+      formData.append("jobCodeId", this.jobCodeData?.jobCodeId);
+      formData.append("candidateId", this.jobCodeData?.candidateId);
+      formData.append("moduleId", "3");
+
+      this.finalSave('education', formData);
     }
 
   }

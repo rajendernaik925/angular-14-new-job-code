@@ -215,13 +215,16 @@ export class TelephonicListComponent implements OnInit {
 
           const round = item.interviewRoundInfo?.interviewRound;
           const interviewScheduledId = item.interviewRoundInfo?.sno;
-          const roundStatus = item.interviewRoundInfo?.status;
+          // this.interviewScheduledId = interviewScheduledId;
+          // const roundStatus = item.interviewRoundInfo?.status;
 
           // if (roundStatus === '1006') {
           //   if (round === 1) statusDescription = 'Hold at Interviewer';
           //   else if (round === 2) statusDescription = 'Hold at Manager';
           //   else if (round === 3) statusDescription = 'Hold at HR';
           // }
+
+          console.log("inetrview scheduled id : ",interviewScheduledId )
 
           return {
             jobcodeId: item.jobcodeId || 'N/A',
@@ -381,11 +384,6 @@ export class TelephonicListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         const rejectionReason = result.value;
-        // console.log("Reject Payload:", {
-        //   candidateId: candidateId,
-        //   interviewScheduledId: interviewScheduledId,
-        //   comments: rejectionReason
-        // });
 
         const payload = {
           candidateId: this.candidateId,
@@ -399,7 +397,7 @@ export class TelephonicListComponent implements OnInit {
               "feedbackId": 4
             }
           ],
-        };
+        };  
 
         console.log("payload : ", payload);
         return;
@@ -428,10 +426,11 @@ export class TelephonicListComponent implements OnInit {
   }
 
 
-  approveHrCandidate(candidateId: any, interviewRound: any) {
+  approveHrCandidate(candidateId: any, interviewScheduledId: any) {
     this.candidateId = candidateId;
+    this.interviewScheduledId = interviewScheduledId;
     console.log("candidate id : ", candidateId);
-    console.log("interview round : ", interviewRound);
+    console.log("interview round : ", interviewScheduledId);
     this.dialogRef = this.dialog.open(this.approve, {
       width: '700px',
       // maxWidth: '90vw',

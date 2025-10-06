@@ -1,7 +1,58 @@
-<div class="d-flex justify-content-center align-items-center  custom-height">
+<!-- <div class="d-flex justify-content-center align-items-center  custom-height">
   <video #myVideo autoplay controls (timeupdate)="checkVideoTime()" (seeked)="checkVideoTime()">
-    <!-- <source src="../../../assets/img/idcard/RepIQ Bot_launch 2.mp4" type="video/mp4"> -->
      <source src="../../../assets/img/idcard/AI-video.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+</div> -->
+
+<!-- <div class="d-flex justify-content-center align-items-center vh-100 bg-dark">
+
+  <div class="text-center container">
+    <button *ngIf="!showSurprise" 
+            class="btn btn-lg btn-danger rounded-4 shadow-lg px-5 py-3 fw-bold"
+            (click)="openSurprise()">
+      🎁 Open Surprise Box 🎁
+    </button>
+
+    <div *ngIf="showSparkles" class="mb-4">
+      <h1 class="text-warning display-1 fw-bold">
+        ✨ ✨ ✨ ✨ ✨
+      </h1>
+      <h3 class="text-light fw-bold mt-3">
+        Please wait... Preparing your special Dussehra surprise 🎉
+      </h3>
+    </div>
+
+    <div *ngIf="showCard" class="card shadow-lg border-0 bg-warning bg-gradient p-4 rounded-4 mt-4">
+      <marquee behavior="scroll" direction="left" scrollamount="15">
+        <h1 class="text-light fw-bold display-5"> 🎉✨ Happy Dussehra Deepthi ✨🎉 🌸 You are a Precious Friend, a Radiant Angel filled with Love & Joy 🌸 🌟 May this Dussehra bring you Victory, Miracles, Sparkles & Endless Happiness 🔥🌟 </h1>
+      </marquee>
+    </div>
+
+  </div>
+
+</div> -->
+
+
+
+
+
+<div class="card">
+  <div class="card-body text-center">
+    <h1 class="mb-3">A value: {{a || 0}}</h1>
+    <h1 class="mb-4">B value: {{b || 0}}</h1>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <button class="btn btn-sm btn-primary mr-2" (click)="adding(a+1,b)">Add A Value</button>
+      <button class="btn btn-sm btn-primary mr-2" (click)="adding(a,b+1)">Add B Value</button>
+      <button class="btn btn-sm btn-primary mr-2" (click)="adding(a+1,b+1)">Add A & B Value</button>
+      <button *ngIf="a != 0 || b != 0" class="btn btn-sm btn-warning" (click)="reset(a,b)">Clear All</button>
+    </div>
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+      <button *ngIf="a != 0" class="btn btn-sm btn-danger mr-2" (click)="adding(a-1,b)">Remove A Value</button>
+      <button *ngIf="b != 0" class="btn btn-sm btn-danger mr-2" (click)="adding(a,b-1)">Remove B Value</button>
+      <button *ngIf="a != 0 && b != 0" class="btn btn-sm btn-danger mr-2" (click)="adding(a-1,b-1)">Remove A & B Value</button>
+    </div>
+  </div>
 </div>
+

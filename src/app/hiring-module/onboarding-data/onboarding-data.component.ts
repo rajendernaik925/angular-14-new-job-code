@@ -91,7 +91,21 @@ export class OnboardingDataComponent implements OnInit {
   uploadPhoto: string = 'Upload Photo'
   alertMessage: string | null = null;
   private panAlertTimeout: any;
-  empId: number | null = null;
+  empId: any | null = null;
+
+  motherTongues = [
+  { id: 1, name: 'Telugu' },
+  { id: 2, name: 'Hindi' },
+  { id: 3, name: 'English' },
+  { id: 4, name: 'Tamil' },
+  { id: 5, name: 'Kannada' },
+  { id: 6, name: 'Malayalam' },
+  { id: 7, name: 'Marathi' },
+  { id: 8, name: 'Gujarati' },
+  { id: 9, name: 'Bengali' },
+  { id: 10, name: 'Punjabi' }
+];
+
 
 
   // sections = [
@@ -136,6 +150,12 @@ export class OnboardingDataComponent implements OnInit {
       // pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
       pan: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]$/)]],
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
+      whatsappNumber:['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      alternativeNumber:['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      nationality:['Indian',Validators.required],
+      religion:['',Validators.required],
+      motherTongue:['',Validators.required],
+      knownLanguages:['',Validators.required],
       resume: [''],
       photo: [''],
       // address
@@ -261,6 +281,7 @@ export class OnboardingDataComponent implements OnInit {
       next: (res: any) => {
         this.loadedData = res;
         this.jobCodeData = res;
+        console.log("result : ",res);
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
@@ -982,7 +1003,8 @@ export class OnboardingDataComponent implements OnInit {
       const personalFields = [
         'email', 'mobileNumber', 'dob', 'titleId',
         'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId', 'uan', 'passport',
-        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo'
+        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo', 'whatsappNumber',
+        'alternativeNumber', 'nationality', 'nationality', 'religion', 'motherTongue', 'knownLanguages'
       ];
 
       let sectionData: any = {};
@@ -1066,17 +1088,17 @@ export class OnboardingDataComponent implements OnInit {
       }
 
       let formData = new FormData();
-      sectionData.candidateId = this.jobCodeData?.candidateId;
-      formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-      formData.append('candidateId', this.jobCodeData?.candidateId);
+      // sectionData.candidateId = this.jobCodeData?.candidateId;
+      // formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
+      // formData.append('candidateId', this.empId);
       formData.append('personalInfo', JSON.stringify(sectionData));
-      formData.append('personalImageFile', this.selectedFiles['photo']);
-      formData.append('personalResumeFile', this.selectedFiles['resume']);
+      // formData.append('personalImageFile', this.selectedFiles['photo']);
+      // formData.append('personalResumeFile', this.selectedFiles['resume']);
       formData.append('moduleId', '1');
-      if (!this.selectedFiles['resume']) {
-        this.showAlert("Resume file is required", "danger");
-        formData.append('personalResumeFile', null);
-      }
+      // if (!this.selectedFiles['resume']) {
+      //   this.showAlert("Resume file is required", "danger");
+      //   formData.append('personalResumeFile', null);
+      // }
 
       this.finalSave('address', formData);
     } else if (Action === 'address') {
@@ -1430,8 +1452,8 @@ export class OnboardingDataComponent implements OnInit {
 
 
   finalSave(action: string, formData) {
-    formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    formData.append('candidateId', this.jobCodeData?.candidateId);
+    formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
+      formData.append('candidateId', this.empId);
     // console.log("education jobcode id : ", this.jobCodeData?.jobCodeId, "candidate id: ", this.jobCodeData?.candidateId)
     this.isLoading = true;
     // console.log(" form data : ", formData)

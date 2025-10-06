@@ -968,14 +968,11 @@ export class InterviewProcessComponent implements OnInit {
 
   onRegionChange(event: Event): void {
     const selectedRegionId = (event.target as HTMLSelectElement).value;
-
     const control = this.feedbackForm.get('region');
     control?.setValue(selectedRegionId);
     control?.markAsTouched();
     control?.updateValueAndValidity();
   }
-
-
 
   viewFile(file: any) {
     this.dialog.closeAll();

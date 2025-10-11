@@ -43,6 +43,7 @@ export class OnboardingDataComponent implements OnInit {
   marriatalStatusOptions: any[] = [];
   joiningOptions: any[] = [];
   bloodGroupOptions: any[] = [];
+  languageOptions: any[] = [];
   indianStates: any[] = [];
   communicationCities: any[] = [];
   permanentCities: any[] = [];
@@ -94,17 +95,17 @@ export class OnboardingDataComponent implements OnInit {
   empId: any | null = null;
 
   motherTongues = [
-  { id: 1, name: 'Telugu' },
-  { id: 2, name: 'Hindi' },
-  { id: 3, name: 'English' },
-  { id: 4, name: 'Tamil' },
-  { id: 5, name: 'Kannada' },
-  { id: 6, name: 'Malayalam' },
-  { id: 7, name: 'Marathi' },
-  { id: 8, name: 'Gujarati' },
-  { id: 9, name: 'Bengali' },
-  { id: 10, name: 'Punjabi' }
-];
+    { id: 1, name: 'Telugu' },
+    { id: 2, name: 'Hindi' },
+    { id: 3, name: 'English' },
+    { id: 4, name: 'Tamil' },
+    { id: 5, name: 'Kannada' },
+    { id: 6, name: 'Malayalam' },
+    { id: 7, name: 'Marathi' },
+    { id: 8, name: 'Gujarati' },
+    { id: 9, name: 'Bengali' },
+    { id: 10, name: 'Punjabi' }
+  ];
 
 
 
@@ -150,12 +151,12 @@ export class OnboardingDataComponent implements OnInit {
       // pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
       pan: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]$/)]],
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
-      whatsappNumber:['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      alternativeNumber:['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      nationality:['Indian',Validators.required],
-      religion:['',Validators.required],
-      motherTongue:['',Validators.required],
-      knownLanguages:['',Validators.required],
+      whatsappNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      alternateMobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      nationality: ['Indian', Validators.required],
+      religion: ['', Validators.required],
+      motherTongue: ['', Validators.required],
+      knownLanguages: [[], Validators.required],
       resume: [''],
       photo: [''],
       // address
@@ -211,7 +212,12 @@ export class OnboardingDataComponent implements OnInit {
 
 
       // emergency
-      completeaddress:['', Validators.required],
+      completeaAddress: ['', Validators.required],
+      emergencyEmail: ['', [Validators.required, Validators.email]],
+      emergencyContact: ['', Validators.required, Validators.minLength(10), Validators.maxLength(10)],
+      emergencyLastname: ['', Validators.required],
+      emergencyFirstname: ['', Validators.required],
+      emergencyRelation: ['', Validators.required],
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -235,12 +241,12 @@ export class OnboardingDataComponent implements OnInit {
         this.empId = null;
       }
     });
-    
+
     this.activeTab = 'personal'
     this.handleExperienceToggle('fresher');
 
 
-    if (true) {
+    if (this.empId) {
       this.loadUserData();
     }
 
@@ -251,8 +257,8 @@ export class OnboardingDataComponent implements OnInit {
     this.educationLevel();
     this.joiningTime();
     this.states();
-    this.bloodGroup()
-    // this.cities();
+    this.bloodGroup();
+    this.languages();
   }
 
   // toggleSidebar() {
@@ -276,12 +282,17 @@ export class OnboardingDataComponent implements OnInit {
   }
 
   loadUserData() {
+    if (!this.empId) {
+      console.warn("emp id not getting");
+      return;
+    }
+
     this.isLoading = true;
     this.authService.registeredData(this.empId).subscribe({
       next: (res: any) => {
         this.loadedData = res;
         this.jobCodeData = res;
-        console.log("result : ",res);
+        console.log("result : ", res);
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
@@ -975,9 +986,6 @@ export class OnboardingDataComponent implements OnInit {
     }
   }
 
-
-
-
   setActiveSection(section: string) {
     this.activeTab = section;
 
@@ -1003,8 +1011,8 @@ export class OnboardingDataComponent implements OnInit {
       const personalFields = [
         'email', 'mobileNumber', 'dob', 'titleId',
         'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId', 'uan', 'passport',
-        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo', 'whatsappNumber',
-        'alternativeNumber', 'nationality', 'nationality', 'religion', 'motherTongue', 'knownLanguages'
+        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'whatsappNumber',
+        'alternateMobileNumber', 'nationality', 'nationality', 'religion', 'motherTongue', 'knownLanguages'
       ];
 
       let sectionData: any = {};
@@ -1056,7 +1064,7 @@ export class OnboardingDataComponent implements OnInit {
       console.log("Passport:", passportValue);
 
       if (passportValue) {
-        const pattern = /^[A-PR-WY][0-9]{7}$/; // excludes Q, X, Z (not used in Indian passports)
+        const pattern = /^[A-PR-WY][0-9]{7}$/;
 
         if (passportValue.length !== 8 || !pattern.test(passportValue)) {
           passportControl?.setErrors({ invalidPassport: true });
@@ -1066,10 +1074,6 @@ export class OnboardingDataComponent implements OnInit {
           sectionData['passport'] = passportValue;
         }
       }
-
-
-
-
 
       if (!isValid) {
         this.showAlert("Please fill required fields!", 'danger');
@@ -1085,6 +1089,10 @@ export class OnboardingDataComponent implements OnInit {
         } else {
           console.error('Invalid DOB format:', sectionData.dob);
         }
+      }
+
+      if(this.empId) {
+        sectionData.candidateId = this.empId;
       }
 
       let formData = new FormData();
@@ -1161,7 +1169,7 @@ export class OnboardingDataComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-    
+
     if (Action === 'education') {
       const educationFields = [
         'educationTypeId',
@@ -1390,8 +1398,8 @@ export class OnboardingDataComponent implements OnInit {
         companyName: experienceData.companyName,
         totalExp: experienceData.totalExp,
         lastWorkingDate: experienceData.lastWorkingDate,
-        jobCodeId: this.jobCodeData?.jobCodeId,
-        candidateId: this.jobCodeData?.candidateId,
+        // jobCodeId: this.jobCodeData?.jobCodeId,
+        // candidateId: this.jobCodeData?.candidateId,
         moduleId: '5'
       };
       this.authService.ExperienceAdd(experiencePayload).subscribe({
@@ -1406,16 +1414,15 @@ export class OnboardingDataComponent implements OnInit {
           console.log("error : ", err);
         }
       })
+
     } if (Action === 'emergency') {
       const educationFields = [
-        'educationTypeId',
-        'educationLevelId',
-        'qualification',
-        'universityId',
-        'branch',
-        'yearOfPassing',
-        'percentage',
-        'college'
+        'emergencyEmail',
+        'completeaAddress',
+        'emergencyContact',
+        'emergencyLastname',
+        'emergencyFirstname',
+        'emergencyRelation',
       ];
 
       let educationSection: any = {};
@@ -1436,14 +1443,14 @@ export class OnboardingDataComponent implements OnInit {
         return;
       }
 
-      educationSection.educationId = this.registrationForm.get('educationId')?.value || 1;
+      // educationSection.educationId = this.registrationForm.get('educationId')?.value || 1;
       educationSection.candidateId = this.jobCodeData?.candidateId;
 
       const formData = new FormData();
       formData.append("education", JSON.stringify([educationSection]));
       formData.append("jobCodeId", this.jobCodeData?.jobCodeId);
       formData.append("candidateId", this.jobCodeData?.candidateId);
-      formData.append("moduleId", "3");
+      formData.append("moduleId", "6");
 
       this.finalSave('education', formData);
     }
@@ -1453,7 +1460,7 @@ export class OnboardingDataComponent implements OnInit {
 
   finalSave(action: string, formData) {
     formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
-      formData.append('candidateId', this.empId);
+    formData.append('candidateId', this.empId);
     // console.log("education jobcode id : ", this.jobCodeData?.jobCodeId, "candidate id: ", this.jobCodeData?.candidateId)
     this.isLoading = true;
     // console.log(" form data : ", formData)
@@ -1682,6 +1689,18 @@ export class OnboardingDataComponent implements OnInit {
     })
   }
 
+  languages() {
+    this.authService.languages().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.languageOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
   states() {
     this.authService.states().subscribe({
       next: (res: any) => {
@@ -1802,10 +1821,11 @@ export class OnboardingDataComponent implements OnInit {
       width: '500px',
       backdrop: true
     }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.removeItem('hiringLoginData');
-        this.router.navigate(['/hiring-login']);
-      }
+      // if (result.isConfirmed) {
+      //   localStorage.removeItem('hiringLoginData');
+      //   this.router.navigate(['/hiring-login']);
+      // }
+
     });
   }
 
@@ -2238,12 +2258,38 @@ export class OnboardingDataComponent implements OnInit {
   //   }
   // }
 
-
   toUppercase(event: any) {
     event.target.value = event.target.value.toUpperCase();
   }
 
 
+  onLanguageSelect(id: number, event: any) {
+  const selectedLanguages = this.registrationForm.get('knownLanguages')?.value || [];
+
+  if (event.target.checked) {
+    selectedLanguages.push(id);
+  } else {
+    const index = selectedLanguages.indexOf(id);
+    if (index >= 0) selectedLanguages.splice(index, 1);
+  }
+
+  this.registrationForm.get('knownLanguages')?.setValue(selectedLanguages);
+}
+
+getSelectedLanguageNames(): string {
+  const selectedIds = this.registrationForm.get('knownLanguages')?.value || [];
+  const count = selectedIds.length;
+
+  if (count === 0) return 'Select Languages';
+  if (count === 1) return '1 Language Selected';
+  return `${count} Languages Selected`;
+}
+
+showLanguageDropdown = false;
+
+toggleLanguageDropdown() {
+  this.showLanguageDropdown = !this.showLanguageDropdown;
+}
 
 
 }

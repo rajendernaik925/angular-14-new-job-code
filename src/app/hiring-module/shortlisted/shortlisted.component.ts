@@ -425,7 +425,7 @@ export class ProfileListComponent implements OnInit {
   copyAndOpen(candidateId: any) {
     console.log("candidate id: ", candidateId);
 
-    const link = `http://192.168.213.34:4200/#/hiring-login?candidateId=${candidateId}`;
+    const link = `http://192.168.212.77:4200/#/hiring-login?candidateId=${candidateId}`;
 
     // Copy link
     const textarea = document.createElement('textarea');

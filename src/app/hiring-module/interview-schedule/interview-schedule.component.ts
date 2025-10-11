@@ -51,6 +51,7 @@ export class InterviewScheduleComponent implements OnInit {
   InterviewerError: string = ''
   // isSidebarOpen = true;
   // closeButton: boolean = true;
+  lastInterviewMode:any;
 
 
 
@@ -353,9 +354,10 @@ export class InterviewScheduleComponent implements OnInit {
       candidateId: this.employeeId,
       interviewScheduledBy: this.userData.user.empID,
       roundNo: this.roundNo || 1,
+      // roundNo: this.isTelephonicMode ? 3 : this.roundNo || 1,
       ...(this.isTelephonicMode ? {} : { interviewRound: 3 })
     };
-    console.log(payload , " payload");
+    console.log(payload, " payload");
 
     this.isLoading = true;
     this.authService.addInterviewRound(payload).subscribe({
@@ -523,6 +525,22 @@ export class InterviewScheduleComponent implements OnInit {
           ? res.candidateInterviewDetails[recordLength - 1].interviewBy
           : null;
 
+        const lastInterviewMode = recordLength
+          ? res.candidateInterviewDetails[recordLength - 1].modeId
+          : null;
+
+          this.lastInterviewMode = lastInterviewMode;
+
+        console.log("lastInterviewMode : ", lastInterviewMode);
+
+        // if (this.lastInterviewMode === 3) {
+        //   this.addNewRoundForm.patchValue({
+        //     mode: this.lastInterviewMode
+        //   });
+        //   this.addNewRoundForm.get('mode')?.disable(); 
+        //   this.onModeChange({ target: { value: '3' } } as any);
+        // }
+
 
         this.interviewScheduleTo = lastRecordInterviewerName;
 
@@ -537,6 +555,12 @@ export class InterviewScheduleComponent implements OnInit {
       }
     });
   }
+
+  getModeNameById(id: number): string {
+  const mode = this.interviewRounds.find((m: any) => m.id === id);
+  return mode ? mode.name : '';
+}
+
 
 
   openDialog() {

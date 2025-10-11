@@ -17,6 +17,24 @@
   // Hide scrollbar for Internet Explorer 10+
   -ms-overflow-style: none
 
+
+.side-scroll-container  
+  max-height: calc(100vh - 135px)
+  min-height: calc(100vh - 135px)
+  overflow-y: scroll 
+  display: block
+  max-width: 100%
+  position: relative
+
+  // Hide scrollbar for Webkit-based browsers (Chrome, Safari, Edge)
+  &::-webkit-scrollbar
+    display: none
+  // Hide scrollbar for Firefox
+  scrollbar-width: none
+
+  // Hide scrollbar for Internet Explorer 10+
+  -ms-overflow-style: none
+
 .custom-text  
   color: #0072BC
 .custom-bg

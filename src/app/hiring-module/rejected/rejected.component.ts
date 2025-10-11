@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -29,6 +29,10 @@ export class RejectedComponent implements OnInit {
   comapnyLogo: string = 'assets/img/icons/company-name.png'
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   searchQueryText: string;
+  resumeFile: string | null = null;
+  fileURL: SafeResourceUrl | null = null;
+  showPDF: boolean = false;
+  employeeId: any;
 
 
   constructor(
@@ -130,16 +134,18 @@ export class RejectedComponent implements OnInit {
     if (!this.searchQueryText || !text) return text;
     const escapedQuery = this.searchQueryText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-    const highlightedText = String(text).replace(regex, `<span class="badge text-white" style="font-weight: bold; background-color: #198754;">$1</span>`);
+    const highlightedText = String(text).replace(regex, `<span  style="font-weight: bold; color: #0072BC;">$1</span>`);
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
   handleAction(employeeId: any) {
+    this.employeeId = employeeId;
     this.isLoading = true;
     this.authService.registeredData(employeeId).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
         this.candidateData = res;
+        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null; this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -158,19 +164,7 @@ export class RejectedComponent implements OnInit {
     window.history.back();
   }
 
-  close() {
-    this.dialog.closeAll();
-  }
 
-  toggleOffcanvas() {
-    this.isOpen = !this.isOpen;
-  }
-
-  closeOffcanvas() {
-    this.isOpen = false;
-  }
-
-  applyFilter() { }
 
   formatTime(time: string): string {
     if (!time) return '';
@@ -178,6 +172,40 @@ export class RejectedComponent implements OnInit {
     const formattedHour = hour % 12 || 12;
     const period = hour >= 12 ? 'PM' : 'AM';
     return `${formattedHour}:${minute.toString().padStart(2, '0')} ${period}`;
+  }
+
+  viewFile(file: any) {
+    this.dialog.closeAll();
+    if (!file) {
+      console.error("No file available for download.");
+      return;
+    }
+
+    const byteCharacters = atob(file);
+    const byteNumbers = new Array(byteCharacters?.length)
+      .fill(0)
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+    const objectURL = URL.createObjectURL(blob);
+    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+    this.showPDF = true;
+  }
+
+  convertToDateObject(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('-');
+    return new Date(+year, +month - 1, +day); // month is 0-indexed
+  }
+
+  closePDF() {
+    this.showPDF = false; // Hide the modal
+    this.fileURL = null; // Clear the URL
+    this.handleAction(this.employeeId);
+  }
+
+  close() {
+    this.dialog.closeAll();
   }
 
   feedbackView(interview: any, name: any, mail: any) {
@@ -330,17 +358,7 @@ export class RejectedComponent implements OnInit {
     });
   }
 
-  sendRemainder() {
-    Swal.fire({
-      title: 'Success',
-      text: 'Remainder Sent',
-      icon: 'success',
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
-    })
-    this.close()
-  }
+
 
   get paginatedRows() {
     const startIndex = (this.currentPage - 1) * this.pageSize;

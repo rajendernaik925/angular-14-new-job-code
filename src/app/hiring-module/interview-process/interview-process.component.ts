@@ -83,7 +83,7 @@ export class InterviewProcessComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer
   ) {
-     const today = new Date();
+    const today = new Date();
     this.minDate = today;
 
     const after90Days = new Date();

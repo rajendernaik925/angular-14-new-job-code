@@ -292,7 +292,33 @@
             </div>
           </div>
 
+          <!-- <div class="col-md-6">
+            <label for="interviewerName" class="form-label">
+              Interview Mode <span class="text-danger">*</span>
+            </label>
+            <div *ngIf="lastInterviewMode == 3; else shownDropdown">
+              <select class="form-control form-control-sm" disabled>
+                <option [value]="3" selected>Telephonic</option>
+              </select>
+              <div class="text-dark fs-custom">Once telephonic, mode change isn’t allowed.</div>
+            </div>
 
+            <ng-template #shownDropdown>
+              <select class="form-control form-control-sm" (change)="onModeChange($event)">
+                <option value="">Select</option>
+                <option *ngFor="let item of interviewRounds" [value]="item?.id">
+                  {{ item?.name }}
+                </option>
+              </select>
+            </ng-template>
+
+            <div *ngIf="
+              addNewRoundForm.get('mode')?.touched &&
+              addNewRoundForm.get('mode')?.invalid
+             "class="text-danger fs-custom">
+              Interview Mode is required
+            </div>
+          </div> -->
 
         </div>
 

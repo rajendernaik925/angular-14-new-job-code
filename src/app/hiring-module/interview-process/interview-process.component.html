@@ -131,12 +131,10 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- loader -->
 <div class="loader attDnceLoadr" *ngIf="isLoading">
   <div class="spinner">
     <div class="bounce1"></div>
@@ -145,24 +143,16 @@
   </div>
 </div>
 
-
-
 <ng-template #aboutCandidateDialog>
   <div class="animate-zoom">
     <div class="container">
       <div class="row mb-2 align-items-center">
         <div class="col-md-9">
-          <div class="d-flex">
-            <!-- <span class="fw-bold custom-text mr-3">Candidate Details </span> -->
+          <div class="d-flex ">
             <span class="small text-uppercase mr-2">
               Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
             </span>
             <span class="small text-muted mr-2">|</span>
-
-            <!-- <span class="small text-uppercase mr-2">
-              Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}
-            </span>
-            <span class="small text-muted mr-2">|</span>  -->
 
             <span class="small text-uppercase mr-2">
               Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId }}
@@ -172,8 +162,6 @@
             <span class="small text-uppercase">
               Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName }}
             </span>
-
-
           </div>
 
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
@@ -193,270 +181,77 @@
 
       <div *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName; else noCandidateData"
         class="scroll-container container">
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Basic Details</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <strong>Name:</strong>
-              {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
-              <span>{{ candidateData?.candidatePersonalInformationDetails?.lastName }}</span>
-            </div>
-            <div class="col-md-3">
-              <strong>Gender:</strong> {{ candidateData?.candidatePersonalInformationDetails?.genderName || 'N/A' }}
-            </div>
-            <div class="col-md-3">
-              <strong>Mobile:</strong> {{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}
-            </div>
-            <div class="col-md-2">
-              <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob }}
-            </div>
-            <div class="col-md-7 mt-1">
-              <strong>Email:</strong> {{ candidateData?.candidatePersonalInformationDetails?.email }}
-            </div>
-            <div class="col-md-5 mt-1">
-              <strong>Marital Status:</strong> {{ candidateData?.candidatePersonalInformationDetails?.maritalStatusName
-              }}
-            </div>
-          </div>
-        </div>
+        <div class="card p-2 mb-3" style="font-size:12px;">
+          <h6 class=" mb-2" style="font-weight:600;">Basic Details : </h6>
 
-        <div class="card p-3 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Communication Address</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <p class="mb-0">
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressA }},
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressB }},
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressC }}
-              </p>
-            </div>
-
-            <div class="col-md-3">
-              <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.stateName
-                }}</p>
-            </div>
-            <div class="col-md-3">
-              <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.cityName }}
-              </p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="card p-3 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Permanent Address</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <p class="mb-0">
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressA }},
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressB }},
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressC }}
-              </p>
-            </div>
-
-            <div class="col-md-3">
-              <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidatePermanentAddressDetails?.stateName }}
-              </p>
-            </div>
-            <div class="col-md-3">
-              <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidatePermanentAddressDetails?.cityName }}</p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="card p-2 mb-3"
-          *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
-          <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
-
-          <!-- Salary details in the same line -->
-          <div class="d-flex justify-content-start">
-            <span class="mr-5"><strong>Current Salary:</strong> ₹{{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.currentSalary }}</span>
-            <span><strong>Expected Salary:</strong> ₹{{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary }}</span>
-          </div>
-
-          <!-- Job description on a new line -->
-          <div>
-            <span><strong>Job Description:</strong> {{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.description }}</span>
-          </div>
-        </div>
-
-
-
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Education</strong></span>
-          <table class="table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Type</th>
-                <th>University</th>
-                <th>Qualification</th>
-                <th>Year</th>
-                <th>Percentage</th>
-              </tr>
-            </thead>
+          <table class="table table-bordered table-sm mb-0" style="width:100%; margin:0; line-height:1.3;">
             <tbody>
-              <tr *ngFor="let edu of candidateData?.candidateEducationDetails">
-                <td class="small-header">{{ edu?.educationTypeName }}</td>
-                <td class="small-header">{{ edu?.universityName }}</td>
-                <td class="small-header">{{ edu?.qualificationName }}</td>
-                <td class="small-header">{{ edu?.yearOfPassing }}</td>
-                <td class="small-header">{{ edu?.percentage }}%</td>
+              <tr>
+                <th style="width:20%; background-color:#f8f9fa; font-weight:600;">Name</th>
+                <td style="width:30%;">
+                  {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+                  {{ candidateData?.candidatePersonalInformationDetails?.lastName }}
+                </td>
+                <th style="width:20%; background-color:#f8f9fa; font-weight:600;">Highest Degree</th>
+                <td style="width:30%;">
+                  {{ candidateData?.candidatePersonalInformationDetails?.highestDegree || 'N/A' }}
+                </td>
               </tr>
-            </tbody>
-          </table>
 
-        </div>
-
-
-        <div class="card p-2 mb-3">
-          <!-- Experience Header Section -->
-          <div class="row mb-1">
-            <div class="col">
-              <span class="custom-text text-decoration-underline fs-4"><strong>Experience</strong></span>
-            </div>
-          </div>
-
-          <!-- Experience Type and Notice Period Side-by-Side -->
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Experience Type:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' :
-              'Experienced'
-              }}
-            </div>
-            <div class="col-md-6">
-              <strong>Notice Period:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.joiningName }}
-            </div>
-          </div>
-
-          <!-- Show Table Only if NOT Fresher -->
-          <table class="table table-bordered"
-            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Company</th>
-                <th>Total Experience (Years)</th>
-                <th>Last Working Date</th>
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Mobile</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Date of Birth</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.dob }}</td>
               </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let exp of candidateData.candidateExperienceDetails?.candidateCompanyDetails">
-                <td class="small-header">{{ exp.companyName }}</td>
-                <td class="small-header">{{ exp.totalExp }}</td>
-                <td class="small-header">{{ exp.lastWorkingDate }}</td>
+
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Email</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.email }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Aadhar</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.adhar }}</td>
+              </tr>
+
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Experience Type</th>
+                <td>
+                  {{ candidateData?.candidatePersonalInformationDetails?.isFresher ? 'Fresher' : 'Experienced' }}
+                </td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Resume</th>
+                <td>
+                  <ng-container *ngIf="resumeFile">
+                    <!-- <button class="btn btn-outline-primary btn-sm w-100 small" style="padding:2px 4px;"
+                      (click)="viewFile(resumeFile)">
+                      View Resume
+                    </button> -->
+                    <span class="badge custom-bg text-white cursor-pointer p-1" (click)="viewFile(resumeFile)">View
+                      Resume</span>
+                  </ng-container>
+                  <span *ngIf="!resumeFile">N/A</span>
+                </td>
+              </tr>
+
+              <tr *ngIf="!candidateData?.candidatePersonalInformationDetails?.isFresher">
+                <th style="background-color:#f8f9fa; font-weight:600;">Company Name</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.companyName || 'N/A' }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Total Experience</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.totalExperience || 'N/A' }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="card p-3 mb-3">
-          <div class="row mb-2">
-            <div class="col">
-              <h6 class="text-decoration-underline fw-bold mb-0 custom-text">Files </h6>
-            </div>
-          </div>
 
-          <div *ngIf="resumeFile" class="row g-2">
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="resumeFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(resumeFile)">
-                  Resume
-                </button>
-              </ng-container>
-            </div>
 
-            <div *ngIf="aadharFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="aadharFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(aadharFile)">
-                  Aadhar
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="pancardFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="pancardFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(pancardFile)">
-                  PAN Card
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="tenthFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="tenthFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(tenthFile)">
-                  10th
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="InterFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="InterFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(InterFile)">
-                  Intermediate
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="BTechFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
-              <ng-container *ngIf="BTechFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(BTechFile)">
-                  B.Tech/Degree
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="photoFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-              <ng-container *ngIf="photoFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(photoFile)">
-                  Photo
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-              <ng-container *ngIf="paySlipFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(paySlipFile)">
-                  Payslip
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="ServiceLetterFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-              <ng-container *ngIf="ServiceLetterFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(ServiceLetterFile)">
-                  Service Letter
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-              <ng-container *ngIf="mTechFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(mTechFile)">
-                  M.Tech/PG
-                </button>
-              </ng-container>
-            </div>
-            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-              <ng-container *ngIf="otherFile">
-                <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(otherFile)">
-                  Other File
-                </button>
-              </ng-container>
-            </div>
-          </div>
-        </div>
 
 
         <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline">
-            <strong>Interview</strong>
+          <span class="text-dark mb-1">
+            <strong>Interview Details : </strong>
           </span>
 
           <div class="table-container">
-            <table class="custom-table">
+            <table class="table table-bordered table-sm mb-0" style="width:100%; margin:0; line-height:1.2;">
               <thead>
                 <tr>
                   <th class="custom-th small-header">S.No</th>
@@ -537,8 +332,6 @@
     </div>
   </div>
 </ng-template>
-
-
 
 <ng-template #feedbackform>
   <div class="row mb-2 align-items-center">
@@ -852,16 +645,5 @@
   <div class="pdf-container">
     <button class="close-btn" (click)="closePDF()">✖</button>
     <iframe [src]="fileURL" width="100%" height="100%"></iframe>
-  </div>
-</div>
-
-
-
-
-<div class="loader attDnceLoadr" *ngIf="isLoading">
-  <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
   </div>
 </div>

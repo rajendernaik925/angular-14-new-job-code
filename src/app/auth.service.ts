@@ -1065,6 +1065,12 @@ export class AuthService {
     )
   }
 
+  languages() {
+    return this.http.get(`${this.jobCodeUrls}master/languages`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
   cities(id: any) {
     return this.http.get(`${this.jobCodeUrls}master/cities/${id}`).pipe(
       catchError(this.handleError)

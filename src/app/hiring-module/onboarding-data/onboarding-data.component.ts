@@ -44,6 +44,8 @@ export class OnboardingDataComponent implements OnInit {
   joiningOptions: any[] = [];
   bloodGroupOptions: any[] = [];
   languageOptions: any[] = [];
+  relationOptions: any[] = [];
+  bankOptions: any[] = [];
   indianStates: any[] = [];
   communicationCities: any[] = [];
   permanentCities: any[] = [];
@@ -52,6 +54,10 @@ export class OnboardingDataComponent implements OnInit {
   isLoading: boolean = false;
   isUpdateMode: boolean = false;
   isAllDataPresent: boolean = false;
+  isEmergencyDataPresent: boolean = false;
+  isBankDataPresent: boolean = false;
+  emergencyUpdate: boolean = false;
+  bankUpdate: boolean = false;
   isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
@@ -67,6 +73,7 @@ export class OnboardingDataComponent implements OnInit {
   tenthFile: string | null = null;
   twelthFile: string | null = null;
   aadharFile: string | null = null;
+  bankFile: string | null = null;
   panFile: string | null = null;
   deplomaFile: string | null = null;
   degreeOrBTechFile: string | null = null;
@@ -90,33 +97,11 @@ export class OnboardingDataComponent implements OnInit {
   experienceId: any;
   uploadResume: string = 'Upload Resume'
   uploadPhoto: string = 'Upload Photo'
+  uploadBankFile: string = 'Upload bank passbook'
   alertMessage: string | null = null;
   private panAlertTimeout: any;
   empId: any | null = null;
-
-  motherTongues = [
-    { id: 1, name: 'Telugu' },
-    { id: 2, name: 'Hindi' },
-    { id: 3, name: 'English' },
-    { id: 4, name: 'Tamil' },
-    { id: 5, name: 'Kannada' },
-    { id: 6, name: 'Malayalam' },
-    { id: 7, name: 'Marathi' },
-    { id: 8, name: 'Gujarati' },
-    { id: 9, name: 'Bengali' },
-    { id: 10, name: 'Punjabi' }
-  ];
-
-
-
-  // sections = [
-  //   { key: 'personalInfo', label: 'Personal Info' },
-  //   { key: 'address', label: 'Address' },
-  //   { key: 'education', label: 'Education' },
-  //   { key: 'document', label: 'Documents' },
-  //   { key: 'experience', label: 'Working Experience' },
-  // ];
-
+  bankFileError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -127,10 +112,6 @@ export class OnboardingDataComponent implements OnInit {
     private datePipe: DatePipe
   ) {
     this.registrationForm = this.fb.group({
-
-
-
-
       // educationDetails: this.fb.array([this.createEducationFormGroup()]),
       jobCodeId: [{ value: '', disabled: false }, Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -212,12 +193,27 @@ export class OnboardingDataComponent implements OnInit {
 
 
       // emergency
-      completeaAddress: ['', Validators.required],
-      emergencyEmail: ['', [Validators.required, Validators.email]],
-      emergencyContact: ['', Validators.required, Validators.minLength(10), Validators.maxLength(10)],
-      emergencyLastname: ['', Validators.required],
+      relationId: ['', Validators.required],
       emergencyFirstname: ['', Validators.required],
-      emergencyRelation: ['', Validators.required],
+      emergencyLastname: ['', Validators.required],
+      emergencyContact: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
+      emergencyEmail: ['', [Validators.required, Validators.email]],
+      completeaAddress: ['', Validators.required],
+
+      // bank
+      accountNumber: [ '', [ Validators.required,Validators.pattern(/^\d{9,18}$/)]],
+      confirmAccountNumber: [ '', [ Validators.required,Validators.pattern(/^\d{9,18}$/)]],
+      bankName: ['', Validators.required],
+      ifscCode: ['', [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]],
+      identificationMarkA: ['', Validators.required],
+      identificationMarkB: ['', Validators.required],
+
+      // family details 
+      familyRelationId: ['', Validators.required],
+
+
+      // medical
+      medicalDescription: ['', [Validators.required, Validators.minLength(10)]]
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -259,6 +255,8 @@ export class OnboardingDataComponent implements OnInit {
     this.states();
     this.bloodGroup();
     this.languages();
+    this.relation();
+    this.banks()
   }
 
   // toggleSidebar() {
@@ -282,15 +280,16 @@ export class OnboardingDataComponent implements OnInit {
   }
 
   loadUserData() {
-    if (!this.empId) {
-      console.warn("emp id not getting");
-      return;
-    }
+    // if (!this.empId) {
+    //   console.warn("emp id not getting");
+    //   return;
+    // }
 
     this.isLoading = true;
     this.authService.registeredData(this.empId).subscribe({
       next: (res: any) => {
         this.loadedData = res;
+        this.isLoading = false;
         this.jobCodeData = res;
         console.log("result : ", res);
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
@@ -325,6 +324,7 @@ export class OnboardingDataComponent implements OnInit {
           this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
           this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
           this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
+          this.bankFile = res?.bankDetailsDTO?.bankFilePath || null;
           this.panFile = res?.candidateDocumentDetails?.panFile || null;
           this.twelthFile = res?.candidateDocumentDetails?.intermediateFile || null;
           this.deplomaFile = res?.candidateDocumentDetails?.pgFile || null;
@@ -369,7 +369,11 @@ export class OnboardingDataComponent implements OnInit {
             pan: (res?.candidatePersonalInformationDetails?.pan || '').trim() || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
             photo: res?.candidatePersonalInformationDetails?.image || '',
-
+            whatsappNumber: res?.candidatePersonalInformationDetails?.whatsappNumber || '',
+            alternateMobileNumber: res?.candidatePersonalInformationDetails?.alternateMobileNumber || '',
+            religion: res?.candidatePersonalInformationDetails?.religion || '',
+            motherTongue: res?.candidatePersonalInformationDetails?.motherTongueId || '',
+            // knownLanguages: res?.candidatePersonalInformationDetails?.knownLanguages[0].id || '',
             // Communication Address
             addressA: res?.candidateCommunicationAddressDetails?.comAddressA || '',
             addressB: res?.candidateCommunicationAddressDetails?.comAddressB || '',
@@ -387,6 +391,28 @@ export class OnboardingDataComponent implements OnInit {
             permanentCityId: res?.candidatePermanentAddressDetails?.cityId || '',
             permanentPostalCode: res?.candidatePermanentAddressDetails?.postalCode,
 
+            // emergency Details
+            relationId: res?.emergencyContactDetailsDTO?.relationId || '',
+            emergencyFirstname: res?.emergencyContactDetailsDTO?.firstName || '',
+            emergencyLastname: res?.emergencyContactDetailsDTO?.lastName || '',
+            emergencyContact: res?.emergencyContactDetailsDTO?.contactNumber || '',
+            emergencyEmail: res?.emergencyContactDetailsDTO?.email || '',
+            completeaAddress: res?.emergencyContactDetailsDTO?.address || '',
+
+            // bank details 
+            //     'accountNumber',
+            // 'confirmAccountNumber',
+            // 'bankName',
+            // 'ifscCode',
+            // 'identificationMarkA',
+            // 'identificationMarkB'
+            accountNumber: res?.bankDetailsDTO?.accountNumber ||'',
+            confirmAccountNumber: res?.bankDetailsDTO?.accountNumber ||'',
+            bankName: res?.bankDetailsDTO?.bankId ||'',
+            ifscCode: res?.bankDetailsDTO?.ifscCode ||'',
+            identificationMarkA: res?.bankDetailsDTO?.identificationMarkA ||'',
+            identificationMarkB: res?.bankDetailsDTO?.identificationMarkB ||'',
+
             // Experience Details
             isFresher: isFresher,
             joiningTime: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
@@ -394,6 +420,7 @@ export class OnboardingDataComponent implements OnInit {
             expectedSalary: res?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary || '',
             suitableJobDescription: res?.candidateExperienceDetails?.candidateSalaryDetails?.description || '',
           });
+
 
           if (res?.candidateCommunicationAddressDetails?.postalCode) {
             this.getCities(
@@ -413,6 +440,12 @@ export class OnboardingDataComponent implements OnInit {
 
           this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.fatherName]
             .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isEmergencyDataPresent = [res?.emergencyContactDetailsDTO?.firstName]
+            .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isBankDataPresent = [res?.bankDetailsDTO?.accountNumber]
+            .every(field => typeof field === 'string' && field.trim() !== '');  
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -819,11 +852,19 @@ export class OnboardingDataComponent implements OnInit {
       this.uploadResume = 'Upload Resume'
       this.uploadPhoto = 'Upload Photo'
     } else if (value == 'address') {
-      this.isAllAddressDataPresent = false
+      this.isAllAddressDataPresent = false;
       this.addressUpadte = true;
     } else if (value == 'experience') {
-      this.isExperienceBoolean = false
+      this.isExperienceBoolean = false;
       this.experienceUpdate = true;
+    } else if (value == 'emergency') {
+      this.isEmergencyDataPresent = false;
+      this.emergencyUpdate = true;
+    } else if(value == 'bank') {
+      console.log("rajender");
+      this.isBankDataPresent = false;
+      this.bankUpdate = true;
+      this.bankFile = 'editBankFile'
     }
   }
 
@@ -902,6 +943,90 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
+  // onFileSelect({ event, fieldName }: { event: Event; fieldName: string; }): void {
+  //   const fileInput = event.target as HTMLInputElement;
+  //   const file = fileInput.files?.[0];
+
+  //   if (file) {
+  //     const maxSizeInMB = 5;
+  //     const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+  //     if (file.size > maxSizeInBytes) {
+  //       Swal.fire({
+  //         title: 'File Too Large',
+  //         text: 'File size must be less than 5 MB.',
+  //         icon: 'error',
+  //         confirmButtonText: 'OK'
+  //       });
+  //       fileInput.value = '';
+  //       return;
+  //     }
+
+  //     if (file.type !== 'application/pdf') {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Invalid File Type!',
+  //         text: 'Please upload a PDF file only.',
+  //       });
+  //       (event.target as HTMLInputElement).value = '';
+  //       return;
+  //     }
+
+  //     if (fieldName == 'resume') {
+  //       this.uploadResume = file.name
+  //     }
+  //     if (fieldName == 'photo') {
+  //       this.uploadPhoto = file.name
+  //     }
+
+  //     // Store a clean copy of the file
+  //     const selectedFile = new File([file], file.name, {
+  //       type: file.type,
+  //       lastModified: Date.now()
+  //     });
+
+  //     // console.log(`Selected file for ${fieldName}:`, selectedFile);
+  //     this.selectedFiles[fieldName] = selectedFile;
+  //   } else {
+  //     // console.log(`No file selected for ${fieldName}`);
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   let hasFile = false;
+
+  //   // Append common fields
+  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
+  //   formData.append('moduleId', '4');
+  //   formData.append('document', JSON.stringify({
+  //     candidateId: this.jobCodeData?.candidateId
+  //   }));
+
+  //   // Map of fieldName => FormData key
+  //   const fileFieldMap: { [key: string]: string } = {
+  //     'tenth': 'tenthFile',
+  //     'aadharFile': 'aadharFile',
+  //     'panFile': 'panFile',
+  //     'twelth': 'interFile',
+  //     'deploma': 'pgFile',
+  //     'degreeOrBTech': 'degreeFile',
+  //     'others': 'otherFile'
+  //   };
+
+  //   // Append only the selected files
+  //   for (const [key, formField] of Object.entries(fileFieldMap)) {
+  //     const selected = this.selectedFiles[key];
+  //     if (selected) {
+  //       formData.append(formField, selected);
+  //       hasFile = true;
+  //     }
+  //   }
+
+  //   if (hasFile) {
+  //     this.finalSave('documents', formData);
+  //   }
+  // }
+
   onFileSelect(event: Event, fieldName: string): void {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
@@ -910,6 +1035,7 @@ export class OnboardingDataComponent implements OnInit {
       const maxSizeInMB = 5;
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
+      // File size validation
       if (file.size > maxSizeInBytes) {
         Swal.fire({
           title: 'File Too Large',
@@ -921,33 +1047,33 @@ export class OnboardingDataComponent implements OnInit {
         return;
       }
 
+      // File type validation
       if (file.type !== 'application/pdf') {
         Swal.fire({
           icon: 'error',
           title: 'Invalid File Type!',
           text: 'Please upload a PDF file only.',
         });
-        (event.target as HTMLInputElement).value = '';
+        fileInput.value = '';
         return;
       }
-
-      if (fieldName == 'resume') {
-        this.uploadResume = file.name
-      }
-      if (fieldName == 'photo') {
-        this.uploadPhoto = file.name
+      if (fieldName === 'bankFile') {
+        this.bankFileError = ''; // clear error when new file selected
       }
 
-      // Store a clean copy of the file
+      // Track uploaded file names
+      if (fieldName === 'resume') this.uploadResume = file.name;
+      if (fieldName === 'photo') this.uploadPhoto = file.name;
+      if (fieldName === 'bankFile') this.uploadBankFile = file.name;
+
+      // Store clean file copy
       const selectedFile = new File([file], file.name, {
         type: file.type,
         lastModified: Date.now()
       });
 
-      // console.log(`Selected file for ${fieldName}:`, selectedFile);
       this.selectedFiles[fieldName] = selectedFile;
     } else {
-      // console.log(`No file selected for ${fieldName}`);
       return;
     }
 
@@ -961,7 +1087,7 @@ export class OnboardingDataComponent implements OnInit {
       candidateId: this.jobCodeData?.candidateId
     }));
 
-    // Map of fieldName => FormData key
+    // File mapping
     const fileFieldMap: { [key: string]: string } = {
       'tenth': 'tenthFile',
       'aadharFile': 'aadharFile',
@@ -969,10 +1095,10 @@ export class OnboardingDataComponent implements OnInit {
       'twelth': 'interFile',
       'deploma': 'pgFile',
       'degreeOrBTech': 'degreeFile',
-      'others': 'otherFile'
+      'others': 'otherFile',
     };
 
-    // Append only the selected files
+    // Append only selected files
     for (const [key, formField] of Object.entries(fileFieldMap)) {
       const selected = this.selectedFiles[key];
       if (selected) {
@@ -1091,7 +1217,7 @@ export class OnboardingDataComponent implements OnInit {
         }
       }
 
-      if(this.empId) {
+      if (this.empId) {
         sectionData.candidateId = this.empId;
       }
 
@@ -1109,7 +1235,8 @@ export class OnboardingDataComponent implements OnInit {
       // }
 
       this.finalSave('address', formData);
-    } else if (Action === 'address') {
+    }
+    else if (Action === 'address') {
       const communicationAddressFields = [
         'addressA', 'addressB', 'addressC',
         'stateId', 'cityId', 'postalCode', 'addressFlag'
@@ -1169,8 +1296,7 @@ export class OnboardingDataComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-
-    if (Action === 'education') {
+    else if (Action === 'education') {
       const educationFields = [
         'educationTypeId',
         'educationLevelId',
@@ -1211,7 +1337,6 @@ export class OnboardingDataComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-
     else if (Action === 'documents') {
       const documentsFields = ['tenth', 'twelth', 'panFile', 'aadharFile', 'deploma', 'degreeOrBTech', 'others'];
       let hasFile = false; // Flag to check if any file is present
@@ -1287,7 +1412,8 @@ export class OnboardingDataComponent implements OnInit {
           timerProgressBar: true,
         });
       }
-    } if (Action === 'experienceWithCtc') {
+    }
+    else if (Action === 'experienceWithCtc') {
       let isValid = true;
       const sectionData: any = {};
 
@@ -1415,46 +1541,208 @@ export class OnboardingDataComponent implements OnInit {
         }
       })
 
-    } if (Action === 'emergency') {
-      const educationFields = [
-        'emergencyEmail',
-        'completeaAddress',
-        'emergencyContact',
-        'emergencyLastname',
+    }
+    else if (Action === 'emergency') {
+      const emergencyFields = [
+        'relationId',
         'emergencyFirstname',
-        'emergencyRelation',
+        'emergencyLastname',
+        'emergencyContact',
+        'emergencyEmail',
+        'completeaAddress'
       ];
 
-      let educationSection: any = {};
+      let emergencySection: any = {};
       let isValid = true;
 
-      educationFields.forEach((field) => {
+      emergencyFields.forEach((field) => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
           control.markAsTouched();
           isValid = false;
         } else {
-          educationSection[field] = control?.value;
+          emergencySection[field] = control?.value;
         }
       });
 
       if (!isValid) {
-        this.showAlert("Please fill required fields!", 'danger');
+        this.showAlert("Please fill all required fields!", 'danger');
         return;
       }
 
-      // educationSection.educationId = this.registrationForm.get('educationId')?.value || 1;
-      educationSection.candidateId = this.jobCodeData?.candidateId;
+      // Build final JSON according to your required structure
+      const finalEmergencyData = {
+        relationId: emergencySection.relationId,
+        firstName: emergencySection.emergencyFirstname,
+        lastName: emergencySection.emergencyLastname,
+        contactNumber: emergencySection.emergencyContact,
+        email: emergencySection.emergencyEmail,
+        address: emergencySection.completeaAddress,
+        candidateId: this.empId
+      };
 
+      console.log('Final Emergency JSON:', finalEmergencyData);
       const formData = new FormData();
-      formData.append("education", JSON.stringify([educationSection]));
-      formData.append("jobCodeId", this.jobCodeData?.jobCodeId);
-      formData.append("candidateId", this.jobCodeData?.candidateId);
-      formData.append("moduleId", "6");
-
-      this.finalSave('education', formData);
+      formData.append('emergencyDetails', JSON.stringify(finalEmergencyData));
+      formData.append('moduleId', '6');
+      this.finalSave('bank', formData);
     }
+    else if (Action === 'bank') {
+      const bankFields = [
+        'accountNumber',
+        'confirmAccountNumber',
+        'bankName',
+        'ifscCode',
+        'identificationMarkA',
+        'identificationMarkB'
+      ];
 
+      let bankSection: any = {};
+      let isValid = true;
+
+      // Validate fields
+      bankFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          bankSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // Account Number match validation
+      const accNum = bankSection.accountNumber;
+      const conAccNum = bankSection.confirmAccountNumber;
+
+      if (accNum !== conAccNum) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Account Number Mismatch',
+          text: 'Account Number and Confirm Account Number must be the same.',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      // Build final JSON
+      const finalBankData = {
+        accountNumber: bankSection.accountNumber,
+        confirmAccountNumber: bankSection.confirmAccountNumber,
+        bankId: bankSection.bankName,
+        ifscCode: bankSection.ifscCode,
+        identificationMarkA: bankSection.identificationMarkA,
+        identificationMarkB: bankSection.identificationMarkB,
+        candidateId: this.empId
+      };
+
+      console.log('Final Bank JSON:', finalBankData);
+
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('bankDetails', JSON.stringify(finalBankData));
+      formData.append('moduleId', '7');
+
+      // ✅ Append bank file if available
+      if (this.selectedFiles['bankFile']) {
+        formData.append('bankFile', this.selectedFiles['bankFile']);
+        this.bankFileError = ''
+      } else {
+        if (this.bankFile == 'editBankFile') {
+          this.bankFileError = ''
+        } else {
+          this.bankFileError = 'Please choose a bank passbook PDF file.';
+          return;
+        }
+      }
+
+      this.finalSave('family', formData);
+    }
+    else if (Action === 'family') {
+      const bankFields = [
+        'accountNumber',
+        'confirmAccountNumber',
+        'bankName',
+        'ifscCode',
+        'identificationMarkA',
+        'identificationMarkB'
+      ];
+
+      let bankSection: any = {};
+      let isValid = true;
+
+      // Validate fields
+      bankFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          bankSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // Account Number match validation
+      const accNum = bankSection.accountNumber;
+      const conAccNum = bankSection.confirmAccountNumber;
+
+      if (accNum !== conAccNum) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Account Number Mismatch',
+          text: 'Account Number and Confirm Account Number must be the same.',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      // Build final JSON
+      const finalBankData = {
+        accountNumber: bankSection.accountNumber,
+        confirmAccountNumber: bankSection.confirmAccountNumber,
+        bankId: bankSection.bankName,
+        ifscCode: bankSection.ifscCode,
+        identificationMarkA: bankSection.identificationMarkA,
+        identificationMarkB: bankSection.identificationMarkB,
+        candidateId: this.empId
+      };
+
+      console.log('Final Bank JSON:', finalBankData);
+
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('familyDetails', JSON.stringify([finalBankData]));
+      formData.append('moduleId', '8');
+
+      // ✅ Append bank file if available
+      if (this.selectedFiles['bankFfamilyAadharile']) {
+        formData.append('familyAadhar', this.selectedFiles['familyAadhar']);
+        // this.bankFileError = ''
+      } else {
+        if (this.bankFile == 'editFamAadharFile') {
+          // this.bankFileError = ''
+        } else {
+          this.bankFileError = 'Please choose a bank passbook PDF file.';
+          return;
+        }
+      }
+
+      if (this.selectedFiles['familyPhoto']) {
+        formData.append('familyPhoto', this.selectedFiles['familyPhoto']);
+      }
+
+      this.finalSave('family', formData);
+    }
   }
 
 
@@ -1471,6 +1759,7 @@ export class OnboardingDataComponent implements OnInit {
         // console.log("personal result : ", res);
 
         if (res.status === 200) {
+          this.isLoading = false;
           this.loadUserData();
           // const educationArray = this.registrationForm.get('educationDetails') as FormArray;
           // if (educationArray) {
@@ -1480,6 +1769,8 @@ export class OnboardingDataComponent implements OnInit {
           this.selectedFiles = {}
           this.personalUpdate = false;
           this.addressUpadte = false;
+          this.emergencyUpdate = false;
+          this.bankUpdate = false;
           // Swal.fire({
           //   title: 'Success',
           //   text: 'Successfully completed',
@@ -1694,6 +1985,30 @@ export class OnboardingDataComponent implements OnInit {
       next: (res: any) => {
         // console.log("titles : ",res)
         this.languageOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  relation() {
+    this.authService.relation().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.relationOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  banks() {
+    this.authService.banks().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.bankOptions = res;
       },
       error: (err: HttpErrorResponse) => {
         // console.log("error", err)
@@ -2264,32 +2579,32 @@ export class OnboardingDataComponent implements OnInit {
 
 
   onLanguageSelect(id: number, event: any) {
-  const selectedLanguages = this.registrationForm.get('knownLanguages')?.value || [];
+    const selectedLanguages = this.registrationForm.get('knownLanguages')?.value || [];
 
-  if (event.target.checked) {
-    selectedLanguages.push(id);
-  } else {
-    const index = selectedLanguages.indexOf(id);
-    if (index >= 0) selectedLanguages.splice(index, 1);
+    if (event.target.checked) {
+      selectedLanguages.push(id);
+    } else {
+      const index = selectedLanguages.indexOf(id);
+      if (index >= 0) selectedLanguages.splice(index, 1);
+    }
+
+    this.registrationForm.get('knownLanguages')?.setValue(selectedLanguages);
   }
 
-  this.registrationForm.get('knownLanguages')?.setValue(selectedLanguages);
-}
+  getSelectedLanguageNames(): string {
+    const selectedIds = this.registrationForm.get('knownLanguages')?.value || [];
+    const count = selectedIds.length;
 
-getSelectedLanguageNames(): string {
-  const selectedIds = this.registrationForm.get('knownLanguages')?.value || [];
-  const count = selectedIds.length;
+    if (count === 0) return 'Select Languages';
+    if (count === 1) return '1 Language Selected';
+    return `${count} Languages Selected`;
+  }
 
-  if (count === 0) return 'Select Languages';
-  if (count === 1) return '1 Language Selected';
-  return `${count} Languages Selected`;
-}
+  showLanguageDropdown = false;
 
-showLanguageDropdown = false;
-
-toggleLanguageDropdown() {
-  this.showLanguageDropdown = !this.showLanguageDropdown;
-}
+  toggleLanguageDropdown() {
+    this.showLanguageDropdown = !this.showLanguageDropdown;
+  }
 
 
 }

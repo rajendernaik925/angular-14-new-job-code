@@ -97,23 +97,41 @@
           <div>
             <h6 class="fw-bold text-dark ps-2 mb-3">Data Submission Status</h6>
 
-            <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-3 rounded ps-2" [ngClass]="{
+            <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2" [ngClass]="{
             'bg-dark shadow-none text-white': activeTab === 'status',
             'btn-light text-dark': activeTab !== 'status'
             }" (click)="setActiveSection('status')">
               <i class="bi bi-clock mr-2"></i> Status
             </button>
+
+            <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-3 rounded ps-2" [ngClass]="{
+            'bg-dark shadow-none text-white': activeTab === 'hrms',
+            'btn-light text-dark': activeTab !== 'hrms'
+            }" (click)="setActiveSection('hrms')">
+              <i class="bi bi-house-add mr-2"></i> Move to HRMS
+            </button>
+
+
             <hr>
             <h6 class="fw-bold text-dark ps-2 mb-2">Account</h6>
-            <div class="px-2 small text-uppercase">
-              <i class="bi bi-person-circle mr-1"></i> {{ jobCodeData?.name || 'Rajender Naik' }}
+            <div class="px-2 small text-uppercase my-3">
+              <i class="bi bi-person-circle mr-1 mb-3"></i> {{ jobCodeData?.name || 'Rajender Naik' }}
               <br>
-              <a class="text-danger small mt-2" role="button" (click)="logout()">
+              <a class="text-danger small mt-3" role="button" (click)="logout()">
                 <i class="bi bi-box-arrow-right mr-1"></i> Log Out
               </a>
             </div>
+            <div class="input-group" style="max-width: 300px;">
+              <input type="text" numbersOnly noFirstSpace class="form-control mr-1" placeholder="Enter Employee ID"
+                [(ngModel)]="searchEmpId" />
+              <button class="btn btn-sm custom-bg text-white border-0 shadow-none" (click)="searchEmployee()">
+                Search
+              </button>
+            </div>
+
           </div>
         </div>
+
         <!-- Section: Profile and Account -->
       </div>
 
@@ -156,9 +174,37 @@
             (click)="setActiveSection('experience'); toggleSidebar()">
             <i class="bi bi-people me-1"></i> Working Experience
           </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('emergency'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Emergency Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('bank'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Bank Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('family'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Family Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('agreement'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Agreement Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('professional'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Professional Info
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'experience' }"
+            (click)="setActiveSection('medical'); toggleSidebar()">
+            <i class="bi bi-people me-1"></i> Medical Info
+          </li>
           <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'status' }"
             (click)="setActiveSection('status'); toggleSidebar()">
             <i class="bi bi-clock me-1"></i> Status
+          </li>
+          <li class="mobile-nav-item py-2 border-bottom" [ngClass]="{ 'fw-bold': activeTab === 'status' }"
+            (click)="setActiveSection('hrms'); toggleSidebar()">
+            <i class="bi bi-clock me-1"></i> Move to HRMS
           </li>
           <li class="mobile-nav-item py-2 text-danger" (click)="logout()">
             <i class="bi bi-box-arrow-right me-1"></i> Log Out
@@ -172,7 +218,6 @@
         <div class="card border-0 pb-1 pt-1">
           <div class="card-body pb-1 pt-5">
             <form [formGroup]="registrationForm">
-
               <div *ngIf="activeTab === 'personal'">
                 <!-- personal updated design -->
 
@@ -2074,7 +2119,7 @@
 
                         <div class="col-md-4">
                           <label for="accountNumber" class="form-label form-label-small">Account Number</label>
-                          <input type="password" [value]="jobCodeData.name" [readOnly]="isBankDataPresent" noFirstSpace
+                          <input type="password" [readOnly]="isBankDataPresent" noFirstSpace
                             formControlName="accountNumber" class="form-control form-control-sm"
                             placeholder="Account Number" numbersOnly maxlength="18" />
                           <div
@@ -2093,7 +2138,7 @@
                             Number</label>
                           <input type="text" placeholder="confirm Account Number" noFirstSpace
                             [readOnly]="isBankDataPresent" formControlName="confirmAccountNumber"
-                            class="form-control form-control-sm" numbersOnly maxlength="18"/>
+                            class="form-control form-control-sm" numbersOnly maxlength="18" />
                           <div
                             *ngIf="registrationForm.get('confirmAccountNumber')?.touched && registrationForm.get('confirmAccountNumber')?.invalid"
                             class="text-danger fs-custom mt-1">
@@ -2230,196 +2275,188 @@
                       <div class="col-md-9 row g-3">
                         <div class="col-md-4">
                           <div class="mb-3">
-                            <label for="relationId" class="form-label form-label-small">Relation</label>
-                            <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                              class="form-control form-control-sm">
+                            <label for="familyRelationId" class="form-label form-label-small">Relation</label>
+                            <select formControlName="familyRelationId" class="form-control form-control-sm">
                               <option value="">Select</option>
-                              <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                              <option *ngFor="let title of relationOptions" [value]="title?.id">{{ title?.name }}
+                              </option>
                             </select>
                             <div
-                              *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                              *ngIf="registrationForm.get('familyRelationId')?.touched && registrationForm.get('familyRelationId')?.invalid"
                               class="text-danger fs-custom">
                               Relation is required
                             </div>
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="emergencyFirstname" class="form-label form-label-small">First Name</label>
-                          <input type="text" [value]="jobCodeData.name" [readOnly]="isAllDataPresent" noFirstSpace
-                            stringOnly formControlName="emergencyFirstname" class="form-control form-control-sm "
-                            placeholder="first name" (keypress)="allowOnlyLetters($event)" />
+                          <label for="familyFirstName" class="form-label form-label-small">First Name</label>
+                          <input type="text" noFirstSpace stringOnly formControlName="familyFirstName"
+                            class="form-control form-control-sm " placeholder="first name" />
                           <div
-                            *ngIf="registrationForm.get('emergencyFirstname')?.touched && registrationForm.get('emergencyFirstname')?.invalid"
+                            *ngIf="registrationForm.get('familyFirstName')?.touched && registrationForm.get('familyFirstName')?.invalid"
                             class="text-danger fs-custom">
                             First name is required
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="emergencyLastname" class="form-label form-label-small">Last Name</label>
-                          <input type="text" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
-                            formControlName="emergencyLastname" class="form-control form-control-sm" stringOnly />
+                          <label for="familyLastName" class="form-label form-label-small">Last Name</label>
+                          <input type="text" placeholder="Last Name" noFirstSpace formControlName="familyLastName"
+                            class="form-control form-control-sm" stringOnly />
                           <div
-                            *ngIf="registrationForm.get('emergencyLastname')?.touched && registrationForm.get('emergencyLastname')?.invalid"
+                            *ngIf="registrationForm.get('familyLastName')?.touched && registrationForm.get('familyLastName')?.invalid"
                             class="text-danger fs-custom">
                             Last name is required
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="emergencyLastname" class="form-label form-label-small">DOB</label>
-                          <input type="date" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
-                            formControlName="emergencyLastname" class="form-control form-control-sm" />
+                          <label class="form-label form-label-small">Date of Birth</label>
+                          <input type="text" id="familyDOB" class="form-control form-control-sm"
+                            placeholder="dd-mm-yyyy" formControlName="familyDOB" autocomplete="off" [bsConfig]="{
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MMM-YYYY'
+                            }" [maxDate]="maxDate" bsDatepicker required readonly
+                            (bsValueChange)="onDOBChange($event)" />
                           <div
-                            *ngIf="registrationForm.get('emergencyLastname')?.touched && registrationForm.get('emergencyLastname')?.invalid"
+                            *ngIf="registrationForm.get('familyDOB')?.touched && registrationForm.get('familyDOB')?.invalid"
                             class="text-danger fs-custom">
-                            Last name is required
+                            Date of Birth is required
                           </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                          <label for="emergencyContact" class="form-label form-label-small">Contact Number</label>
-                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace numbersOnly
-                            formControlName="emergencyContact" placeholder="Father's Name"
-                            class="form-control form-control-sm" maxlength="10" />
+                          <label for="familyContact" class="form-label form-label-small">Contact Number</label>
+                          <input type="text" noFirstSpace numbersOnly formControlName="familyContact"
+                            placeholder="Father's Name" class="form-control form-control-sm" maxlength="10" />
                           <div
-                            *ngIf="registrationForm.get('emergencyContact')?.touched && registrationForm.get('emergencyContact')?.invalid"
+                            *ngIf="registrationForm.get('familyContact')?.touched && registrationForm.get('familyContact')?.invalid"
                             class="text-danger fs-custom">
-                            Contact Number is required
+                            <small *ngIf="registrationForm.get('familyContact')?.errors?.['required']">
+                              Family contact is required.
+                            </small>
+                            <small *ngIf="registrationForm.get('familyContact')?.errors?.['pattern']">
+                              Enter a valid 10-digit contact number.
+                            </small>
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="relationId" class="form-label form-label-small">Gender</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyGender" class="form-label form-label-small">Gender</label>
+                          <select formControlName="familyGender" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of genderOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyGender')?.touched && registrationForm.get('familyGender')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Gender is required
                           </div>
                         </div>
 
                         <div class="col-md-4 mb-3">
-                          <label for="relationId" class="form-label form-label-small">Blood Group</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyBloodGroup" class="form-label form-label-small">Blood Group</label>
+                          <select formControlName="familyBloodGroup" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of bloodGroupOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyBloodGroup')?.touched && registrationForm.get('familyBloodGroup')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Blood Group is required
                           </div>
                         </div>
 
                         <div class="col-md-4">
-                          <label for="relationId" class="form-label form-label-small">Is Dependent</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyIsdependent" class="form-label form-label-small">Is Dependent</label>
+                          <select formControlName="familyIsdependent" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyIsdependent')?.touched && registrationForm.get('familyIsdependent')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Is Dependent is required
                           </div>
                         </div>
 
                         <div class="col-md-4">
-                          <label for="relationId" class="form-label form-label-small">Is Expired</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyIsExpired" class="form-label form-label-small">Is Expired</label>
+                          <select formControlName="familyIsExpired" class="form-control form-control-sm"
+                            (change)="onIsExpiredChange($event)">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyIsExpired')?.touched && registrationForm.get('familyIsExpired')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Is Expired is required
                           </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                          <label for="relationId" class="form-label form-label-small">Is PF Nominee</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyIsPFNominee" class="form-label form-label-small">Is PF Nominee</label>
+                          <select formControlName="familyIsPFNominee" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyIsPFNominee')?.touched && registrationForm.get('familyIsPFNominee')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Is PF Nominee is required
                           </div>
                         </div>
 
                         <div class="col-md-4">
-                          <label for="relationId" class="form-label form-label-small">Is Graduity Nominee</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyIsGraduityNominee" class="form-label form-label-small">Is Graduity
+                            Nominee</label>
+                          <select formControlName="familyIsGraduityNominee" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyIsGraduityNominee')?.touched && registrationForm.get('familyIsGraduityNominee')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Is Graduity Nominee is required
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="emergencyEmail" class="form-label form-label-small">Occupation</label>
-                          <input type="text" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
-                            formControlName="emergencyEmail" class="form-control form-control-sm" />
+                          <label for="familyOccupation" class="form-label form-label-small">Occupation</label>
+                          <input type="text" placeholder="Last Name" noFirstSpace formControlName="familyOccupation"
+                            class="form-control form-control-sm" />
                           <div
-                            *ngIf="registrationForm.get('emergencyEmail')?.touched && registrationForm.get('emergencyEmail')?.invalid"
+                            *ngIf="registrationForm.get('familyOccupation')?.touched && registrationForm.get('familyOccupation')?.invalid"
                             class="text-danger fs-custom">
-                            Email is required
+                            Occupation is required
                           </div>
                         </div>
-                        <!-- <div class="col-md-4"></div> -->
                         <div class="col-md-4 mb-3">
-                          <label for="emergencyEmail" class="form-label form-label-small">Age</label>
-                          <input type="text" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
-                            formControlName="emergencyEmail" class="form-control form-control-sm" />
+                          <label for="familyAge" class="form-label form-label-small">Age</label>
+                          <input type="text" placeholder="please select Date Of Birth" noFirstSpace readonly
+                            formControlName="familyAge" class="form-control form-control-sm" />
                           <div
-                            *ngIf="registrationForm.get('emergencyEmail')?.touched && registrationForm.get('emergencyEmail')?.invalid"
+                            *ngIf="registrationForm.get('familyAge')?.touched && registrationForm.get('familyAge')?.invalid"
                             class="text-danger fs-custom">
-                            Email is required
+                            Please select Dare Of Birth
                           </div>
                         </div>
 
                         <div class="col-md-4">
-                          <label for="relationId" class="form-label form-label-small">Status</label>
-                          <select formControlName="relationId" [attr.disabled]="isAllDataPresent ? true : null"
-                            class="form-control form-control-sm">
+                          <label for="familyStatus" class="form-label form-label-small">Status</label>
+                          <select formControlName="familyStatus" class="form-control form-control-sm readonly-select">
                             <option value="">Select</option>
-                            <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of statusOptions" [value]="title?.id">
+                              {{ title?.name }}
+                            </option>
                           </select>
                           <div
-                            *ngIf="registrationForm.get('relationId')?.touched && registrationForm.get('relationId')?.invalid"
+                            *ngIf="registrationForm.get('familyStatus')?.touched && registrationForm.get('familyStatus')?.invalid"
                             class="text-danger fs-custom">
-                            Relation is required
+                            Please select Is Expired.
                           </div>
                         </div>
-
-                        <!-- <div class="col-md-4">
-                          <label for="emergencyEmail" class="form-label form-label-small">Aadhar</label>
-                          <input type="file" placeholder="Last Name" noFirstSpace [readOnly]="isAllDataPresent"
-                            formControlName="emergencyEmail" class="form-control form-control-sm" />
-                          <div
-                            *ngIf="registrationForm.get('emergencyEmail')?.touched && registrationForm.get('emergencyEmail')?.invalid"
-                            class="text-danger fs-custom">
-                            Email is required
-                          </div>
-                        </div> -->
-
-
 
                       </div>
-
-
-
                     </div>
 
                     <div class="row mb-4">
@@ -2428,8 +2465,8 @@
                         <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
                       </div>
                       <div class="col-md-9 row g-3">
-                        <div class="col-md-6" *ngIf="!aadharFile; else familyPhotoInput">
-                          <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
+                        <div class="col-md-6" *ngIf="!familyAadharFile; else familyAadharInput">
+                          <div *ngIf="!editButtonDisplay; else nonBlurAadharFileInput" class="mb-3">
                             <div class="mb-3 opacity-50 pointer-events-none ">
                               <label
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
@@ -2438,52 +2475,54 @@
                               </label>
                             </div>
                           </div>
-                          <ng-template #nonBlurFileInput>
+                          <ng-template #nonBlurAadharFileInput>
                             <div class="mb-3">
-                              <label for="aadharFile"
+                              <label for="familyAadhar"
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
                                 <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
-                                <span class="text-primary fw-semibold">Upload Aadhar</span>
-                                <input type="file" id="aadharFile" accept=".pdf" #aadharFileInput
-                                  (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                                <span class="text-primary fw-semibold">{{uploadFamilyAadharFile}}</span>
+                                <input type="file" id="familyAadhar" accept=".pdf" #aadharFileInput
+                                  (change)="onFileSelect($event, 'familyAadhar')" class="d-none" />
                               </label>
                             </div>
+                            <div *ngIf="familyAadharFileError" class="text-danger fs-custom mt-1">
+                              {{ familyAadharFileError }}
+                            </div>
                           </ng-template>
-
                         </div>
-                        <ng-template #familyPhotoInput>
+                        <ng-template #familyAadharInput>
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
                               (click)="viewFile(aadharFile)">
-                              aadhaar file
+                              View Aadhaar File
                             </span>
-                            <input type="file" accept=".pdf" #hiddenAadharInput
+                            <!-- <input type="file" accept=".pdf" #hiddenAadharInput
                               (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
                             <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
                               (click)="deleteFile('6')"></i>
                             <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
-                              (click)="openAadharFileInput()"></i>
+                              (click)="openAadharFileInput()"></i> -->
                           </div>
                         </ng-template>
 
-                        <div class="col-md-6" *ngIf="!aadharFile; else familyPhotoInput">
-                          <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
+                        <div class="col-md-6" *ngIf="!familyPhotoFile; else familyPhotoInput">
+                          <div *ngIf="!editButtonDisplay; else nonBlurFamilyPhotoFileInput" class="mb-3">
                             <div class="mb-3 opacity-50 pointer-events-none ">
                               <label
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
                                 <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
-                                <span class="text-primary fw-semibold">Upload Aadhaar</span>
+                                <span class="text-primary fw-semibold">Upload Family Photo</span>
                               </label>
                             </div>
                           </div>
-                          <ng-template #nonBlurFileInput>
+                          <ng-template #nonBlurFamilyPhotoFileInput>
                             <div class="mb-3">
-                              <label for="aadharFile"
+                              <label for="familyPhotoFile"
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
                                 <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
-                                <span class="text-primary fw-semibold">Upload Family Photo</span>
-                                <input type="file" id="aadharFile" accept=".pdf" #aadharFileInput
-                                  (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                                <span class="text-primary fw-semibold">{{uploadFamilyPhotoFile}}</span>
+                                <input type="file" id="familyPhotoFile" accept=".pdf" #aadharFileInput
+                                  (change)="onFileSelect($event, 'familyPhotoFile')" class="d-none" />
                               </label>
                             </div>
                           </ng-template>
@@ -2493,14 +2532,14 @@
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
                               (click)="viewFile(aadharFile)">
-                              aadhaar file
+                              View Family Photo
                             </span>
-                            <input type="file" accept=".pdf" #hiddenAadharInput
+                            <!-- <input type="file" accept=".pdf" #hiddenAadharInput
                               (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
                             <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
                               (click)="deleteFile('6')"></i>
                             <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
-                              (click)="openAadharFileInput()"></i>
+                              (click)="openAadharFileInput()"></i> -->
                           </div>
                         </ng-template>
                       </div>
@@ -2508,19 +2547,126 @@
 
                     <div class="d-flex justify-content-end mr-4">
                       <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
-                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('bank')">
-                        Save & Next
+                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('family')">
+                        Save & Add
                       </button>
 
-                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
-                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('bank')">
+                      <!-- <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
+                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('family')">
                         Edit Data
                       </button>
 
                       <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
-                        (click)="setValidation('bank')">
-                        Update & Next
-                      </button>
+                        (click)="setValidation('family')">
+                        Update & Add
+                      </button> -->
+                    </div>
+                    <div *ngFor="let member of FamilyInfoData; let i = index" class="mb-3">
+                      <hr>
+                      <div class="row mb-4">
+
+                        <div class="col-md-3 fw-semibold">
+                          Family Details Recorded {{i+1}}
+                          <p class="mb-1 text-muted">({{ member.relationName }})</p>
+                        </div>
+
+                        <div class="col-md-9 row g-3">
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Relation</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.relationName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Name</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.firstName }} {{
+                              member.lastName
+                              }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Date Of Birth</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.dob | date:'dd-MM-yyyy'
+                              }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Contact</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.contactNumber }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Gender</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.genderName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Blood Group</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.bloodGroupName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Dependent</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.isDependentFlagName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Expired</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.isExpiredFlagName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">PF Nominee</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.isPfNomineeFlagName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Gratuity Nominee</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.isGraduityNomineeFlagName
+                              }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Occupation</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.occupation }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Status</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.statusName }}</span>
+                          </div>
+
+                          <div class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Age</label>
+                            <span class="form-control form-control-sm" readonly>{{ member.age }}</span>
+                          </div>
+
+                          <div *ngIf="member.aadharFile" class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Aadhar</label>
+                            <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                              (click)="viewFile(member.aadharFile)">
+                              View Aadhar File
+                            </span>
+                          </div>
+
+                          <div *ngIf="member.familyPhotoFile" class="col-md-4 mb-3">
+                            <label class="form-label form-label-small">Family Photo</label>
+                            <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
+                              (click)="viewFile(member.familyPhotoFile)">
+                              View Family Photo
+                            </span>
+                          </div>
+
+                          <!-- Delete Button -->
+                          <div class="col-md-12 mt-2 d-flex justify-content-start">
+                            <button type="button" class="btn btn-sm btn-danger"
+                              (click)="deleteFamilyMember(member.sno)">
+                              <i class="bi bi-trash3-fill"></i> Delete
+                            </button>
+                          </div>
+
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2546,8 +2692,8 @@
                     <div class="row mb-4">
                       <div class="col-md-3 fw-bold-d">Agreement Information</div>
                       <div class="col-md-9 row g-3">
-                        <div class="col-md-12" *ngIf="!aadharFile; else aadharFileInputt">
-                          <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
+                        <div class="col-md-12" *ngIf="!agreementFile; else agreementFileInputt">
+                          <div *ngIf="!editButtonDisplay; else nonBlurAgreementFileInput" class="mb-3">
                             <div class="mb-3 opacity-50 pointer-events-none ">
                               <label
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-blocked">
@@ -2556,20 +2702,20 @@
                               </label>
                             </div>
                           </div>
-                          <ng-template #nonBlurFileInput>
+                          <ng-template #nonBlurAgreementFileInput>
                             <div class="mb-3">
-                              <label for="aadharFile"
+                              <label for="agreementFile"
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
                                 <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
                                 <span class="text-primary fw-semibold">Upload agreement document</span>
-                                <input type="file" id="aadharFile" accept=".pdf" #aadharFileInput
-                                  (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                                <input type="file" id="agreementFile" accept=".pdf" #aadharFileInput
+                                  (change)="onFileSelect($event, 'agreementFile')" class="d-none" />
                               </label>
                             </div>
                           </ng-template>
 
                         </div>
-                        <ng-template #aadharFileInputt>
+                        <ng-template #agreementFileInputt>
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
                               (click)="viewFile(aadharFile)">
@@ -2625,12 +2771,140 @@
                   <div class="scroll-container">
                     <div class="row mb-4">
                       <div class="col-md-3 fw-bold-d">Professional Information</div>
-                      <div class="col-md-9 row text-danger d-flex justify-content-center align-items-center">
-                        <img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5sSR8EW8dzS2ZVyqgRguH_hHHo_0t_yYBw&s"
-                          alt="">
+                      <div class="col-md-9 row">
+                        <div class="col-md-4 mb-3">
+                          <label for="department" class="form-label form-label-small">Department</label>
+                          <select formControlName="department" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of departmentListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('department')?.touched && registrationForm.get('department')?.invalid"
+                            class="text-danger fs-custom">
+                            Department is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="designation" class="form-label form-label-small">Designation</label>
+                          <select formControlName="designation" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of designationListOptions" [value]="title?.designationid">{{
+                              title?.name }}</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('designation')?.touched && registrationForm.get('designation')?.invalid"
+                            class="text-danger fs-custom">
+                            Designation is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="reportingManager" class="form-label form-label-small">Repoting Manager</label>
+                          <select formControlName="reportingManager" class="form-control form-control-sm" disabled>
+                            <option value="">Select</option>
+                            <option *ngFor="let title of managersListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('reportingManager')?.touched && registrationForm.get('reportingManager')?.invalid"
+                            class="text-danger fs-custom">
+                            Reporting Manager is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="businessUnit" class="form-label form-label-small">Business Unit</label>
+                          <select formControlName="businessUnit" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('businessUnit')?.touched && registrationForm.get('businessUnit')?.invalid"
+                            class="text-danger fs-custom">
+                            Business Unit is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="HQ" class="form-label form-label-small">Head Quarter</label>
+                          <select formControlName="HQ" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div *ngIf="registrationForm.get('HQ')?.touched && registrationForm.get('HQ')?.invalid"
+                            class="text-danger fs-custom">
+                            Head Quarter is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="incrementType" class="form-label form-label-small">Increament Type</label>
+                          <select formControlName="incrementType" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('incrementType')?.touched && registrationForm.get('incrementType')?.invalid"
+                            class="text-danger fs-custom">
+                            Increament Type is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="paysheetGroup" class="form-label form-label-small">Paysheet Group</label>
+                          <select formControlName="paysheetGroup" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('paysheetGroup')?.touched && registrationForm.get('paysheetGroup')?.invalid"
+                            class="text-danger fs-custom">
+                            Paysheet Group is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="ishod" class="form-label form-label-small">Is HOD</label>
+                          <select formControlName="ishod" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
+                          </select>
+                          <div *ngIf="registrationForm.get('ishod')?.touched && registrationForm.get('ishod')?.invalid"
+                            class="text-danger fs-custom">
+                            Is HOD is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="hodName" class="form-label form-label-small">HOD Name (Emp ID)</label>
+                          <input type="text" [value]="jobCodeData.name" [readOnly]="isEmergencyDataPresent" noFirstSpace
+                            formControlName="hodName" class="form-control form-control-sm" placeholder="first name"
+                            (keypress)="allowOnlyLetters($event)" />
+                          <div
+                            *ngIf="registrationForm.get('hodName')?.touched && registrationForm.get('hodName')?.invalid"
+                            class="text-danger fs-custom">
+                            First name is required
+                          </div>
+                        </div>
                       </div>
+                    </div>
+                    <div class="d-flex justify-content-end mr-4">
+                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
+                        class="btn custom-bg text-white  btn-sm shadow-none border-0"
+                        (click)="setValidation('professional')">
+                        Save & Next
+                      </button>
 
+                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
+                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('professional')">
+                        Edit Data
+                      </button>
+
+                      <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
+                        (click)="setValidation('professional')">
+                        Update & Next
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -2658,7 +2932,7 @@
                       <div class="col-md-9 row g-3">
 
 
-                        <div class="col-md-12 mb-2" *ngIf="!aadharFile; else aadharFileInputt">
+                        <div class="col-md-12 mb-2" *ngIf="!MedicalReportFile; else medicalReportFileInput">
                           <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
                             <div class="mb-3 opacity-50 pointer-events-none ">
                               <label
@@ -2681,7 +2955,7 @@
                           </ng-template>
 
                         </div>
-                        <ng-template #aadharFileInputt>
+                        <ng-template #medicalReportFileInput>
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
                               (click)="viewFile(aadharFile)">
@@ -2954,6 +3228,36 @@
                     </div>
                   </div>
                 </div> -->
+              </div>
+
+              <div *ngIf="activeTab === 'hrms'">
+                <div class="container-fluid border-0 pt-4 card ">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Move To HRMS</h5>
+                    <div class="text-end mr-4">
+                      <ng-container *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        <span class="badge bg-warning text-dark d-none d-md-inline">
+                          {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                          Complete
+                        </span>
+                      </ng-container>
+                      <ng-template #allDone>
+                        <span class="badge bg-success d-none d-md-inline text-white">All Sections Completed</span>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="scroll-container">
+                    <div class="row mb-4">
+                      <div class="col-md-3 fw-bold-d">Proceed to HRMS</div>
+                      <div class="col-md-9 row text-danger d-flex justify-content-center align-items-center">
+                        <img
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5sSR8EW8dzS2ZVyqgRguH_hHHo_0t_yYBw&s"
+                          alt="">
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </form>

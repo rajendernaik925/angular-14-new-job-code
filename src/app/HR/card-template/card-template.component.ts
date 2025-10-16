@@ -11,6 +11,10 @@ export class CardTemplateComponent implements OnInit {
   loggedUser: any = {};
   userData: any;
   myDate: any;
+  activeTab: string = 'HHCL';
+  logo: string = 'https://sso.heterohealthcare.com/iconnect/assets/img/logo.svg';
+  downloadValue: boolean = false;
+
 
   downloadIcon = 'assets/img/idcard/download.svg';
   companiesImage: any[] = [];
@@ -19,6 +23,13 @@ export class CardTemplateComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+
+
+    this.activeTab = 'HHCL'
+
+
+
+
     this.loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(this.loggedUser);
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate')));
@@ -63,6 +74,20 @@ export class CardTemplateComponent implements OnInit {
         { label: 'Front', url: 'assets/img/idcard/Azista BST ID card.jpg' },
         { label: 'Back', url: 'assets/img/idcard/back-3.jpg' }
       ]
+    },
+    {
+      name: 'Assam Unit-Ⅰ',
+      images: [
+        { label: 'Front', url: 'assets/img/idcard/Hhcl-1.jpg' },
+        { label: 'Back', url: 'assets/img/idcard/assam-unit-1.PNG' }
+      ]
+    },
+    {
+      name: 'Assam Unit-ⅠⅠ',
+      images: [
+        { label: 'Front', url: 'assets/img/idcard/Hhcl-1.jpg' },
+        { label: 'Back', url: 'assets/img/idcard/assam-unit-2.PNG' }
+      ]
     }
   ];
 
@@ -71,6 +96,20 @@ export class CardTemplateComponent implements OnInit {
     link.href = url;
     link.download = url.substring(url.lastIndexOf('/') + 1);
     link.click();
+  }
+
+
+    setActiveSection(section: string) {
+    this.activeTab = section;
+
+    // Object.keys(this.registrationForm.controls).forEach(field => {
+    //   const control = this.registrationForm.get(field);
+    //   if (control) {
+    //     control.markAsUntouched();
+    //     control.markAsPristine();
+    //     control.updateValueAndValidity();
+    //   }
+    // });
   }
 
 }

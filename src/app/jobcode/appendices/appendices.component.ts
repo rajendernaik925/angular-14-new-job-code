@@ -275,7 +275,7 @@ export class AppendicesComponent implements OnInit {
                 this.employeeForm.patchValue({ employeeCode: '13431' });
                 this.showEmployeeCodeHighlight = false;
                 const base64Once = btoa(this.empId.toString());
-                const base64Twice = btoa(base64Once); 
+                const base64Twice = btoa(base64Once);
                 this.router.navigate(['/onboarding-data', base64Twice]);
               }, 3000);
             }
@@ -513,23 +513,6 @@ export class AppendicesComponent implements OnInit {
       }
     });
   }
-
-  // salesGroup(id: any) {
-  //   this.authService.salesGroup(id).subscribe({
-  //     next: (res) => {
-  //       this.salesGroupList = res;
-  //       if (res.length === 1) {
-  //         this.employeeForm.get('salesGroup')?.setValue(res[0].salesgroupcode);
-  //       } else {
-  //         this.employeeForm.get('salesGroup')?.setValue('');
-  //       }
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       console.log("Error fetching sales group:", err);
-  //     }
-  //   });
-  // }
-
 
   probationPeriod() {
     this.authService.probationPeriod().subscribe({

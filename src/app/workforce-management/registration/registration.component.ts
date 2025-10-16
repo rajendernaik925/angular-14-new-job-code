@@ -54,6 +54,7 @@ export class RegistrationComponent implements OnInit {
       isFresher: ['fresher', Validators.required],
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
+      completeAddress: ['', Validators.required],
     });
   }
 
@@ -89,6 +90,10 @@ export class RegistrationComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         this.loadedData = res;
+        if(this.loadedData?.candidateInterviewDetails?.length) {
+          localStorage.setItem('HiringLoginCandidateId', this.jobCodeData.candidateId);
+          this.router.navigate(['/personal-info']);
+        }
         if (
           res?.candidatePersonalInformationDetails ||
           res?.candidateCommunicationAddressDetails ||
@@ -110,6 +115,7 @@ export class RegistrationComponent implements OnInit {
             firstName: res?.candidatePersonalInformationDetails?.firstName ? res.candidatePersonalInformationDetails.firstName : this.jobCodeData.name,
             mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber ? res.candidatePersonalInformationDetails.mobileNumber : this.jobCodeData.mobileNumber,
             lastName: res?.candidatePersonalInformationDetails?.lastName || '',
+            completeAddress: res?.candidatePersonalInformationDetails?.lastName || '',
             dob: res?.candidatePersonalInformationDetails?.dob || '',
             highestDegree: res?.candidatePersonalInformationDetails?.highestDegree || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
@@ -328,8 +334,8 @@ export class RegistrationComponent implements OnInit {
 
       // Required fields based on fresher/experienced
       const requiredFields = this.isFresher
-        ? ['isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume']
-        : ['companyName', 'totalExperience', 'isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume'];
+        ? ['isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress']
+        : ['companyName', 'totalExperience', 'isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress'];
 
       // Validate form
       requiredFields.forEach(field => {
@@ -378,6 +384,7 @@ export class RegistrationComponent implements OnInit {
         mobileNumber: formValues.mobileNumber || null,
         dob: formValues.dob || null,
         firstName: formValues.firstName || null,
+        completeAddress: formValues.completeAddress || null,
         lastName: formValues.lastName || null,
         highestDegree: formValues.highestDegree || null,
         aadharNumber: formValues.adhar || null,

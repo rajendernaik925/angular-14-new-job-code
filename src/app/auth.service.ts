@@ -893,7 +893,7 @@ export class AuthService {
     };
   }
   
-  private jobCodeUrls: string = "http://192.168.215.75:2025/";
+  private jobCodeUrls: string = "http://192.168.213.189:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -1054,31 +1054,35 @@ export class AuthService {
   }
 
   states() {
-    return this.http.get(`${this.jobCodeUrls}master/states`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/states`)
   }
 
   bloodGroup() {
-    return this.http.get(`${this.jobCodeUrls}master/bloodgroup`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/bloodgroup`)
   }
 
   languages() {
-    return this.http.get(`${this.jobCodeUrls}master/languages`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/languages`)
   }
 
   relation() {
-    return this.http.get(`${this.jobCodeUrls}master/relations`).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get(`${this.jobCodeUrls}master/relations`)
   }
 
   banks() {
-    return this.http.get(`${this.jobCodeUrls}master/banks`).pipe(
+    return this.http.get(`${this.jobCodeUrls}master/banks`)
+  }
+
+  yesNoOptions() {
+    return this.http.get(`${this.jobCodeUrls}master/flags`)
+  }
+
+  status() {
+    return this.http.get(`${this.jobCodeUrls}master/status`)
+  }
+
+  deleteFamilyMember(id:any) {
+    return this.http.delete(`${this.jobCodeUrls}hiring/deletefamily/${id}`).pipe(
       catchError(this.handleError)
     )
   }

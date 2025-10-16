@@ -14,8 +14,7 @@
     </ol>
 </nav>
 <div class="container-fluid card">
-    <!-- Centered Heading -->
-    <div class="row mb-4 custom-bg p-2">
+    <!-- <div class="row mb-4 p-2">
         <div class="col-12 d-flex">
             <p class="h5 m-0 text-center" style="color: #0072BC; font-weight: bold;">
                 <i class="bi bi-person-fill"></i> ID Card Template
@@ -23,29 +22,34 @@
         </div>
     </div>
 
-    <!-- Card Grid -->
-   <div class="custom-height">
-        <div class="row">
-            <div class="col-md-3 " *ngFor="let company of companies"
-                style="box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
-                <h5 class="mb-2" style="font-weight: bold;">
-                    {{ company.name }} <i class="bi bi-person-fill-down"></i>
+    <div class="custom-height">
+        <div class="d-flex overflow-auto" style="gap: 1rem; padding: 1rem;">
+            <div *ngFor="let company of companies" style="
+              flex: 0 0 auto;
+              width: 320px;
+              box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+              border-radius: 6px;
+              padding: 0.5rem;
+            ">
+                <h5 class="mb-2 fw-bold">
+                    {{ company.name }}
                 </h5>
+
                 <div class="row">
                     <div class="col-6 mb-3" *ngFor="let img of company.images; let i = index">
                         <div class="card position-relative" (mouseenter)="hoverIndex[company.name + i] = true"
                             (mouseleave)="hoverIndex[company.name + i] = false">
-
-                            <img [src]="img.url" class="card-img-top img-fluid" [alt]="img.label" />
+                            <img [src]="img.url" class="card-img-top img-fluid" [alt]="img.label"
+                                style="border-radius: 4px;" />
 
                             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                                 [ngStyle]="{
-                              'background': 'rgba(0,0,0,0.4)',
-                              'opacity': hoverIndex[company.name + i] ? '1' : '0',
-                              'transition': '0.3s'
-                            }">
+                                  background: 'rgba(0,0,0,0.4)',
+                                  opacity: hoverIndex[company.name + i] ? '1' : '0',
+                                  transition: '0.3s'
+                                }">
                                 <button class="btn btn-light" (click)="downloadImage(img.url)">
-                                    <img [src]="downloadIcon" alt="">
+                                    <img [src]="downloadIcon" alt="" />
                                 </button>
                             </div>
                         </div>
@@ -53,17 +57,265 @@
                 </div>
             </div>
         </div>
-    </div> 
-
-
-    <!-- <video width="700" controls>
-        <source src="../../../assets/img/idcard/RepIQ Bot_launch 2.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video> -->
-
-    
+    </div> -->
 
 
 
 
+
+     <div class="container-flui">
+        <div class="container-flui mb-0">
+            <div class="row">
+                <div class="col-md-2 d-none d-md-flex flex-column justify-content-betwen card border-0 py-3 px-2"
+                    style="min-height: 68vh; background-color: #F8F8F8;">
+                    <!-- <div class="text-center mb-2">
+                        <img [src]="logo" alt="Logo" class="img-fluid cursor-pointer" style="max-height: 40px;"
+                            [routerLink]="['/dashboard']">
+                    </div> -->
+                    <!-- <hr class="mt-2"> -->
+                    <div class="mb-0 side-scroll-container">
+                        <h6 class="fw-bold text-dark ps-2 mb-3 mt-3">ID Card Templates</h6>
+                        <hr class="mt-2">
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white ': activeTab === 'HHCL',
+                              'btn-light text-dark': activeTab !== 'HHCL'
+                            }" (click)="setActiveSection('HHCL')">
+                            <i class="bi bi-check-circle mr-2"></i> HHCL Template
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'azistaComposites',
+                              'btn-light text-dark': activeTab !== 'azistaComposites'
+                            }" (click)="setActiveSection('azistaComposites')">
+                            <i class="bi bi-check-circle mr-2"></i> Azista Composites
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'azistaAerospace',
+                              'btn-light text-dark': activeTab !== 'azistaAerospace'
+                            }" (click)="setActiveSection('azistaAerospace')">
+                            <i class="bi bi-check-circle mr-2"></i> Azista Aerospace
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'azistaBST',
+                              'btn-light text-dark': activeTab !== 'azistaBST'
+                            }" (click)="setActiveSection('azistaBST')">
+                            <i class="bi bi-check-circle mr-2"></i> Azista BST
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'assamUnit-1',
+                              'btn-light text-dark': activeTab !== 'assamUnit-1'
+                            }" (click)="setActiveSection('assamUnit-1')">
+                            <i class="bi bi-check-circle mr-2"></i> Assam Division Unit-I
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'assamUnit-2',
+                              'btn-light text-dark': activeTab !== 'assamUnit-2'
+                            }" (click)="setActiveSection('assamUnit-2')">
+                            <i class="bi bi-check-circle mr-2"></i> Assam Division Unit-II
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-10">
+                    <div *ngIf="activeTab === 'HHCL'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>HHCL ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container">
+                                <div class="row mb-4 mt-3">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Hhcl-1.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Hhcl-1.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/HHcl back.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/HHcl back.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'azistaComposites'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Azista Composites ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Azista Composites ID.jpg" width="200px"
+                                            height="285px" alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Azista Composites ID.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/Azista Composites  ID Card-back.jpg" width="200px"
+                                            height="285px" alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Azista Composites  ID Card-back.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'azistaAerospace'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Azista Aerospace ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Azista Aerospace ID.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Azista Aerospace ID.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/back-2.jpg" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/back-2.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'azistaBST'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Azista BST ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Azista BST ID card.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Azista BST ID card.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/back-3.jpg" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/back-3.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'assamUnit-1'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Assam Division Unit-I ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Hhcl-1.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Hhcl-1.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/assam-unit-1.PNG" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/assam-unit-1.PNG')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'assamUnit-2'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Assam Division Unit-II ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/Hhcl-1.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/Hhcl-1.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/assam-unit-2.PNG" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/assam-unit-2.PNG')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>

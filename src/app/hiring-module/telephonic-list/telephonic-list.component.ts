@@ -601,7 +601,6 @@ export class TelephonicListComponent implements OnInit {
   totalCities(id: any) {
     this.authService.cities(id).subscribe({
       next: (res: any) => {
-        console.log("total designation: ", res);
         this.totalCitiesList = res;
       },
       error: (err: HttpErrorResponse) => {

@@ -113,6 +113,21 @@
                   </div>
 
                 </div>
+
+                <div class="row my-3">
+                  <div class="col-md-12">
+                    <label for="completeAddress">
+                      Complete Address (Pincode) <span class="text-danger">*</span>
+                    </label>
+                    <textarea [readOnly]="isAllDataPresent" stringOnly formControlName="completeAddress"
+                      class="form-control form-control-sm" placeholder="Enter Complete Address" rows="2" [ngClass]="{
+                        'is-invalid':
+                          registrationForm.get('completeAddress')?.invalid &&
+                          registrationForm.get('completeAddress')?.touched
+                      }"></textarea>
+                  </div>
+                </div>
+
                 <hr class="custom-hr mt-2 scale-in-hor-left" />
                 <div class="row">
                   <!-- <div class="col-md-3">
@@ -181,12 +196,13 @@
                   </div>
                 </div>
                 <hr *ngIf="isAllDataPresent" class="custom- mt-2 scale-in-hor-left" />
-                <div *ngIf="isAllDataPresent && !loadedData?.candidateInterviewDetails?.length" class="alert alert-dark text-center mt-3 fw-bold">
+                <div *ngIf="isAllDataPresent && !loadedData?.candidateInterviewDetails?.length"
+                  class="alert alert-dark text-center mt-3 fw-bold">
                   <!-- ⚠️ Once submitting the data, no edit option for this form ❗ -->
                   ⚠️ No changes can be made after submission ❗
                 </div>
 
-                <div *ngIf="loadedData?.candidateInterviewDetails?.length" >
+                <div *ngIf="loadedData?.candidateInterviewDetails?.length">
                   <!-- <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name | uppercase }})</h6> -->
 
                   <!-- <div class="scroll-container mb-0"> -->

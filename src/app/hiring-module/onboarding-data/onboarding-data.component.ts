@@ -46,10 +46,21 @@ export class OnboardingDataComponent implements OnInit {
   languageOptions: any[] = [];
   relationOptions: any[] = [];
   bankOptions: any[] = [];
+  yesNoOptions: any[] = [];
+  statusOptions: any[] = [];
+  managersListOptions: any[] = [];
+  businessUnitsListOptions: any[] = [];
+  departmentListOptions: any[] = [];
+  designationListOptions: any[] = [];
+  employeeDataListOptions: any[] = [];
+  ptStatesListOptions: any[] = [];
+  salesOfficeListOptions: any[] = [];
+
   indianStates: any[] = [];
   communicationCities: any[] = [];
   permanentCities: any[] = [];
   experienceArray: any[] = [];
+  FamilyInfoData: any[] = [];
   isSidebarOpen: boolean = false;
   isLoading: boolean = false;
   isUpdateMode: boolean = false;
@@ -73,6 +84,10 @@ export class OnboardingDataComponent implements OnInit {
   tenthFile: string | null = null;
   twelthFile: string | null = null;
   aadharFile: string | null = null;
+  agreementFile: string | null = null;
+  MedicalReportFile: string | null = null;
+  familyPhotoFile: string | null = null;
+  familyAadharFile: string | null = null;
   bankFile: string | null = null;
   panFile: string | null = null;
   deplomaFile: string | null = null;
@@ -95,13 +110,17 @@ export class OnboardingDataComponent implements OnInit {
   selectedServiceLetterFileName: string = 'Upload Service Letter';
   hasExperince: boolean = false;
   experienceId: any;
-  uploadResume: string = 'Upload Resume'
-  uploadPhoto: string = 'Upload Photo'
-  uploadBankFile: string = 'Upload bank passbook'
+  uploadResume: string = 'Upload Resume';
+  uploadPhoto: string = 'Upload Photo';
+  uploadBankFile: string = 'Upload bank passbook';
+  uploadFamilyAadharFile: string = 'Upload Aadhar';
+  uploadFamilyPhotoFile: string = 'Upload Family Photo';
   alertMessage: string | null = null;
   private panAlertTimeout: any;
   empId: any | null = null;
   bankFileError: string | null = null;
+  familyAadharFileError: string | null = null;
+  searchEmpId: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -201,8 +220,8 @@ export class OnboardingDataComponent implements OnInit {
       completeaAddress: ['', Validators.required],
 
       // bank
-      accountNumber: [ '', [ Validators.required,Validators.pattern(/^\d{9,18}$/)]],
-      confirmAccountNumber: [ '', [ Validators.required,Validators.pattern(/^\d{9,18}$/)]],
+      accountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
+      confirmAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
       bankName: ['', Validators.required],
       ifscCode: ['', [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]],
       identificationMarkA: ['', Validators.required],
@@ -210,10 +229,35 @@ export class OnboardingDataComponent implements OnInit {
 
       // family details 
       familyRelationId: ['', Validators.required],
+      familyFirstName: ['', Validators.required],
+      familyLastName: ['', Validators.required],
+      familyDOB: ['', Validators.required],
+      familyContact: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      familyGender: ['', [Validators.required]],
+      familyBloodGroup: ['', [Validators.required]],
+      familyIsdependent: ['', [Validators.required]],
+      familyIsExpired: ['', [Validators.required]],
+      familyIsPFNominee: ['', [Validators.required]],
+      familyIsGraduityNominee: ['', [Validators.required]],
+      familyOccupation: ['', [Validators.required]],
+      familyAge: ['', Validators.required],
+      familyStatus: ['', Validators.required],
 
 
       // medical
-      medicalDescription: ['', [Validators.required, Validators.minLength(10)]]
+      medicalDescription: ['', [Validators.required, Validators.minLength(10)]],
+
+      // professional information 
+      department: ['', [Validators.required]],
+      designation: ['', [Validators.required]],
+      HQ: ['', [Validators.required]],
+      ishod: ['', [Validators.required]],
+      reportingManager: ['', [Validators.required]],
+      paysheetGroup: ['', [Validators.required]],
+      incrementType: ['', [Validators.required]],
+      businessUnit: ['', [Validators.required]],
+      hodName: ['', [Validators.required]],
+
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -256,7 +300,23 @@ export class OnboardingDataComponent implements OnInit {
     this.bloodGroup();
     this.languages();
     this.relation();
-    this.banks()
+    this.banks();
+    this.loadYesNoOptions();
+    this.status();
+
+
+
+    // list
+    // this.joiningTime();
+    this.masterBu();
+    this.listOfManagers();
+    this.totalDepartments();
+    this.designation();
+    this.employeeList();
+    this.ptStates();
+    this.salesDistrict();
+    this.salesOffice();
+    this.probationPeriod();
   }
 
   // toggleSidebar() {
@@ -298,6 +358,10 @@ export class OnboardingDataComponent implements OnInit {
         if (this.loadedData?.candidateInterviewDetails?.length) {
           // this.editButtonDisplay = false;
           // this.InterviewStatus();
+        }
+
+        if (res?.familyInformationResponseDTO) {
+          this.FamilyInfoData = res?.familyInformationResponseDTO;
         }
 
         this.hasExperince = !res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher;
@@ -406,12 +470,28 @@ export class OnboardingDataComponent implements OnInit {
             // 'ifscCode',
             // 'identificationMarkA',
             // 'identificationMarkB'
-            accountNumber: res?.bankDetailsDTO?.accountNumber ||'',
-            confirmAccountNumber: res?.bankDetailsDTO?.accountNumber ||'',
-            bankName: res?.bankDetailsDTO?.bankId ||'',
-            ifscCode: res?.bankDetailsDTO?.ifscCode ||'',
-            identificationMarkA: res?.bankDetailsDTO?.identificationMarkA ||'',
-            identificationMarkB: res?.bankDetailsDTO?.identificationMarkB ||'',
+            accountNumber: res?.bankDetailsDTO?.accountNumber || '',
+            confirmAccountNumber: res?.bankDetailsDTO?.accountNumber || '',
+            bankName: res?.bankDetailsDTO?.bankId || '',
+            ifscCode: res?.bankDetailsDTO?.ifscCode || '',
+            identificationMarkA: res?.bankDetailsDTO?.identificationMarkA || '',
+            identificationMarkB: res?.bankDetailsDTO?.identificationMarkB || '',
+
+            // professional
+            // 'department',
+            // 'designation',
+            // 'HQ',
+            // 'ishod',
+            // 'reportingManager',
+            // 'paysheetGroup',
+            // 'incrementType',
+            // 'businessUnit'
+            department: res?.candidatePersonalInformationDetails?.departmentId || '',
+            designation: res?.candidatePersonalInformationDetails?.designationId || '',
+            reportingManager: res?.candidateOnboardingDTO?.reportingId || '',
+            businessUnit: res?.candidateOnboardingDTO?.buId || '',
+            hodName: res?.candidateOnboardingDTO?.reportingPersonName || '',
+
 
             // Experience Details
             isFresher: isFresher,
@@ -445,7 +525,7 @@ export class OnboardingDataComponent implements OnInit {
             .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isBankDataPresent = [res?.bankDetailsDTO?.accountNumber]
-            .every(field => typeof field === 'string' && field.trim() !== '');  
+            .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -860,7 +940,7 @@ export class OnboardingDataComponent implements OnInit {
     } else if (value == 'emergency') {
       this.isEmergencyDataPresent = false;
       this.emergencyUpdate = true;
-    } else if(value == 'bank') {
+    } else if (value == 'bank') {
       console.log("rajender");
       this.isBankDataPresent = false;
       this.bankUpdate = true;
@@ -1058,13 +1138,21 @@ export class OnboardingDataComponent implements OnInit {
         return;
       }
       if (fieldName === 'bankFile') {
-        this.bankFileError = ''; // clear error when new file selected
+        this.bankFileError = '';
+      }
+      if (fieldName === 'familyAadhar') {
+        this.familyAadharFileError = '';
       }
 
       // Track uploaded file names
-      if (fieldName === 'resume') this.uploadResume = file.name;
-      if (fieldName === 'photo') this.uploadPhoto = file.name;
-      if (fieldName === 'bankFile') this.uploadBankFile = file.name;
+      const shortName = file.name.length > 25 ? file.name.substring(0, 25) + '...' : file.name;
+
+      if (fieldName === 'resume') this.uploadResume = shortName;
+      if (fieldName === 'photo') this.uploadPhoto = shortName;
+      if (fieldName === 'bankFile') this.uploadBankFile = shortName;
+      if (fieldName === 'familyAadhar') this.uploadFamilyAadharFile = shortName;
+      if (fieldName === 'familyPhotoFile') this.uploadFamilyPhotoFile = shortName;
+
 
       // Store clean file copy
       const selectedFile = new File([file], file.name, {
@@ -1081,10 +1169,11 @@ export class OnboardingDataComponent implements OnInit {
     let hasFile = false;
 
     // Append common fields
-    formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    formData.append('moduleId', '4');
+    // formData.append('jobCodeId', this.empId);
+    // formData.append('moduleId', '4');
+    formData.append('moduleId', fieldName === 'agreementFile' ? '9' : '4');
     formData.append('document', JSON.stringify({
-      candidateId: this.jobCodeData?.candidateId
+      candidateId: this.empId
     }));
 
     // File mapping
@@ -1096,6 +1185,7 @@ export class OnboardingDataComponent implements OnInit {
       'deploma': 'pgFile',
       'degreeOrBTech': 'degreeFile',
       'others': 'otherFile',
+      'agreementFile': 'agreementFile'
     };
 
     // Append only selected files
@@ -1123,10 +1213,6 @@ export class OnboardingDataComponent implements OnInit {
         control.updateValueAndValidity();
       }
     });
-
-    // if (section === 'documents' && !this.loadedData?.candidateInterviewDetails?.length && this.loadedData?.candidateTrackingDTO?.totalPercentage != '100') {
-    //   this.loadUserData();
-    // }
   }
 
   setValidation(Action: string) {
@@ -1664,26 +1750,34 @@ export class OnboardingDataComponent implements OnInit {
       this.finalSave('family', formData);
     }
     else if (Action === 'family') {
-      const bankFields = [
-        'accountNumber',
-        'confirmAccountNumber',
-        'bankName',
-        'ifscCode',
-        'identificationMarkA',
-        'identificationMarkB'
+      const familyFields = [
+        'familyRelationId',
+        'familyFirstName',
+        'familyLastName',
+        'familyDOB',
+        'familyContact',
+        'familyGender',
+        'familyBloodGroup',
+        'familyIsdependent',
+        'familyIsExpired',
+        'familyIsPFNominee',
+        'familyIsGraduityNominee',
+        'familyOccupation',
+        'familyAge',
+        'familyStatus'
       ];
 
-      let bankSection: any = {};
+      let familySection: any = {};
       let isValid = true;
 
-      // Validate fields
-      bankFields.forEach((field) => {
+      // ✅ Validate form fields
+      familyFields.forEach((field) => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
           control.markAsTouched();
           isValid = false;
         } else {
-          bankSection[field] = control?.value;
+          familySection[field] = control?.value;
         }
       });
 
@@ -1692,57 +1786,102 @@ export class OnboardingDataComponent implements OnInit {
         return;
       }
 
-      // Account Number match validation
-      const accNum = bankSection.accountNumber;
-      const conAccNum = bankSection.confirmAccountNumber;
+      // ✅ Build final JSON object
+      const finalFamilyData = {
+        candidateId: this.empId,
+        relationId: familySection.familyRelationId,
+        firstName: familySection.familyFirstName,
+        lastName: familySection.familyLastName,
+        // dob: familySection.familyDOB,
+        dob: familySection.familyDOB ? new Date(familySection.familyDOB).toISOString().split('T')[0] : '',
+        contactNumber: familySection.familyContact,
+        gender: familySection.familyGender,
+        bloodGroup: familySection.familyBloodGroup,
+        isDependent: familySection.familyIsdependent,
+        isExpired: familySection.familyIsExpired,
+        isPfNominee: familySection.familyIsPFNominee,
+        isGraduityNominee: familySection.familyIsGraduityNominee,
+        occupation: familySection.familyOccupation,
+        age: familySection.familyAge,
+        familyStatus: familySection.familyStatus
+      };
 
-      if (accNum !== conAccNum) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Account Number Mismatch',
-          text: 'Account Number and Confirm Account Number must be the same.',
-          confirmButtonText: 'OK',
-        });
+      console.log('Final Family JSON:', finalFamilyData);
+
+      const formData = new FormData();
+      formData.append('familyDetails', JSON.stringify(finalFamilyData));
+      formData.append('moduleId', '8');
+
+      if (this.selectedFiles['familyAadhar']) {
+        formData.append('familyAadharFile', this.selectedFiles['familyAadhar']);
+        this.familyAadharFileError = '';
+      } else {
+        this.familyAadharFileError = 'Please choose the Aadhaar PDF file.';
         return;
       }
 
-      // Build final JSON
-      const finalBankData = {
-        accountNumber: bankSection.accountNumber,
-        confirmAccountNumber: bankSection.confirmAccountNumber,
-        bankId: bankSection.bankName,
-        ifscCode: bankSection.ifscCode,
-        identificationMarkA: bankSection.identificationMarkA,
-        identificationMarkB: bankSection.identificationMarkB,
-        candidateId: this.empId
-      };
-
-      console.log('Final Bank JSON:', finalBankData);
-
-      // Prepare FormData
-      const formData = new FormData();
-      formData.append('familyDetails', JSON.stringify([finalBankData]));
-      formData.append('moduleId', '8');
-
-      // ✅ Append bank file if available
-      if (this.selectedFiles['bankFfamilyAadharile']) {
-        formData.append('familyAadhar', this.selectedFiles['familyAadhar']);
-        // this.bankFileError = ''
-      } else {
-        if (this.bankFile == 'editFamAadharFile') {
-          // this.bankFileError = ''
-        } else {
-          this.bankFileError = 'Please choose a bank passbook PDF file.';
-          return;
-        }
-      }
-
-      if (this.selectedFiles['familyPhoto']) {
-        formData.append('familyPhoto', this.selectedFiles['familyPhoto']);
+      if (this.selectedFiles['familyPhotoFile']) {
+        formData.append('familyPhotoFile', this.selectedFiles['familyPhotoFile']);
       }
 
       this.finalSave('family', formData);
     }
+    else if (Action === 'professional') {
+      const professionalFields = [
+        'department',
+        'designation',
+        'HQ',
+        'ishod',
+        'reportingManager',
+        'paysheetGroup',
+        'incrementType',
+        'businessUnit',
+        'hodName'
+      ];
+
+      let professionalSection: any = {};
+      let isValid = true;
+
+      professionalFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          professionalSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required professional information fields!", 'danger');
+        return;
+      }
+
+      const finalProfessionalData = {
+        candidateId: this.empId,
+        departmentId: professionalSection.department,
+        designationId: professionalSection.designation,
+        headQuarter: professionalSection.HQ,
+        isHOD: professionalSection.ishod,
+        reportingManagerId: professionalSection.reportingManager,
+        paysheetGroup: professionalSection.paysheetGroup,
+        incrementType: professionalSection.incrementType,
+        businessUnit: professionalSection.businessUnit,
+        hodName: professionalSection.hodName,
+      };
+
+      console.log('Final Professional JSON:', finalProfessionalData);
+
+      return;
+
+
+      const formData = new FormData();
+      formData.append('professionalDetails', JSON.stringify(finalProfessionalData));
+      formData.append('moduleId', '10');
+      this.finalSave('professional', formData);
+    }
+
+
   }
 
 
@@ -1824,6 +1963,31 @@ export class OnboardingDataComponent implements OnInit {
               // expectedSalary: '',
               // suitableJobDescription: '',
             });
+          } else if (action === 'family') {
+            const educationFields = [
+              'familyRelationId',
+              'familyFirstName',
+              'familyLastName',
+              'familyDOB',
+              'familyContact',
+              'familyGender',
+              'familyBloodGroup',
+              'familyIsdependent',
+              'familyIsExpired',
+              'familyIsPFNominee',
+              'familyIsGraduityNominee',
+              'familyOccupation',
+              'familyAge',
+              'familyStatus'
+            ];
+            this.uploadFamilyAadharFile = 'Upload Aadhar';
+            this.uploadFamilyPhotoFile = 'Upload Family Photo';
+
+            educationFields.forEach(field => {
+              this.registrationForm.get(field)?.setValue('');
+              this.registrationForm.get(field)?.markAsPristine();
+              this.registrationForm.get(field)?.markAsUntouched();
+            });
           }
         } else if (res.status === 500) {
           const errorMessage = (res as any).message || 'Failed';
@@ -1837,6 +2001,7 @@ export class OnboardingDataComponent implements OnInit {
 
       }, error: (err: HttpErrorResponse) => {
         this.isLoading = false;
+        this.selectedFiles = {};
         // console.log("error : ", err);
         Swal.fire({
           title: 'error',
@@ -2016,6 +2181,30 @@ export class OnboardingDataComponent implements OnInit {
     })
   }
 
+  loadYesNoOptions() {
+    this.authService.yesNoOptions().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.yesNoOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  status() {
+    this.authService.status().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.statusOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
   states() {
     this.authService.states().subscribe({
       next: (res: any) => {
@@ -2056,6 +2245,145 @@ export class OnboardingDataComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         console.error('Error fetching cities:', err);
         this.setCitiesAndPatch([], addressType, null);
+      }
+    });
+  }
+
+
+
+  masterBu() {
+    this.authService.masterBu().subscribe({
+      next: (res: any[]) => {
+        this.businessUnitsListOptions = [...res];
+      },
+      error: (err) => {
+        console.error('Error fetching business unit data:', err);
+      },
+    });
+  }
+
+  listOfManagers(): void {
+    this.authService.ReportingManagers().subscribe({
+      next: (res: any) => {
+        this.managersListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  totalDepartments() {
+    this.authService.totalDepartments().subscribe({
+      next: (res: any) => {
+        this.departmentListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  designation() {
+    this.authService.getDesignations().subscribe({
+      next: (res: any) => {
+        this.designationListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  employeeList() {
+    this.authService.employeeList().subscribe({
+      next: (res) => {
+        this.employeeDataListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  ptStates() {
+    this.authService.ptStates().subscribe({
+      next: (res) => {
+        this.ptStatesListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  // onBusinessUnitChange(event: any) {
+  //   const selectedId = event.target.value;
+  //   const selectedItem = this.businessUnitsList.find(item => item.id == selectedId);
+  //   console.log("selected item : ", selectedItem.id);
+  //   this.costCenter(selectedItem.id)
+
+  // }
+
+  costCenter(id: any) {
+    this.authService.costCenterList(id).subscribe({
+      next: (res) => {
+        // this.costCenterList = res;
+        // this.employeeForm.get('costCenter')?.setValue('');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  salesDistrict() {
+    this.authService.salesDistrict().subscribe({
+      next: (res) => {
+        // this.salesDistrictList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  salesOffice() {
+    this.authService.salesOffice().subscribe({
+      next: (res: any) => {
+        this.salesOfficeListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  onSalesOfficeChange(event: any) {
+    const selectedId = event.target.value;
+    this.salesGroup(selectedId);
+  }
+
+
+  salesGroup(id: any) {
+    this.authService.salesGroup(id).subscribe({
+      next: (res) => {
+        // this.salesGroupList = res;
+        // this.employeeForm.get('salesGroup')?.setValue('');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching sales group:", err);
+      }
+    });
+  }
+
+  probationPeriod() {
+    this.authService.probationPeriod().subscribe({
+      next: (res: any) => {
+        // this.probationPeriodList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
       }
     });
   }
@@ -2136,6 +2464,9 @@ export class OnboardingDataComponent implements OnInit {
       width: '500px',
       backdrop: true
     }).then((result) => {
+      const base64Once = btoa(this.empId.toString());
+      const base64Twice = btoa(base64Once);
+      this.router.navigate(['/employee-code', base64Twice]);
       // if (result.isConfirmed) {
       //   localStorage.removeItem('hiringLoginData');
       //   this.router.navigate(['/hiring-login']);
@@ -2605,6 +2936,177 @@ export class OnboardingDataComponent implements OnInit {
   toggleLanguageDropdown() {
     this.showLanguageDropdown = !this.showLanguageDropdown;
   }
+
+  // Example: in your component.ts
+
+  onDOBChange(selectedDate: Date) {
+    if (selectedDate) {
+      const today = new Date();
+      let age = today.getFullYear() - selectedDate.getFullYear();
+      const m = today.getMonth() - selectedDate.getMonth();
+
+      // If birth month/day has not occurred yet this year, subtract 1
+      if (m < 0 || (m === 0 && today.getDate() < selectedDate.getDate())) {
+        age--;
+      }
+
+      // Patch the value to familyAge form control
+      this.registrationForm.patchValue({
+        familyAge: age
+      });
+    } else {
+      this.registrationForm.patchValue({
+        familyAge: ''
+      });
+    }
+  }
+
+  onIsExpiredChange(event: any) {
+    const selectedValue = +event.target.value; // convert to number
+    if (selectedValue === 1) {
+      // Yes → Inactive
+      this.registrationForm.get('familyStatus')?.setValue(2);
+    } else if (selectedValue === 2) {
+      // No → Active
+      this.registrationForm.get('familyStatus')?.setValue(1);
+    } else {
+      this.registrationForm.get('familyStatus')?.setValue('');
+    }
+  }
+
+
+
+  // FamilyInfoData = [
+  //   {
+  //     id: 1,
+  //     firstName: "John",
+  //     lastName: "Doe",
+  //     relationId: 1,
+  //     relationName: "Father",
+  //     dob: "1965-08-10",
+  //     contactNumber: "9876543210",
+  //     gender: 1,
+  //     bloodGroup: 1,
+  //     isDependent: 0,
+  //     isExpired: 0,
+  //     isPfNominee: 1,
+  //     isGraduityNominee: 1,
+  //     occupation: "Retired",
+  //     age: 60,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "FatherAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/FatherAadhar.pdf"
+  //   },
+  //   {
+  //     id: 2,
+  //     firstName: "Jane",
+  //     lastName: "Doe",
+  //     relationId: 2,
+  //     relationName: "Mother",
+  //     dob: "1968-02-15",
+  //     contactNumber: "9876543211",
+  //     gender: 2,
+  //     bloodGroup: 2,
+  //     isDependent: 0,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Homemaker",
+  //     age: 56,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "MotherAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/MotherAadhar.pdf"
+  //   },
+  //   {
+  //     id: 3,
+  //     firstName: "Emily",
+  //     lastName: "Doe",
+  //     relationId: 3,
+  //     relationName: "Daughter",
+  //     dob: "1995-12-01",
+  //     contactNumber: "9876543212",
+  //     gender: 2,
+  //     bloodGroup: 1,
+  //     isDependent: 1,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Software Engineer",
+  //     age: 28,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "EmilyAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/EmilyAadhar.pdf"
+  //   },
+  //   {
+  //     id: 4,
+  //     firstName: "Michael",
+  //     lastName: "Doe",
+  //     relationId: 4,
+  //     relationName: "Son",
+  //     dob: "2000-06-20",
+  //     contactNumber: "9876543213",
+  //     gender: 1,
+  //     bloodGroup: 2,
+  //     isDependent: 1,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Student",
+  //     age: 23,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "",
+  //     familyAadharFileUrl: ""
+  //   }
+  // ];
+
+
+  deleteFamilyMember(id: number) {
+    console.log(" sno : ", id);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this family member?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.existingCandidates.splice(index, 1);
+        // Swal.fire('Deleted!', 'Family member has been removed.', 'success');
+        // return;
+        this.isLoading = true;
+        this.authService.deleteFamilyMember(id).subscribe({
+          next: (res: any) => {
+            console.log(res);
+            this.isLoading = false;
+            this.loadUserData();
+            Swal.fire('Deleted!', 'Family member has been removed.', 'success');
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isLoading = false;
+            console.warn(err)
+          }
+        })
+      }
+    });
+  }
+
+  searchEmployee(): void {
+    if (!this.searchEmpId) {
+      this.showAlert('Please enter a valid Employee ID', 'danger');
+      return;
+    }
+    const base64Once = btoa(this.searchEmpId.toString());
+    const base64Twice = btoa(base64Once);
+    this.router.navigate(['/onboarding-data', base64Twice]);
+    this.empId = this.searchEmpId;
+    this.loadUserData();
+    this.searchEmpId = '';
+    this.activeTab = 'personal';
+  }
+
+
+
 
 
 }

@@ -205,8 +205,9 @@ export class personalInfoComponent implements OnInit {
     this.registrationForm.get('email')?.setValue(this.jobCodeData.email);
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
     this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
-    if (!this.jobCodeData.status) {
-      this.router.navigate(['/hiring-login']);
+    const HiringLoginCandidateId = localStorage.getItem('HiringLoginCandidateId') || '';
+    if (!HiringLoginCandidateId) {
+      // this.router.navigate(['/hiring-login']);
     }
     // this.checkIfLoginExpired();
 

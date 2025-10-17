@@ -17,6 +17,7 @@ export class OnboardingDataComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
   @ViewChild('hiddenTenthInput') hiddenTenthInput!: ElementRef;
   @ViewChild('hiddenAadharInput') hiddenAadharInput!: ElementRef;
+  @ViewChild('hiddenAgreementInput') hiddenAgreementInput!: ElementRef;
   @ViewChild('hiddenPanInput') hiddenPanInput!: ElementRef;
   @ViewChild('hiddenTwelthInput') hiddenTwelthInput!: ElementRef;
   @ViewChild('hiddenDegreeOrBTechInput') hiddenDegreeOrBTechInput!: ElementRef;
@@ -389,6 +390,7 @@ export class OnboardingDataComponent implements OnInit {
           this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
           this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
           this.bankFile = res?.bankDetailsDTO?.bankFilePath || null;
+          this.agreementFile = res?.agreementFileDTO?.agreementFile || null;
           this.panFile = res?.candidateDocumentDetails?.panFile || null;
           this.twelthFile = res?.candidateDocumentDetails?.intermediateFile || null;
           this.deplomaFile = res?.candidateDocumentDetails?.pgFile || null;
@@ -1172,9 +1174,20 @@ export class OnboardingDataComponent implements OnInit {
     // formData.append('jobCodeId', this.empId);
     // formData.append('moduleId', '4');
     formData.append('moduleId', fieldName === 'agreementFile' ? '9' : '4');
-    formData.append('document', JSON.stringify({
-      candidateId: this.empId
-    }));
+    // formData.append('document', JSON.stringify({
+    //   candidateId: this.empId
+    // }));
+
+    if (fieldName === 'agreementFile') {
+      formData.append('agreementDetails', JSON.stringify({
+        candidateId: this.empId
+      }));
+    } else {
+      formData.append('document', JSON.stringify({
+        candidateId: this.empId
+      }));
+    }
+
 
     // File mapping
     const fileFieldMap: { [key: string]: string } = {
@@ -1188,18 +1201,28 @@ export class OnboardingDataComponent implements OnInit {
       'agreementFile': 'agreementFile'
     };
 
+    hasFile = false;
+    let hasAgreement = false;
+
     // Append only selected files
     for (const [key, formField] of Object.entries(fileFieldMap)) {
       const selected = this.selectedFiles[key];
       if (selected) {
         formData.append(formField, selected);
         hasFile = true;
+        if (key === 'agreementFile') {
+          hasAgreement = true;
+        }
+      }
+    }
+    if (hasFile) {
+      if (hasAgreement) {
+        this.finalSave('professional', formData);
+      } else {
+        this.finalSave('documents', formData);
       }
     }
 
-    if (hasFile) {
-      this.finalSave('documents', formData);
-    }
   }
 
   setActiveSection(section: string) {
@@ -2550,6 +2573,10 @@ export class OnboardingDataComponent implements OnInit {
 
   openAadharFileInput(): void {
     this.hiddenAadharInput.nativeElement.click();
+  }
+
+  openAgreementFileInput(): void {
+    this.hiddenAgreementInput.nativeElement.click();
   }
 
   openPanFileInput(): void {

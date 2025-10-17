@@ -68,6 +68,8 @@ export class RegistrationComponent implements OnInit {
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
     this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
     if (!this.jobCodeData.status) {
+      localStorage.removeItem('hiringLoginData');
+      localStorage.removeItem('HiringLoginCandidateId');
       this.router.navigate(['/hiring-login']);
     }
 
@@ -469,6 +471,7 @@ export class RegistrationComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem('hiringFieldLoginData');
+        localStorage.removeItem('HiringLoginCandidateId');
         this.router.navigate(['/hiring-login']);
       }
     });

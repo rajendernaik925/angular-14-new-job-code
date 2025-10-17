@@ -1,9 +1,27 @@
 
 .scroll-container
-  //max-height: calc(100vh - 245px)
+  //max-height: calc(100vh - 275px)
   max-height: calc(100vh - 175px)
   min-height: calc(100vh - 175px)
   overflow-y: scroll // Keep scrolling functionality
+  display: block
+  max-width: 100%
+  position: relative
+
+  // Hide scrollbar for Webkit-based browsers (Chrome, Safari, Edge)
+  &::-webkit-scrollbar
+    display: none
+  // Hide scrollbar for Firefox
+  scrollbar-width: none
+
+  // Hide scrollbar for Internet Explorer 10+
+  -ms-overflow-style: none
+
+
+.side-scroll-container  
+  max-height: calc(100vh - 135px)
+  min-height: calc(100vh - 135px)
+  overflow-y: scroll 
   display: block
   max-width: 100%
   position: relative
@@ -384,6 +402,10 @@ input::placeholder, textarea::placeholder
   color: #6c757d
   opacity: 0.5
 
+.readonly-select 
+  pointer-events: none
+  background-color: #f8f9fa
+  color: #212529
 
 
 

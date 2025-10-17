@@ -2718,36 +2718,19 @@
                         <ng-template #agreementFileInputt>
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
-                              (click)="viewFile(aadharFile)">
-                              aadhaar file
+                              (click)="viewFile(agreementFile)">
+                              View Agreement File
                             </span>
-                            <input type="file" accept=".pdf" #hiddenAadharInput
-                              (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
-                            <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
-                              (click)="deleteFile('6')"></i>
+                            <input type="file" accept=".pdf" #hiddenAgreementInput
+                              (change)="onFileSelect($event, 'agreementFile')" class="d-none" />
                             <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
-                              (click)="openAadharFileInput()"></i>
+                              (click)="openAgreementFileInput()"></i>
                           </div>
                         </ng-template>
                       </div>
                     </div>
 
-                    <div class="d-flex justify-content-end mr-4">
-                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
-                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('bank')">
-                        Save & Next
-                      </button>
-
-                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
-                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('bank')">
-                        Edit Data
-                      </button>
-
-                      <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
-                        (click)="setValidation('bank')">
-                        Update & Next
-                      </button>
-                    </div>
+                    
                   </div>
                 </div>
               </div>

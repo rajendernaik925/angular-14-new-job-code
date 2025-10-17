@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
@@ -20,6 +20,7 @@ export class personalInfoComponent implements OnInit {
   @ViewChild('hiddenAadharInput') hiddenAadharInput!: ElementRef;
   @ViewChild('hiddenPanInput') hiddenPanInput!: ElementRef;
   @ViewChild('hiddenTwelthInput') hiddenTwelthInput!: ElementRef;
+  @ViewChild('hiddenAgreementInput') hiddenAgreementInput!: ElementRef;
   @ViewChild('hiddenDegreeOrBTechInput') hiddenDegreeOrBTechInput!: ElementRef;
   @ViewChild('hiddenDeplomaInput') hiddenDeplomaInput!: ElementRef;
   @ViewChild('hiddenOthersInput') hiddenOthersInput!: ElementRef;
@@ -44,14 +45,25 @@ export class personalInfoComponent implements OnInit {
   marriatalStatusOptions: any[] = [];
   joiningOptions: any[] = [];
   bloodGroupOptions: any[] = [];
+  languageOptions: any[] = [];
+  relationOptions: any[] = [];
+  bankOptions: any[] = [];
+  yesNoOptions: any[] = [];
+  statusOptions: any[] = [];
+
   indianStates: any[] = [];
   communicationCities: any[] = [];
   permanentCities: any[] = [];
   experienceArray: any[] = [];
+  FamilyInfoData: any[] = [];
   isSidebarOpen: boolean = false;
   isLoading: boolean = false;
   isUpdateMode: boolean = false;
   isAllDataPresent: boolean = false;
+  isEmergencyDataPresent: boolean = false;
+  isBankDataPresent: boolean = false;
+  emergencyUpdate: boolean = false;
+  bankUpdate: boolean = false;
   isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
@@ -67,6 +79,11 @@ export class personalInfoComponent implements OnInit {
   tenthFile: string | null = null;
   twelthFile: string | null = null;
   aadharFile: string | null = null;
+  agreementFile: string | null = null;
+  MedicalReportFile: string | null = null;
+  familyPhotoFile: string | null = null;
+  familyAadharFile: string | null = null;
+  bankFile: string | null = null;
   panFile: string | null = null;
   deplomaFile: string | null = null;
   degreeOrBTechFile: string | null = null;
@@ -88,20 +105,17 @@ export class personalInfoComponent implements OnInit {
   selectedServiceLetterFileName: string = 'Upload Service Letter';
   hasExperince: boolean = false;
   experienceId: any;
-  uploadResume: string = 'Upload Resume'
-  uploadPhoto: string = 'Upload Photo'
+  uploadResume: string = 'Upload Resume';
+  uploadPhoto: string = 'Upload Photo';
+  uploadBankFile: string = 'Upload bank passbook';
+  uploadFamilyAadharFile: string = 'Upload Aadhar';
+  uploadFamilyPhotoFile: string = 'Upload Family Photo';
   alertMessage: string | null = null;
   private panAlertTimeout: any;
-
-
-  // sections = [
-  //   { key: 'personalInfo', label: 'Personal Info' },
-  //   { key: 'address', label: 'Address' },
-  //   { key: 'education', label: 'Education' },
-  //   { key: 'document', label: 'Documents' },
-  //   { key: 'experience', label: 'Working Experience' },
-  // ];
-
+  empId: any | null = null;
+  bankFileError: string | null = null;
+  familyAadharFileError: string | null = null;
+  searchEmpId: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -112,10 +126,6 @@ export class personalInfoComponent implements OnInit {
     private datePipe: DatePipe
   ) {
     this.registrationForm = this.fb.group({
-
-
-
-
       // educationDetails: this.fb.array([this.createEducationFormGroup()]),
       jobCodeId: [{ value: '', disabled: false }, Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -136,6 +146,12 @@ export class personalInfoComponent implements OnInit {
       // pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
       pan: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]$/)]],
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
+      whatsappNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      alternateMobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      nationality: ['Indian', Validators.required],
+      religion: ['', Validators.required],
+      motherTongue: ['', Validators.required],
+      knownLanguages: [[], Validators.required],
       resume: [''],
       photo: [''],
       // address
@@ -187,7 +203,56 @@ export class personalInfoComponent implements OnInit {
       //salary
       currentSalary: ['', Validators.required],
       expectedSalary: ['', Validators.required],
-      suitableJobDescription: ['', Validators.required]
+      suitableJobDescription: ['', Validators.required],
+
+
+      // emergency
+      relationId: ['', Validators.required],
+      emergencyFirstname: ['', Validators.required],
+      emergencyLastname: ['', Validators.required],
+      emergencyContact: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
+      emergencyEmail: ['', [Validators.required, Validators.email]],
+      completeaAddress: ['', Validators.required],
+
+      // bank
+      accountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
+      confirmAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
+      bankName: ['', Validators.required],
+      ifscCode: ['', [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]],
+      identificationMarkA: ['', Validators.required],
+      identificationMarkB: ['', Validators.required],
+
+      // family details 
+      familyRelationId: ['', Validators.required],
+      familyFirstName: ['', Validators.required],
+      familyLastName: ['', Validators.required],
+      familyDOB: ['', Validators.required],
+      familyContact: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      familyGender: ['', [Validators.required]],
+      familyBloodGroup: ['', [Validators.required]],
+      familyIsdependent: ['', [Validators.required]],
+      familyIsExpired: ['', [Validators.required]],
+      familyIsPFNominee: ['', [Validators.required]],
+      familyIsGraduityNominee: ['', [Validators.required]],
+      familyOccupation: ['', [Validators.required]],
+      familyAge: ['', Validators.required],
+      familyStatus: ['', Validators.required],
+
+
+      // medical
+      medicalDescription: ['', [Validators.required, Validators.minLength(10)]],
+
+      // professional information 
+      department: ['', [Validators.required]],
+      designation: ['', [Validators.required]],
+      HQ: ['', [Validators.required]],
+      ishod: ['', [Validators.required]],
+      reportingManager: ['', [Validators.required]],
+      paysheetGroup: ['', [Validators.required]],
+      incrementType: ['', [Validators.required]],
+      businessUnit: ['', [Validators.required]],
+      hodName: ['', [Validators.required]],
+
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -195,9 +260,26 @@ export class personalInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.route.paramMap.subscribe(params => {
+    //   const encodedId = params.get('id');
+    //   if (encodedId) {
+    //     try {
+    //       const firstDecode = atob(encodedId);
+    //       const secondDecode = atob(firstDecode);
+    //       this.empId = Number(secondDecode) || null;
+    //       console.log('Decoded Job Code ID:', this.empId);
+    //     } catch (error) {
+    //       console.error('Error decoding encoded ID:', error);
+    //       this.empId = null;
+    //     }
+    //   } else {
+    //     this.empId = null;
+    //   }
+    // });
+
     this.activeTab = 'personal'
     this.handleExperienceToggle('fresher');
-    const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
+    const loginData = JSON.parse(localStorage.getItem('hiringFieldLoginData') || '{}');
     this.jobCodeData = loginData;
     console.log("loggin data : ", this.jobCodeData);
     // console.log("hiring login data : ", this.jobCodeData.email)
@@ -206,13 +288,27 @@ export class personalInfoComponent implements OnInit {
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
     this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
     const HiringLoginCandidateId = localStorage.getItem('HiringLoginCandidateId') || '';
-    if (!HiringLoginCandidateId) {
-      // this.router.navigate(['/hiring-login']);
+    
+      console.log("rajender")
+      console.log("rrr : ",HiringLoginCandidateId);
+      console.log("rrr : ",this.jobCodeData.status);
+    if (!HiringLoginCandidateId || !this.jobCodeData.status) {
+      console.log("rajender")
+      localStorage.removeItem('hiringFieldLoginData');
+      localStorage.removeItem('HiringLoginCandidateId');
+      this.router.navigate(['/hiring-login']);
     }
+
+
     // this.checkIfLoginExpired();
 
 
     if (this.jobCodeData.candidateId) {
+      this.empId = this.jobCodeData.candidateId
+      this.loadUserData();
+    }
+
+    if (this.empId) {
       this.loadUserData();
     }
 
@@ -223,8 +319,13 @@ export class personalInfoComponent implements OnInit {
     this.educationLevel();
     this.joiningTime();
     this.states();
-    this.bloodGroup()
-    // this.cities();
+    this.bloodGroup();
+    this.languages();
+    this.relation();
+    this.banks();
+    this.loadYesNoOptions();
+    this.status();
+
   }
 
   // toggleSidebar() {
@@ -248,12 +349,28 @@ export class personalInfoComponent implements OnInit {
   }
 
   loadUserData() {
+    // if (!this.empId) {
+    //   console.warn("emp id not getting");
+    //   return;
+    // }
+
     this.isLoading = true;
-    this.authService.registeredData(this.jobCodeData.candidateId).subscribe({
+    this.authService.registeredData(this.empId).subscribe({
       next: (res: any) => {
         this.loadedData = res;
+        this.isLoading = false;
+        this.jobCodeData = res;
+        console.log("result : ", res);
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
-          this.completedStatus();
+          // this.completedStatus();
+        }
+        if (this.loadedData?.candidateInterviewDetails?.length) {
+          // this.editButtonDisplay = false;
+          // this.InterviewStatus();
+        }
+
+        if (res?.familyInformationResponseDTO) {
+          this.FamilyInfoData = res?.familyInformationResponseDTO;
         }
 
         this.hasExperince = !res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher;
@@ -261,20 +378,7 @@ export class personalInfoComponent implements OnInit {
         console.log("education details : ", res.candidateEducationDetails);
         this.existingEducationList = res.candidateEducationDetails;
 
-        if (this.loadedData?.candidateInterviewDetails?.length) {
-          this.editButtonDisplay = false;
-          this.InterviewStatus();
-          // this.setActiveSection('status');
-          // Swal.fire({
-          //   title: 'Notice',
-          //   text: 'You do not have access to edit. Please check the status of your interview rounds.',
-          //   icon: 'info',
-          //   showConfirmButton: true,
-          //   confirmButtonText: 'OK',
-          //   timerProgressBar: true,
-          // });
-          // this.showAlert("You do not have access to edit. Please check the status of your interview rounds.",'success')
-        }
+
         // console.log("rajender : ",res.candidatePersonalInformationDetails.candidateInterviewDetails)
         if (
           res?.candidatePersonalInformationDetails ||
@@ -290,18 +394,11 @@ export class personalInfoComponent implements OnInit {
 
           this.resumeFile = this.loadedData?.candidatePersonalInformationDetails?.resumeFile || null;
 
-          // const resumeControl = this.registrationForm.get('resume');
-
-          // if (!this.resumeFile) {
-          //   resumeControl?.setValidators(Validators.required);
-          // } else {
-          //   resumeControl?.clearValidators();
-          // }
-
-          // resumeControl?.updateValueAndValidity();
           this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
           this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
           this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
+          this.bankFile = res?.bankDetailsDTO?.bankFilePath || null;
+          this.agreementFile = res?.agreementFileDTO?.agreementFile || null;
           this.panFile = res?.candidateDocumentDetails?.panFile || null;
           this.twelthFile = res?.candidateDocumentDetails?.intermediateFile || null;
           this.deplomaFile = res?.candidateDocumentDetails?.pgFile || null;
@@ -313,31 +410,24 @@ export class personalInfoComponent implements OnInit {
           this.paySlipFilePath3 = res?.candidateExperienceDetails?.candidateSalaryDetails?.paySlipFileC || null;
           this.serviceFilePath = res?.candidateExperienceDetails?.candidateSalaryDetails?.serviceFile || null;
 
-          // if (!this.paySlipFilePath1) {
-          //   this.registrationForm.get('payslipFile')?.setValidators([Validators.required]);
-          // } else {
-          //   this.registrationForm.get('payslipFile')?.clearValidators();
-          // }
+          //this.isFresher = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced';
+          const isFresher =
+            res?.candidateExperienceDetails?.candidateJoiningDetails !== null
+              ? (res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced')
+              : (res?.candidatePersonalInformationDetails?.isFresher ? 'fresher' : 'experienced');
 
-          // if (!this.serviceFilePath) {
-          //   this.registrationForm.get('serviceLetterFile')?.setValidators([Validators.required]);
-          // } else {
-          //   this.registrationForm.get('serviceLetterFile')?.clearValidators();
-          // }
 
-          // // Update validity status after changing validators
-          // this.registrationForm.get('payslipFile')?.updateValueAndValidity();
-          // this.registrationForm.get('serviceLetterFile')?.updateValueAndValidity();
+          // const isFreshers = res?.candidateExperienceDetails?.candidateJoiningDetails === null ? (res?.candidateExperienceDetails ? 'fresher' : 'experienced')
+          // : (res?.candidatePersonalInformationDetails?.isFresher ? 'fresher' : 'experienced');
 
-          // console.log("file docs name : ",paySlipFile,serviceFile)
-
-          const isFresher = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced';
           this.experienceArray = res?.candidateExperienceDetails?.candidateCompanyDetails || [];
 
           // Patch form data
           this.registrationForm.patchValue({
             firstName: res?.candidatePersonalInformationDetails?.firstName ? res.candidatePersonalInformationDetails.firstName : this.jobCodeData.name,
             mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber ? res.candidatePersonalInformationDetails.mobileNumber : this.jobCodeData.mobileNumber,
+            jobCodeId: res?.candidatePersonalInformationDetails?.jcReferanceId ? res.candidatePersonalInformationDetails.jcReferanceId : this.jobCodeData.jcReferanceId,
+            email: res?.candidatePersonalInformationDetails?.email ? res.candidatePersonalInformationDetails.email : this.jobCodeData.email,
             middleName: res?.candidatePersonalInformationDetails?.middleName || '',
             lastName: res?.candidatePersonalInformationDetails?.lastName || '',
             maritalStatusId: res?.candidatePersonalInformationDetails?.maritalStatusId || '',
@@ -345,16 +435,19 @@ export class personalInfoComponent implements OnInit {
             genderId: res?.candidatePersonalInformationDetails?.genderId || '',
             titleId: res?.candidatePersonalInformationDetails?.titleId || '',
             dob: this.dobFormat(res?.candidatePersonalInformationDetails?.dob) || '',
-            fatherName: res?.candidatePersonalInformationDetails?.fatherName || '',
+            fatherName: (res?.candidatePersonalInformationDetails?.fatherName || '').trim() || '',
             passport: res?.candidatePersonalInformationDetails?.passport || '',
             uan: res?.candidatePersonalInformationDetails?.uan || '',
-            district: res?.candidatePersonalInformationDetails?.district || '',
+            district: (res?.candidatePersonalInformationDetails?.district || '').trim() || '',
             licence: res?.candidatePersonalInformationDetails?.licence || '',
-            pan: res?.candidatePersonalInformationDetails?.pan || '',
+            pan: (res?.candidatePersonalInformationDetails?.pan || '').trim() || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
-            // resume: res?.candidatePersonalInformationDetails?.resume || '',
             photo: res?.candidatePersonalInformationDetails?.image || '',
-
+            whatsappNumber: res?.candidatePersonalInformationDetails?.whatsappNumber || '',
+            alternateMobileNumber: res?.candidatePersonalInformationDetails?.alternateMobileNumber || '',
+            religion: res?.candidatePersonalInformationDetails?.religion || '',
+            motherTongue: res?.candidatePersonalInformationDetails?.motherTongueId || '',
+            // knownLanguages: res?.candidatePersonalInformationDetails?.knownLanguages[0].id || '',
             // Communication Address
             addressA: res?.candidateCommunicationAddressDetails?.comAddressA || '',
             addressB: res?.candidateCommunicationAddressDetails?.comAddressB || '',
@@ -372,6 +465,44 @@ export class personalInfoComponent implements OnInit {
             permanentCityId: res?.candidatePermanentAddressDetails?.cityId || '',
             permanentPostalCode: res?.candidatePermanentAddressDetails?.postalCode,
 
+            // emergency Details
+            relationId: res?.emergencyContactDetailsDTO?.relationId || '',
+            emergencyFirstname: res?.emergencyContactDetailsDTO?.firstName || '',
+            emergencyLastname: res?.emergencyContactDetailsDTO?.lastName || '',
+            emergencyContact: res?.emergencyContactDetailsDTO?.contactNumber || '',
+            emergencyEmail: res?.emergencyContactDetailsDTO?.email || '',
+            completeaAddress: res?.emergencyContactDetailsDTO?.address || '',
+
+            // bank details 
+            //     'accountNumber',
+            // 'confirmAccountNumber',
+            // 'bankName',
+            // 'ifscCode',
+            // 'identificationMarkA',
+            // 'identificationMarkB'
+            accountNumber: res?.bankDetailsDTO?.accountNumber || '',
+            confirmAccountNumber: res?.bankDetailsDTO?.accountNumber || '',
+            bankName: res?.bankDetailsDTO?.bankId || '',
+            ifscCode: res?.bankDetailsDTO?.ifscCode || '',
+            identificationMarkA: res?.bankDetailsDTO?.identificationMarkA || '',
+            identificationMarkB: res?.bankDetailsDTO?.identificationMarkB || '',
+
+            // professional
+            // 'department',
+            // 'designation',
+            // 'HQ',
+            // 'ishod',
+            // 'reportingManager',
+            // 'paysheetGroup',
+            // 'incrementType',
+            // 'businessUnit'
+            department: res?.candidatePersonalInformationDetails?.departmentId || '',
+            designation: res?.candidatePersonalInformationDetails?.designationId || '',
+            reportingManager: res?.candidateOnboardingDTO?.reportingId || '',
+            businessUnit: res?.candidateOnboardingDTO?.buId || '',
+            hodName: res?.candidateOnboardingDTO?.reportingPersonName || '',
+
+
             // Experience Details
             isFresher: isFresher,
             joiningTime: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
@@ -379,6 +510,7 @@ export class personalInfoComponent implements OnInit {
             expectedSalary: res?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary || '',
             suitableJobDescription: res?.candidateExperienceDetails?.candidateSalaryDetails?.description || '',
           });
+
 
           if (res?.candidateCommunicationAddressDetails?.postalCode) {
             this.getCities(
@@ -397,6 +529,12 @@ export class personalInfoComponent implements OnInit {
           }
 
           this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.fatherName]
+            .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isEmergencyDataPresent = [res?.emergencyContactDetailsDTO?.firstName]
+            .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isBankDataPresent = [res?.bankDetailsDTO?.accountNumber]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
@@ -468,80 +606,6 @@ export class personalInfoComponent implements OnInit {
     });
   }
 
-
-
-  // get educationArray(): FormArray {
-  //   return this.registrationForm.get('educationDetails') as FormArray;
-  // }
-  // get educationArray(): FormArray {
-  //   return this.registrationForm.get('educationDetails') as FormArray;
-  // }
-
-
-  // createEducationFormGroup(educationData: any = {}): FormGroup {
-  //   const formGroup = this.fb.group({
-  //     educationId: [educationData.educationId || null],
-  //     educationTypeId: [educationData.educationTypeId || '', Validators.required],
-  //     educationLevelId: [educationData.educationLevelId || '', Validators.required],
-  //     qualification: [educationData.qualificationName || '', Validators.required],
-  //     universityId: [educationData.universityId || '', Validators.required],
-  //     branch: [educationData.branch || ''], // make required later conditionally
-  //     yearOfPassing: [educationData.yearOfPassing || '', Validators.required],
-  //     percentage: [educationData.percentage || '', Validators.required],
-  //     college: [educationData.collegeName || '', Validators.required]
-  //   });
-
-  //   if (educationData.educationId) {
-  //     formGroup.disable(); // mark existing record rows as readonly
-  //   }
-
-  //   return formGroup;
-  // }
-
-
-
-
-  // deleteFile(fileId: any) {
-  //   console.log("canddd : ", this.jobCodeData?.candidateId);
-
-  //   if (!this.jobCodeData?.candidateId || !fileId) {
-  //     console.error("Missing parameters: Employee ID or File ID is undefined.");
-  //     return;
-  //   }
-
-  //   const candidateId = this.jobCodeData?.candidateId;
-  //   this.authService.deleteFile(candidateId, fileId).subscribe({
-  //     next: (res: HttpResponse<any>) => {
-  //       this.loadUserData();
-  //       if (res.status === 200) {
-  //         console.log("res delete file : ", res);
-  //         this.showAlert('Successfully Deleted','success')
-  //         // Swal.fire({
-  //         //   title: 'Success',
-  //         //   text: 'Successfully Deleted',
-  //         //   icon: 'success',
-  //         //   showConfirmButton: false,
-  //         //   timer: 1000,
-  //         //   timerProgressBar: true,
-  //         // });
-  //       } else {
-  //         // Swal.fire({
-  //         //   title: 'Error',
-  //         //   text: 'Delete Failed',
-  //         //   icon: 'error',
-  //         //   showConfirmButton: false,
-  //         //   timer: 1000,
-  //         //   timerProgressBar: true,
-  //         // });
-
-  //         this.showAlert("Delete Failed", 'danger')
-  //       }
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       console.log("error : ", err);
-  //     }
-  //   });
-  // }
   deleteFile(fileId: any): void {
     if (!this.jobCodeData?.candidateId || !fileId) {
       console.error("Missing parameters: Employee ID or File ID is undefined.");
@@ -878,11 +942,19 @@ export class personalInfoComponent implements OnInit {
       this.uploadResume = 'Upload Resume'
       this.uploadPhoto = 'Upload Photo'
     } else if (value == 'address') {
-      this.isAllAddressDataPresent = false
+      this.isAllAddressDataPresent = false;
       this.addressUpadte = true;
     } else if (value == 'experience') {
-      this.isExperienceBoolean = false
+      this.isExperienceBoolean = false;
       this.experienceUpdate = true;
+    } else if (value == 'emergency') {
+      this.isEmergencyDataPresent = false;
+      this.emergencyUpdate = true;
+    } else if (value == 'bank') {
+      console.log("rajender");
+      this.isBankDataPresent = false;
+      this.bankUpdate = true;
+      this.bankFile = 'editBankFile'
     }
   }
 
@@ -961,80 +1033,7 @@ export class personalInfoComponent implements OnInit {
     });
   }
 
-
-  // onFileSelect(event: Event, fieldName: string): void {
-  //   console.log("file name : ", fieldName)
-  //   const fileInput = event.target as HTMLInputElement;
-  //   const file = fileInput.files?.[0];
-
-  //   if (file) {
-  //     const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
-
-  //     console.log(`Selected file for ${fieldName}:`, selectedFile);
-
-  //     this.selectedFiles[fieldName] = selectedFile;
-  //   } else {
-  //     console.log(`No file selected for ${fieldName}`);
-  //   }
-  //   let hasFile = false;
-  //   let formData = new FormData();
-  //   console.log("file array: ", this.selectedFiles);
-  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-
-  //   const documentData = {
-  //     candidateId: this.jobCodeData.candidateId
-  //   };
-  //   formData.append('document', JSON.stringify(documentData));
-  //   formData.append('moduleId', '4');
-
-  //   // Check if at least one file is present
-  //   if (this.selectedFiles['tenth']) {
-  //     formData.append('tenthFile', this.selectedFiles['tenth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['aadharFile']) {
-  //     formData.append('aadharFile', this.selectedFiles['aadharFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['panFile']) {
-  //     formData.append('panFile', this.selectedFiles['panFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['twelth']) {
-  //     formData.append('interFile', this.selectedFiles['twelth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['deploma']) {
-  //     formData.append('pgFile', this.selectedFiles['deploma']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['degreeOrBTech']) {
-  //     formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['others']) {
-  //     formData.append('otherFile', this.selectedFiles['others']);
-  //     hasFile = true;
-  //   }
-
-  //   // Only call finalSave if at least one file is selected
-  //   if (hasFile) {
-  //     this.finalSave('documents', formData);
-  //   }
-  //   // else {
-  //   //   Swal.fire({
-  //   //     title: 'warning',
-  //   //     text: 'Please upload File',
-  //   //     icon: 'warning',
-  //   //     showConfirmButton: false,
-  //   //     timer: 1000,
-  //   //     timerProgressBar: true,
-  //   //   });
-  //   // }
-  // }
-
-  // onFileSelect(event: Event, fieldName: string): void {
-  //   console.log("file name : ", fieldName);
+  // onFileSelect({ event, fieldName }: { event: Event; fieldName: string; }): void {
   //   const fileInput = event.target as HTMLInputElement;
   //   const file = fileInput.files?.[0];
 
@@ -1049,55 +1048,68 @@ export class personalInfoComponent implements OnInit {
   //         icon: 'error',
   //         confirmButtonText: 'OK'
   //       });
-  //       fileInput.value = ''; // Clear the input
+  //       fileInput.value = '';
   //       return;
   //     }
 
-  //     const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
-  //     console.log(`Selected file for ${fieldName}:`, selectedFile);
+  //     if (file.type !== 'application/pdf') {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Invalid File Type!',
+  //         text: 'Please upload a PDF file only.',
+  //       });
+  //       (event.target as HTMLInputElement).value = '';
+  //       return;
+  //     }
+
+  //     if (fieldName == 'resume') {
+  //       this.uploadResume = file.name
+  //     }
+  //     if (fieldName == 'photo') {
+  //       this.uploadPhoto = file.name
+  //     }
+
+  //     // Store a clean copy of the file
+  //     const selectedFile = new File([file], file.name, {
+  //       type: file.type,
+  //       lastModified: Date.now()
+  //     });
+
+  //     // console.log(`Selected file for ${fieldName}:`, selectedFile);
   //     this.selectedFiles[fieldName] = selectedFile;
   //   } else {
-  //     console.log(`No file selected for ${fieldName}`);
+  //     // console.log(`No file selected for ${fieldName}`);
+  //     return;
   //   }
 
+  //   const formData = new FormData();
   //   let hasFile = false;
-  //   let formData = new FormData();
-  //   console.log("file array: ", this.selectedFiles);
+
+  //   // Append common fields
   //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-
-  //   const documentData = {
-  //     candidateId: this.jobCodeData.candidateId
-  //   };
-  //   formData.append('document', JSON.stringify(documentData));
   //   formData.append('moduleId', '4');
+  //   formData.append('document', JSON.stringify({
+  //     candidateId: this.jobCodeData?.candidateId
+  //   }));
 
-  //   if (this.selectedFiles['tenth']) {
-  //     formData.append('tenthFile', this.selectedFiles['tenth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['aadharFile']) {
-  //     formData.append('aadharFile', this.selectedFiles['aadharFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['panFile']) {
-  //     formData.append('panFile', this.selectedFiles['panFile']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['twelth']) {
-  //     formData.append('interFile', this.selectedFiles['twelth']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['deploma']) {
-  //     formData.append('pgFile', this.selectedFiles['deploma']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['degreeOrBTech']) {
-  //     formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
-  //     hasFile = true;
-  //   }
-  //   if (this.selectedFiles['others']) {
-  //     formData.append('otherFile', this.selectedFiles['others']);
-  //     hasFile = true;
+  //   // Map of fieldName => FormData key
+  //   const fileFieldMap: { [key: string]: string } = {
+  //     'tenth': 'tenthFile',
+  //     'aadharFile': 'aadharFile',
+  //     'panFile': 'panFile',
+  //     'twelth': 'interFile',
+  //     'deploma': 'pgFile',
+  //     'degreeOrBTech': 'degreeFile',
+  //     'others': 'otherFile'
+  //   };
+
+  //   // Append only the selected files
+  //   for (const [key, formField] of Object.entries(fileFieldMap)) {
+  //     const selected = this.selectedFiles[key];
+  //     if (selected) {
+  //       formData.append(formField, selected);
+  //       hasFile = true;
+  //     }
   //   }
 
   //   if (hasFile) {
@@ -1113,6 +1125,7 @@ export class personalInfoComponent implements OnInit {
       const maxSizeInMB = 5;
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
+      // File size validation
       if (file.size > maxSizeInBytes) {
         Swal.fire({
           title: 'File Too Large',
@@ -1120,37 +1133,45 @@ export class personalInfoComponent implements OnInit {
           icon: 'error',
           confirmButtonText: 'OK'
         });
-        fileInput.value = ''; 
+        fileInput.value = '';
         return;
       }
 
+      // File type validation
       if (file.type !== 'application/pdf') {
         Swal.fire({
           icon: 'error',
           title: 'Invalid File Type!',
           text: 'Please upload a PDF file only.',
         });
-        (event.target as HTMLInputElement).value = '';
+        fileInput.value = '';
         return;
       }
-
-      if (fieldName == 'resume') {
-        this.uploadResume = file.name
+      if (fieldName === 'bankFile') {
+        this.bankFileError = '';
       }
-      if (fieldName == 'photo') {
-        this.uploadPhoto = file.name
+      if (fieldName === 'familyAadhar') {
+        this.familyAadharFileError = '';
       }
 
-      // Store a clean copy of the file
+      // Track uploaded file names
+      const shortName = file.name.length > 25 ? file.name.substring(0, 25) + '...' : file.name;
+
+      if (fieldName === 'resume') this.uploadResume = shortName;
+      if (fieldName === 'photo') this.uploadPhoto = shortName;
+      if (fieldName === 'bankFile') this.uploadBankFile = shortName;
+      if (fieldName === 'familyAadhar') this.uploadFamilyAadharFile = shortName;
+      if (fieldName === 'familyPhotoFile') this.uploadFamilyPhotoFile = shortName;
+
+
+      // Store clean file copy
       const selectedFile = new File([file], file.name, {
         type: file.type,
         lastModified: Date.now()
       });
 
-      // console.log(`Selected file for ${fieldName}:`, selectedFile);
       this.selectedFiles[fieldName] = selectedFile;
     } else {
-      // console.log(`No file selected for ${fieldName}`);
       return;
     }
 
@@ -1158,13 +1179,20 @@ export class personalInfoComponent implements OnInit {
     let hasFile = false;
 
     // Append common fields
-    formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    formData.append('moduleId', '4');
-    formData.append('document', JSON.stringify({
-      candidateId: this.jobCodeData?.candidateId
-    }));
+    // formData.append('jobCodeId', this.empId);
+    // formData.append('moduleId', '4');
+    formData.append('moduleId', fieldName === 'agreementFile' ? '9' : '4');
+    if (fieldName === 'agreementFile') {
+      formData.append('agreementDetails', JSON.stringify({
+        candidateId: this.empId
+      }));
+    } else {
+      formData.append('document', JSON.stringify({
+        candidateId: this.empId
+      }));
+    }
 
-    // Map of fieldName => FormData key
+    // File mapping
     const fileFieldMap: { [key: string]: string } = {
       'tenth': 'tenthFile',
       'aadharFile': 'aadharFile',
@@ -1172,25 +1200,32 @@ export class personalInfoComponent implements OnInit {
       'twelth': 'interFile',
       'deploma': 'pgFile',
       'degreeOrBTech': 'degreeFile',
-      'others': 'otherFile'
+      'others': 'otherFile',
+      'agreementFile': 'agreementFile'
     };
 
-    // Append only the selected files
+    hasFile = false;
+    let hasAgreement = false;
+
+    // Append only selected files
     for (const [key, formField] of Object.entries(fileFieldMap)) {
       const selected = this.selectedFiles[key];
       if (selected) {
         formData.append(formField, selected);
         hasFile = true;
+        if (key === 'agreementFile') {
+          hasAgreement = true;
+        }
       }
     }
-
     if (hasFile) {
-      this.finalSave('documents', formData);
+      if (hasAgreement) {
+        this.finalSave('medical', formData);
+      } else {
+        this.finalSave('documents', formData);
+      }
     }
   }
-
-
-
 
   setActiveSection(section: string) {
     this.activeTab = section;
@@ -1203,10 +1238,6 @@ export class personalInfoComponent implements OnInit {
         control.updateValueAndValidity();
       }
     });
-
-    // if (section === 'documents' && !this.loadedData?.candidateInterviewDetails?.length && this.loadedData?.candidateTrackingDTO?.totalPercentage != '100') {
-    //   this.loadUserData();
-    // }
   }
 
   setValidation(Action: string) {
@@ -1217,7 +1248,8 @@ export class personalInfoComponent implements OnInit {
       const personalFields = [
         'email', 'mobileNumber', 'dob', 'titleId',
         'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId', 'uan', 'passport',
-        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo'
+        'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'whatsappNumber',
+        'alternateMobileNumber', 'nationality', 'nationality', 'religion', 'motherTongue', 'knownLanguages'
       ];
 
       let sectionData: any = {};
@@ -1269,7 +1301,7 @@ export class personalInfoComponent implements OnInit {
       console.log("Passport:", passportValue);
 
       if (passportValue) {
-        const pattern = /^[A-PR-WY][0-9]{7}$/; // excludes Q, X, Z (not used in Indian passports)
+        const pattern = /^[A-PR-WY][0-9]{7}$/;
 
         if (passportValue.length !== 8 || !pattern.test(passportValue)) {
           passportControl?.setErrors({ invalidPassport: true });
@@ -1279,10 +1311,6 @@ export class personalInfoComponent implements OnInit {
           sectionData['passport'] = passportValue;
         }
       }
-
-
-
-
 
       if (!isValid) {
         this.showAlert("Please fill required fields!", 'danger');
@@ -1300,21 +1328,26 @@ export class personalInfoComponent implements OnInit {
         }
       }
 
-      let formData = new FormData();
-      sectionData.candidateId = this.jobCodeData?.candidateId;
-      formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-      formData.append('candidateId', this.jobCodeData?.candidateId);
-      formData.append('personalInfo', JSON.stringify(sectionData));
-      formData.append('personalImageFile', this.selectedFiles['photo']);
-      formData.append('personalResumeFile', this.selectedFiles['resume']);
-      formData.append('moduleId', '1');
-      if (!this.selectedFiles['resume']) {
-        this.showAlert("Resume file is required", "danger");
-        formData.append('personalResumeFile', null);
+      if (this.empId) {
+        sectionData.candidateId = this.empId;
       }
 
+      let formData = new FormData();
+      // sectionData.candidateId = this.jobCodeData?.candidateId;
+      // formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
+      // formData.append('candidateId', this.empId);
+      formData.append('personalInfo', JSON.stringify(sectionData));
+      // formData.append('personalImageFile', this.selectedFiles['photo']);
+      // formData.append('personalResumeFile', this.selectedFiles['resume']);
+      formData.append('moduleId', '1');
+      // if (!this.selectedFiles['resume']) {
+      //   this.showAlert("Resume file is required", "danger");
+      //   formData.append('personalResumeFile', null);
+      // }
+
       this.finalSave('address', formData);
-    } else if (Action === 'address') {
+    }
+    else if (Action === 'address') {
       const communicationAddressFields = [
         'addressA', 'addressB', 'addressC',
         'stateId', 'cityId', 'postalCode', 'addressFlag'
@@ -1374,89 +1407,7 @@ export class personalInfoComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-    // else if (Action === 'education') {
-    //   let isValid = true;
-    //   let educationData: any[] = [];
-
-    //   const newEducationControls = this.educationArray.controls.filter(ctrl => !ctrl.disabled);
-    //   const existingEducationControls = this.educationArray.controls.filter(ctrl => ctrl.disabled);
-
-    //   if (newEducationControls.length === 0) {
-    //     // this.formFillMessageAlert();
-    //     this.showAlert("Please fill required fields!", 'danger');
-    //     return;
-    //   }
-
-    //   // Collect existing qualificationIds and normalize to string
-    //   const existingQualificationIds = existingEducationControls
-    //     .map(ctrl => String(ctrl.get('qualificationId')?.value))
-    //     .filter(id => !!id); // Remove null/undefined
-
-    //   const newQualificationIds: string[] = [];
-    //   let hasDuplicate = false;
-
-    //   for (let group of newEducationControls) {
-    //     const qualificationId = String(group.get('qualificationId')?.value);
-
-    //     if (!qualificationId || qualificationId === 'null') continue;
-
-    //     if (existingQualificationIds.includes(qualificationId) || newQualificationIds.includes(qualificationId)) {
-    //       hasDuplicate = true;
-    //       break;
-    //     }
-
-    //     newQualificationIds.push(qualificationId);
-    //   }
-
-    //   if (hasDuplicate) {
-    //     // Swal.fire({
-    //     //   title: 'Duplicate Qualification',
-    //     //   text: 'You have already selected this qualification. To update, please delete the existing entry and add again.',
-    //     //   icon: 'warning',
-    //     //   confirmButtonText: 'OK'
-    //     // });
-    //     this.showAlert("Duplicate Qualification", "danger")
-    //     return;
-    //   }
-
-    //   newEducationControls.forEach((group: FormGroup) => {
-    //     let educationEntry: any = {};
-    //     const educationFields = [
-    //       'educationTypeId', 'universityId', 'qualification',
-    //       'yearOfPassing', 'percentage', 'branch', 'educationLevelId', 'college'
-    //     ];
-
-    //     educationFields.forEach((field) => {
-    //       const control = group.get(field);
-    //       if (control?.invalid) {
-    //         control.markAsTouched();
-    //         isValid = false;
-    //       } else {
-    //         educationEntry[field] = control?.value;
-    //       }
-    //     });
-
-    //     educationEntry['educationId'] = 1;
-    //     educationEntry['candidateId'] = this.jobCodeData?.candidateId;
-
-    //     educationData.push(educationEntry);
-    //   });
-
-    //   if (!isValid) {
-    //     // this.formFillMessageAlert();
-    //     this.showAlert("Please fill required fields!", 'danger');
-    //     return;
-    //   }
-
-    //   let formData = new FormData();
-    //   formData.append("education", JSON.stringify(educationData));
-    //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    //   formData.append('candidateId', this.jobCodeData?.candidateId);
-    //   formData.append('moduleId', '3');
-
-    //   this.finalSave('education', formData);
-    // } 
-    if (Action === 'education') {
+    else if (Action === 'education') {
       const educationFields = [
         'educationTypeId',
         'educationLevelId',
@@ -1497,7 +1448,6 @@ export class personalInfoComponent implements OnInit {
 
       this.finalSave('education', formData);
     }
-
     else if (Action === 'documents') {
       const documentsFields = ['tenth', 'twelth', 'panFile', 'aadharFile', 'deploma', 'degreeOrBTech', 'others'];
       let hasFile = false; // Flag to check if any file is present
@@ -1573,7 +1523,8 @@ export class personalInfoComponent implements OnInit {
           timerProgressBar: true,
         });
       }
-    } if (Action === 'experienceWithCtc') {
+    }
+    else if (Action === 'experienceWithCtc') {
       let isValid = true;
       const sectionData: any = {};
 
@@ -1684,8 +1635,8 @@ export class personalInfoComponent implements OnInit {
         companyName: experienceData.companyName,
         totalExp: experienceData.totalExp,
         lastWorkingDate: experienceData.lastWorkingDate,
-        jobCodeId: this.jobCodeData?.jobCodeId,
-        candidateId: this.jobCodeData?.candidateId,
+        // jobCodeId: this.jobCodeData?.jobCodeId,
+        // candidateId: this.jobCodeData?.candidateId,
         moduleId: '5'
       };
       this.authService.ExperienceAdd(experiencePayload).subscribe({
@@ -1700,14 +1651,268 @@ export class personalInfoComponent implements OnInit {
           console.log("error : ", err);
         }
       })
+
     }
+    else if (Action === 'emergency') {
+      const emergencyFields = [
+        'relationId',
+        'emergencyFirstname',
+        'emergencyLastname',
+        'emergencyContact',
+        'emergencyEmail',
+        'completeaAddress'
+      ];
+
+      let emergencySection: any = {};
+      let isValid = true;
+
+      emergencyFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          emergencySection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // Build final JSON according to your required structure
+      const finalEmergencyData = {
+        relationId: emergencySection.relationId,
+        firstName: emergencySection.emergencyFirstname,
+        lastName: emergencySection.emergencyLastname,
+        contactNumber: emergencySection.emergencyContact,
+        email: emergencySection.emergencyEmail,
+        address: emergencySection.completeaAddress,
+        candidateId: this.empId
+      };
+
+      console.log('Final Emergency JSON:', finalEmergencyData);
+      const formData = new FormData();
+      formData.append('emergencyDetails', JSON.stringify(finalEmergencyData));
+      formData.append('moduleId', '6');
+      this.finalSave('bank', formData);
+    }
+    else if (Action === 'bank') {
+      const bankFields = [
+        'accountNumber',
+        'confirmAccountNumber',
+        'bankName',
+        'ifscCode',
+        'identificationMarkA',
+        'identificationMarkB'
+      ];
+
+      let bankSection: any = {};
+      let isValid = true;
+
+      // Validate fields
+      bankFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          bankSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // Account Number match validation
+      const accNum = bankSection.accountNumber;
+      const conAccNum = bankSection.confirmAccountNumber;
+
+      if (accNum !== conAccNum) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Account Number Mismatch',
+          text: 'Account Number and Confirm Account Number must be the same.',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      // Build final JSON
+      const finalBankData = {
+        accountNumber: bankSection.accountNumber,
+        confirmAccountNumber: bankSection.confirmAccountNumber,
+        bankId: bankSection.bankName,
+        ifscCode: bankSection.ifscCode,
+        identificationMarkA: bankSection.identificationMarkA,
+        identificationMarkB: bankSection.identificationMarkB,
+        candidateId: this.empId
+      };
+
+      console.log('Final Bank JSON:', finalBankData);
+
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('bankDetails', JSON.stringify(finalBankData));
+      formData.append('moduleId', '7');
+
+      // ✅ Append bank file if available
+      if (this.selectedFiles['bankFile']) {
+        formData.append('bankFile', this.selectedFiles['bankFile']);
+        this.bankFileError = ''
+      } else {
+        if (this.bankFile == 'editBankFile') {
+          this.bankFileError = ''
+        } else {
+          this.bankFileError = 'Please choose a bank passbook PDF file.';
+          return;
+        }
+      }
+
+      this.finalSave('family', formData);
+    }
+    else if (Action === 'family') {
+      const familyFields = [
+        'familyRelationId',
+        'familyFirstName',
+        'familyLastName',
+        'familyDOB',
+        'familyContact',
+        'familyGender',
+        'familyBloodGroup',
+        'familyIsdependent',
+        'familyIsExpired',
+        'familyIsPFNominee',
+        'familyIsGraduityNominee',
+        'familyOccupation',
+        'familyAge',
+        'familyStatus'
+      ];
+
+      let familySection: any = {};
+      let isValid = true;
+
+      // ✅ Validate form fields
+      familyFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          familySection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // ✅ Build final JSON object
+      const finalFamilyData = {
+        candidateId: this.empId,
+        relationId: familySection.familyRelationId,
+        firstName: familySection.familyFirstName,
+        lastName: familySection.familyLastName,
+        // dob: familySection.familyDOB,
+        dob: familySection.familyDOB ? new Date(familySection.familyDOB).toISOString().split('T')[0] : '',
+        contactNumber: familySection.familyContact,
+        gender: familySection.familyGender,
+        bloodGroup: familySection.familyBloodGroup,
+        isDependent: familySection.familyIsdependent,
+        isExpired: familySection.familyIsExpired,
+        isPfNominee: familySection.familyIsPFNominee,
+        isGraduityNominee: familySection.familyIsGraduityNominee,
+        occupation: familySection.familyOccupation,
+        age: familySection.familyAge,
+        familyStatus: familySection.familyStatus
+      };
+
+      console.log('Final Family JSON:', finalFamilyData);
+
+      const formData = new FormData();
+      formData.append('familyDetails', JSON.stringify(finalFamilyData));
+      formData.append('moduleId', '8');
+
+      if (this.selectedFiles['familyAadhar']) {
+        formData.append('familyAadharFile', this.selectedFiles['familyAadhar']);
+        this.familyAadharFileError = '';
+      } else {
+        this.familyAadharFileError = 'Please choose the Aadhaar PDF file.';
+        return;
+      }
+
+      if (this.selectedFiles['familyPhotoFile']) {
+        formData.append('familyPhotoFile', this.selectedFiles['familyPhotoFile']);
+      }
+
+      this.finalSave('family', formData);
+    }
+    else if (Action === 'professional') {
+      const professionalFields = [
+        'department',
+        'designation',
+        'HQ',
+        'ishod',
+        'reportingManager',
+        'paysheetGroup',
+        'incrementType',
+        'businessUnit',
+        'hodName'
+      ];
+
+      let professionalSection: any = {};
+      let isValid = true;
+
+      professionalFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          professionalSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required professional information fields!", 'danger');
+        return;
+      }
+
+      const finalProfessionalData = {
+        candidateId: this.empId,
+        departmentId: professionalSection.department,
+        designationId: professionalSection.designation,
+        headQuarter: professionalSection.HQ,
+        isHOD: professionalSection.ishod,
+        reportingManagerId: professionalSection.reportingManager,
+        paysheetGroup: professionalSection.paysheetGroup,
+        incrementType: professionalSection.incrementType,
+        businessUnit: professionalSection.businessUnit,
+        hodName: professionalSection.hodName,
+      };
+
+      console.log('Final Professional JSON:', finalProfessionalData);
+
+      return;
+
+
+      const formData = new FormData();
+      formData.append('professionalDetails', JSON.stringify(finalProfessionalData));
+      formData.append('moduleId', '10');
+      this.finalSave('professional', formData);
+    }
+
 
   }
 
 
   finalSave(action: string, formData) {
-    formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-    formData.append('candidateId', this.jobCodeData?.candidateId);
+    formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
+    formData.append('candidateId', this.empId);
     // console.log("education jobcode id : ", this.jobCodeData?.jobCodeId, "candidate id: ", this.jobCodeData?.candidateId)
     this.isLoading = true;
     // console.log(" form data : ", formData)
@@ -1718,6 +1923,7 @@ export class personalInfoComponent implements OnInit {
         // console.log("personal result : ", res);
 
         if (res.status === 200) {
+          this.isLoading = false;
           this.loadUserData();
           // const educationArray = this.registrationForm.get('educationDetails') as FormArray;
           // if (educationArray) {
@@ -1727,6 +1933,8 @@ export class personalInfoComponent implements OnInit {
           this.selectedFiles = {}
           this.personalUpdate = false;
           this.addressUpadte = false;
+          this.emergencyUpdate = false;
+          this.bankUpdate = false;
           // Swal.fire({
           //   title: 'Success',
           //   text: 'Successfully completed',
@@ -1780,6 +1988,31 @@ export class personalInfoComponent implements OnInit {
               // expectedSalary: '',
               // suitableJobDescription: '',
             });
+          } else if (action === 'family') {
+            const educationFields = [
+              'familyRelationId',
+              'familyFirstName',
+              'familyLastName',
+              'familyDOB',
+              'familyContact',
+              'familyGender',
+              'familyBloodGroup',
+              'familyIsdependent',
+              'familyIsExpired',
+              'familyIsPFNominee',
+              'familyIsGraduityNominee',
+              'familyOccupation',
+              'familyAge',
+              'familyStatus'
+            ];
+            this.uploadFamilyAadharFile = 'Upload Aadhar';
+            this.uploadFamilyPhotoFile = 'Upload Family Photo';
+
+            educationFields.forEach(field => {
+              this.registrationForm.get(field)?.setValue('');
+              this.registrationForm.get(field)?.markAsPristine();
+              this.registrationForm.get(field)?.markAsUntouched();
+            });
           }
         } else if (res.status === 500) {
           const errorMessage = (res as any).message || 'Failed';
@@ -1793,6 +2026,7 @@ export class personalInfoComponent implements OnInit {
 
       }, error: (err: HttpErrorResponse) => {
         this.isLoading = false;
+        this.selectedFiles = {};
         // console.log("error : ", err);
         Swal.fire({
           title: 'error',
@@ -1936,6 +2170,66 @@ export class personalInfoComponent implements OnInit {
     })
   }
 
+  languages() {
+    this.authService.languages().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.languageOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  relation() {
+    this.authService.relation().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.relationOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  banks() {
+    this.authService.banks().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.bankOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  loadYesNoOptions() {
+    this.authService.yesNoOptions().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.yesNoOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  status() {
+    this.authService.status().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.statusOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
   states() {
     this.authService.states().subscribe({
       next: (res: any) => {
@@ -1979,6 +2273,8 @@ export class personalInfoComponent implements OnInit {
       }
     });
   }
+
+
 
 
   private setCitiesAndPatch(cities: any[] | null, addressType: 'communication' | 'permanent', cityId: string | null) {
@@ -2057,9 +2353,11 @@ export class personalInfoComponent implements OnInit {
       backdrop: true
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem('hiringLoginData');
+        localStorage.removeItem('hiringFieldLoginData');
+        localStorage.removeItem('HiringLoginCandidateId');
         this.router.navigate(['/hiring-login']);
       }
+
     });
   }
 
@@ -2148,6 +2446,10 @@ export class personalInfoComponent implements OnInit {
     this.hiddenTwelthInput.nativeElement.click();
   }
 
+  openAgreementFileInput(): void {
+    this.hiddenAgreementInput.nativeElement.click();
+  }
+
   openDegreeOrBTechInput(): void {
     this.hiddenDegreeOrBTechInput.nativeElement.click();
   }
@@ -2190,14 +2492,14 @@ export class personalInfoComponent implements OnInit {
     }
 
     if (file.type !== 'application/pdf') {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid File Type!',
-          text: 'Please upload a PDF file only.',
-        });
-        (event.target as HTMLInputElement).value = '';
-        return;
-      }
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type!',
+        text: 'Please upload a PDF file only.',
+      });
+      (event.target as HTMLInputElement).value = '';
+      return;
+    }
 
     this.registrationForm.get(controlName)?.setValue(file);
     console.log("Selected file:", file);
@@ -2492,10 +2794,207 @@ export class personalInfoComponent implements OnInit {
   //   }
   // }
 
-
   toUppercase(event: any) {
     event.target.value = event.target.value.toUpperCase();
   }
+
+
+  onLanguageSelect(id: number, event: any) {
+    const selectedLanguages = this.registrationForm.get('knownLanguages')?.value || [];
+
+    if (event.target.checked) {
+      selectedLanguages.push(id);
+    } else {
+      const index = selectedLanguages.indexOf(id);
+      if (index >= 0) selectedLanguages.splice(index, 1);
+    }
+
+    this.registrationForm.get('knownLanguages')?.setValue(selectedLanguages);
+  }
+
+  getSelectedLanguageNames(): string {
+    const selectedIds = this.registrationForm.get('knownLanguages')?.value || [];
+    const count = selectedIds.length;
+
+    if (count === 0) return 'Select Languages';
+    if (count === 1) return '1 Language Selected';
+    return `${count} Languages Selected`;
+  }
+
+  showLanguageDropdown = false;
+
+  toggleLanguageDropdown() {
+    this.showLanguageDropdown = !this.showLanguageDropdown;
+  }
+
+  // Example: in your component.ts
+
+  onDOBChange(selectedDate: Date) {
+    if (selectedDate) {
+      const today = new Date();
+      let age = today.getFullYear() - selectedDate.getFullYear();
+      const m = today.getMonth() - selectedDate.getMonth();
+
+      // If birth month/day has not occurred yet this year, subtract 1
+      if (m < 0 || (m === 0 && today.getDate() < selectedDate.getDate())) {
+        age--;
+      }
+
+      // Patch the value to familyAge form control
+      this.registrationForm.patchValue({
+        familyAge: age
+      });
+    } else {
+      this.registrationForm.patchValue({
+        familyAge: ''
+      });
+    }
+  }
+
+  onIsExpiredChange(event: any) {
+    const selectedValue = +event.target.value; // convert to number
+    if (selectedValue === 1) {
+      // Yes → Inactive
+      this.registrationForm.get('familyStatus')?.setValue(2);
+    } else if (selectedValue === 2) {
+      // No → Active
+      this.registrationForm.get('familyStatus')?.setValue(1);
+    } else {
+      this.registrationForm.get('familyStatus')?.setValue('');
+    }
+  }
+
+
+
+  // FamilyInfoData = [
+  //   {
+  //     id: 1,
+  //     firstName: "John",
+  //     lastName: "Doe",
+  //     relationId: 1,
+  //     relationName: "Father",
+  //     dob: "1965-08-10",
+  //     contactNumber: "9876543210",
+  //     gender: 1,
+  //     bloodGroup: 1,
+  //     isDependent: 0,
+  //     isExpired: 0,
+  //     isPfNominee: 1,
+  //     isGraduityNominee: 1,
+  //     occupation: "Retired",
+  //     age: 60,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "FatherAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/FatherAadhar.pdf"
+  //   },
+  //   {
+  //     id: 2,
+  //     firstName: "Jane",
+  //     lastName: "Doe",
+  //     relationId: 2,
+  //     relationName: "Mother",
+  //     dob: "1968-02-15",
+  //     contactNumber: "9876543211",
+  //     gender: 2,
+  //     bloodGroup: 2,
+  //     isDependent: 0,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Homemaker",
+  //     age: 56,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "MotherAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/MotherAadhar.pdf"
+  //   },
+  //   {
+  //     id: 3,
+  //     firstName: "Emily",
+  //     lastName: "Doe",
+  //     relationId: 3,
+  //     relationName: "Daughter",
+  //     dob: "1995-12-01",
+  //     contactNumber: "9876543212",
+  //     gender: 2,
+  //     bloodGroup: 1,
+  //     isDependent: 1,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Software Engineer",
+  //     age: 28,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "EmilyAadhar.pdf",
+  //     familyAadharFileUrl: "https://example.com/files/EmilyAadhar.pdf"
+  //   },
+  //   {
+  //     id: 4,
+  //     firstName: "Michael",
+  //     lastName: "Doe",
+  //     relationId: 4,
+  //     relationName: "Son",
+  //     dob: "2000-06-20",
+  //     contactNumber: "9876543213",
+  //     gender: 1,
+  //     bloodGroup: 2,
+  //     isDependent: 1,
+  //     isExpired: 0,
+  //     isPfNominee: 0,
+  //     isGraduityNominee: 0,
+  //     occupation: "Student",
+  //     age: 23,
+  //     familyStatus: 1,
+  //     familyAadharFileName: "",
+  //     familyAadharFileUrl: ""
+  //   }
+  // ];
+
+
+  deleteFamilyMember(id: number) {
+    console.log(" sno : ", id);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this family member?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.existingCandidates.splice(index, 1);
+        // Swal.fire('Deleted!', 'Family member has been removed.', 'success');
+        // return;
+        this.isLoading = true;
+        this.authService.deleteFamilyMember(id).subscribe({
+          next: (res: any) => {
+            console.log(res);
+            this.isLoading = false;
+            this.loadUserData();
+            Swal.fire('Deleted!', 'Family member has been removed.', 'success');
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isLoading = false;
+            console.warn(err)
+          }
+        })
+      }
+    });
+  }
+
+  searchEmployee(): void {
+    if (!this.searchEmpId) {
+      this.showAlert('Please enter a valid Employee ID', 'danger');
+      return;
+    }
+    const base64Once = btoa(this.searchEmpId.toString());
+    const base64Twice = btoa(base64Once);
+    this.router.navigate(['/onboarding-data', base64Twice]);
+    this.empId = this.searchEmpId;
+    this.loadUserData();
+    this.searchEmpId = '';
+    this.activeTab = 'personal';
+  }
+
 
 
 

@@ -62,8 +62,10 @@ export class personalInfoComponent implements OnInit {
   isAllDataPresent: boolean = false;
   isEmergencyDataPresent: boolean = false;
   isBankDataPresent: boolean = false;
+  isMedicalDataPresent: boolean = false;
   emergencyUpdate: boolean = false;
   bankUpdate: boolean = false;
+  medicalUpdate: boolean = false;
   isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
@@ -110,11 +112,13 @@ export class personalInfoComponent implements OnInit {
   uploadBankFile: string = 'Upload bank passbook';
   uploadFamilyAadharFile: string = 'Upload Aadhar';
   uploadFamilyPhotoFile: string = 'Upload Family Photo';
+  uploadMedicalFile: string = 'Upload Mecical Report';
   alertMessage: string | null = null;
   private panAlertTimeout: any;
   empId: any | null = null;
   bankFileError: string | null = null;
   familyAadharFileError: string | null = null;
+  medicalFileError: string | null = null;
   searchEmpId: string = '';
 
   constructor(
@@ -399,6 +403,7 @@ export class personalInfoComponent implements OnInit {
           this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
           this.bankFile = res?.bankDetailsDTO?.bankFilePath || null;
           this.agreementFile = res?.agreementFileDTO?.agreementFile || null;
+          this.MedicalReportFile = res?.medicalDocumentDTO?.medicalDocumentData || null;
           this.panFile = res?.candidateDocumentDetails?.panFile || null;
           this.twelthFile = res?.candidateDocumentDetails?.intermediateFile || null;
           this.deplomaFile = res?.candidateDocumentDetails?.pgFile || null;
@@ -502,6 +507,9 @@ export class personalInfoComponent implements OnInit {
             businessUnit: res?.candidateOnboardingDTO?.buId || '',
             hodName: res?.candidateOnboardingDTO?.reportingPersonName || '',
 
+            // medical Report
+            medicalDescription: res?.medicalDocumentDTO?.description || '',
+
 
             // Experience Details
             isFresher: isFresher,
@@ -536,6 +544,9 @@ export class personalInfoComponent implements OnInit {
 
           this.isBankDataPresent = [res?.bankDetailsDTO?.accountNumber]
             .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isMedicalDataPresent = [res?.medicalDocumentDTO?.description]
+            .every(field => typeof field === 'string' && field.trim() !== '');  
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -607,7 +618,7 @@ export class personalInfoComponent implements OnInit {
   }
 
   deleteFile(fileId: any): void {
-    if (!this.jobCodeData?.candidateId || !fileId) {
+    if (!this.empId || !fileId) {
       console.error("Missing parameters: Employee ID or File ID is undefined.");
       return;
     }
@@ -638,7 +649,7 @@ export class personalInfoComponent implements OnInit {
       backdrop: true
     }).then((result) => {
       if (result.isConfirmed) {
-        const candidateId = this.jobCodeData?.candidateId;
+        const candidateId = this.empId;
 
         this.authService.deleteFile(candidateId, fileId).subscribe({
           next: (res: HttpResponse<any>) => {
@@ -951,10 +962,13 @@ export class personalInfoComponent implements OnInit {
       this.isEmergencyDataPresent = false;
       this.emergencyUpdate = true;
     } else if (value == 'bank') {
-      console.log("rajender");
       this.isBankDataPresent = false;
       this.bankUpdate = true;
       this.bankFile = 'editBankFile'
+    } else if (value == 'medical') {
+      this.isMedicalDataPresent = false;
+      this.medicalUpdate = true;
+      this.MedicalReportFile = 'editMedicalFile'
     }
   }
 
@@ -1033,90 +1047,6 @@ export class personalInfoComponent implements OnInit {
     });
   }
 
-  // onFileSelect({ event, fieldName }: { event: Event; fieldName: string; }): void {
-  //   const fileInput = event.target as HTMLInputElement;
-  //   const file = fileInput.files?.[0];
-
-  //   if (file) {
-  //     const maxSizeInMB = 5;
-  //     const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-
-  //     if (file.size > maxSizeInBytes) {
-  //       Swal.fire({
-  //         title: 'File Too Large',
-  //         text: 'File size must be less than 5 MB.',
-  //         icon: 'error',
-  //         confirmButtonText: 'OK'
-  //       });
-  //       fileInput.value = '';
-  //       return;
-  //     }
-
-  //     if (file.type !== 'application/pdf') {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Invalid File Type!',
-  //         text: 'Please upload a PDF file only.',
-  //       });
-  //       (event.target as HTMLInputElement).value = '';
-  //       return;
-  //     }
-
-  //     if (fieldName == 'resume') {
-  //       this.uploadResume = file.name
-  //     }
-  //     if (fieldName == 'photo') {
-  //       this.uploadPhoto = file.name
-  //     }
-
-  //     // Store a clean copy of the file
-  //     const selectedFile = new File([file], file.name, {
-  //       type: file.type,
-  //       lastModified: Date.now()
-  //     });
-
-  //     // console.log(`Selected file for ${fieldName}:`, selectedFile);
-  //     this.selectedFiles[fieldName] = selectedFile;
-  //   } else {
-  //     // console.log(`No file selected for ${fieldName}`);
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   let hasFile = false;
-
-  //   // Append common fields
-  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-  //   formData.append('moduleId', '4');
-  //   formData.append('document', JSON.stringify({
-  //     candidateId: this.jobCodeData?.candidateId
-  //   }));
-
-  //   // Map of fieldName => FormData key
-  //   const fileFieldMap: { [key: string]: string } = {
-  //     'tenth': 'tenthFile',
-  //     'aadharFile': 'aadharFile',
-  //     'panFile': 'panFile',
-  //     'twelth': 'interFile',
-  //     'deploma': 'pgFile',
-  //     'degreeOrBTech': 'degreeFile',
-  //     'others': 'otherFile'
-  //   };
-
-  //   // Append only the selected files
-  //   for (const [key, formField] of Object.entries(fileFieldMap)) {
-  //     const selected = this.selectedFiles[key];
-  //     if (selected) {
-  //       formData.append(formField, selected);
-  //       hasFile = true;
-  //     }
-  //   }
-
-  //   if (hasFile) {
-  //     this.finalSave('documents', formData);
-  //   }
-  // }
-
   onFileSelect(event: Event, fieldName: string): void {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
@@ -1153,6 +1083,9 @@ export class personalInfoComponent implements OnInit {
       if (fieldName === 'familyAadhar') {
         this.familyAadharFileError = '';
       }
+      if (fieldName === 'medicalFile') {
+        this.medicalFileError = '';
+      }
 
       // Track uploaded file names
       const shortName = file.name.length > 25 ? file.name.substring(0, 25) + '...' : file.name;
@@ -1162,6 +1095,7 @@ export class personalInfoComponent implements OnInit {
       if (fieldName === 'bankFile') this.uploadBankFile = shortName;
       if (fieldName === 'familyAadhar') this.uploadFamilyAadharFile = shortName;
       if (fieldName === 'familyPhotoFile') this.uploadFamilyPhotoFile = shortName;
+      if (fieldName === 'medicalFile') this.uploadMedicalFile = shortName;
 
 
       // Store clean file copy
@@ -1391,18 +1325,15 @@ export class personalInfoComponent implements OnInit {
       }
 
       // Set up candidate ID and address flags
-      communicationAddress.candidateId = this.jobCodeData?.candidateId;
+      communicationAddress.candidateId = this.empId;
 
-      permanentAddress.candidateId = this.jobCodeData?.candidateId;
+      permanentAddress.candidateId = this.empId;
 
       let formData = new FormData();
 
       // Append both addresses as separate JSON objects
       formData.append("communicationAddress", JSON.stringify(communicationAddress));
       formData.append("permanentAddress", JSON.stringify(permanentAddress));
-
-      formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
-      formData.append('candidateId', this.jobCodeData?.candidateId);
       formData.append('moduleId', '2');
 
       this.finalSave('education', formData);
@@ -1438,12 +1369,10 @@ export class personalInfoComponent implements OnInit {
       }
 
       educationSection.educationId = this.registrationForm.get('educationId')?.value || 1;
-      educationSection.candidateId = this.jobCodeData?.candidateId;
+      educationSection.candidateId = this.empId;
 
       const formData = new FormData();
       formData.append("education", JSON.stringify([educationSection]));
-      formData.append("jobCodeId", this.jobCodeData?.jobCodeId);
-      formData.append("candidateId", this.jobCodeData?.candidateId);
       formData.append("moduleId", "3");
 
       this.finalSave('education', formData);
@@ -1554,7 +1483,7 @@ export class personalInfoComponent implements OnInit {
       }
 
       const experienceData: any = {
-        candidateId: this.jobCodeData.candidateId,
+        candidateId: this.empId,
         isFresher: sectionData.isFresher === 'fresher',
         joiningId: sectionData.joiningTime
       };
@@ -1905,6 +1834,65 @@ export class personalInfoComponent implements OnInit {
       formData.append('moduleId', '10');
       this.finalSave('professional', formData);
     }
+    else if (Action === 'medical') {
+      console.log("medical")
+      const medicalFields = ['medicalDescription'];
+      let medicalSection: any = {};
+      let isValid = true;
+
+      medicalFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          medicalSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required fields!", 'danger');
+        return;
+      }
+
+      // ✅ Build final JSON for medical report
+      const finalMedicalData = {
+        description: medicalSection.medicalDescription,
+        candidateId: this.empId
+      };
+
+      console.log('Final Medical JSON:', finalMedicalData);
+
+      // ✅ Prepare FormData
+      const formData = new FormData();
+      formData.append('medicalDetails', JSON.stringify(finalMedicalData));
+      formData.append('moduleId', '10');
+
+      // ✅ Append medical file if available
+      if (this.selectedFiles['medicalFile']) {
+        formData.append('medicalFile', this.selectedFiles['medicalFile']);
+        this.medicalFileError = '';
+      } else {
+        this.medicalFileError = 'Please upload the Medical Report';
+        this.showAlert(this.medicalFileError, 'danger');
+        return;
+      }
+
+      // if (this.selectedFiles['medicalFile']) {
+      //   formData.append('medicalFile', this.selectedFiles['medicalFile']);
+      //   this.medicalFileError = ''
+      // } else {
+      //   if (this.MedicalReportFile == 'editMedicalFile') {
+      //     this.medicalFileError = ''
+      //   } else {
+      //     this.medicalFileError = 'Please upload the Medical Report.';
+      //     return;
+      //   }
+      // }
+
+      // ✅ Final save call
+      this.finalSave('medical', formData);
+    }
 
 
   }
@@ -1935,6 +1923,7 @@ export class personalInfoComponent implements OnInit {
           this.addressUpadte = false;
           this.emergencyUpdate = false;
           this.bankUpdate = false;
+          this.medicalUpdate = false;
           // Swal.fire({
           //   title: 'Success',
           //   text: 'Successfully completed',

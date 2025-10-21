@@ -40,6 +40,10 @@ export class assetManagerSideBarComponent implements OnInit {
       route: '/process',
     },
     {
+      label: 'Voice Interviews',
+      route: '/telephonic'
+    },
+    {
       label: 'Offer Management',
       route: '/offer-letter',
     },
@@ -47,11 +51,6 @@ export class assetManagerSideBarComponent implements OnInit {
       label: 'Employee Onboarding',
       route: '/employee-code',
     },
-    {
-      // label: 'Telephonic Interviews',
-      label: 'Voice Interviews',
-      route: '/telephonic'
-    }
   ];
 
   constructor(

@@ -893,7 +893,7 @@ export class AuthService {
     };
   }
   
-  private jobCodeUrls: string = "http://192.168.213.189:2025/";
+  private jobCodeUrls: string = "http://192.168.215.164:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)

@@ -14,65 +14,60 @@
     </ol>
 </nav>
 <div class="container-fluid card">
-    <!-- <div class="row mb-4 p-2">
-        <div class="col-12 d-flex">
-            <p class="h5 m-0 text-center" style="color: #0072BC; font-weight: bold;">
-                <i class="bi bi-person-fill"></i> ID Card Template
-            </p>
+        <div class="row mb-4 p-2">
+            <div class="col-12 d-flex">
+                <p class="h5 m-0 text-center" style="color: #0072BC; font-weight: bold;">
+                    <i class="bi bi-person-fill"></i> ID Card Template
+                </p>
+            </div>
         </div>
-    </div>
 
-    <div class="custom-height">
-        <div class="d-flex overflow-auto" style="gap: 1rem; padding: 1rem;">
-            <div *ngFor="let company of companies" style="
-              flex: 0 0 auto;
-              width: 320px;
-              box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
-              border-radius: 6px;
-              padding: 0.5rem;
-            ">
-                <h5 class="mb-2 fw-bold">
-                    {{ company.name }}
-                </h5>
+        <div class="custom-height">
+            <div class="d-flex overflow-auto" style="gap: 1rem; padding: 1rem;">
+                <div *ngFor="let company of companies" style="
+                flex: 0 0 auto;
+                width: 320px;
+                box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+                border-radius: 6px;
+                padding: 0.5rem;
+                ">
+                    <h5 class="mb-2 fw-bold">
+                        {{ company.name }}
+                    </h5>
 
-                <div class="row">
-                    <div class="col-6 mb-3" *ngFor="let img of company.images; let i = index">
-                        <div class="card position-relative" (mouseenter)="hoverIndex[company.name + i] = true"
-                            (mouseleave)="hoverIndex[company.name + i] = false">
-                            <img [src]="img.url" class="card-img-top img-fluid" [alt]="img.label"
-                                style="border-radius: 4px;" />
+                    <div class="row">
+                        <div class="col-6 mb-3" *ngFor="let img of company.images; let i = index">
+                            <div class="card position-relative" (mouseenter)="hoverIndex[company.name + i] = true"
+                                (mouseleave)="hoverIndex[company.name + i] = false">
+                                <img [src]="img.url" class="card-img-top img-fluid" [alt]="img.label"
+                                    style="border-radius: 4px;" />
 
-                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                                [ngStyle]="{
-                                  background: 'rgba(0,0,0,0.4)',
-                                  opacity: hoverIndex[company.name + i] ? '1' : '0',
-                                  transition: '0.3s'
-                                }">
-                                <button class="btn btn-light" (click)="downloadImage(img.url)">
-                                    <img [src]="downloadIcon" alt="" />
-                                </button>
+                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                                    [ngStyle]="{
+                                    background: 'rgba(0,0,0,0.4)',
+                                    opacity: hoverIndex[company.name + i] ? '1' : '0',
+                                    transition: '0.3s'
+                                    }">
+                                    <button class="btn btn-light" (click)="downloadImage(img.url)">
+                                        <img [src]="downloadIcon" alt="" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div> -->
 
 
 
 
 
-     <div class="container-flui">
+     <!-- <div class="container-flui">
         <div class="container-flui mb-0">
             <div class="row">
                 <div class="col-md-2 d-none d-md-flex flex-column justify-content-betwen card border-0 py-3 px-2"
                     style="min-height: 68vh; background-color: #F8F8F8;">
-                    <!-- <div class="text-center mb-2">
-                        <img [src]="logo" alt="Logo" class="img-fluid cursor-pointer" style="max-height: 40px;"
-                            [routerLink]="['/dashboard']">
-                    </div> -->
-                    <!-- <hr class="mt-2"> -->
                     <div class="mb-0 side-scroll-container">
                         <h6 class="fw-bold text-dark ps-2 mb-3 mt-3">ID Card Templates</h6>
                         <hr class="mt-2">
@@ -317,5 +312,5 @@
             </div>
         </div>
 
-    </div>
+    </div> -->
 </div>

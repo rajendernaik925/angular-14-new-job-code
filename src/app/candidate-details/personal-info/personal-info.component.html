@@ -2521,8 +2521,8 @@
                     </div>
 
                     <div class="d-flex justify-content-end mr-4">
-                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
-                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('family')">
+                      <button type="submit" class="btn custom-bg text-white  btn-sm shadow-none border-0"
+                        (click)="setValidation('family')">
                         Save & Add
                       </button>
 
@@ -2704,23 +2704,6 @@
                         </ng-template>
                       </div>
                     </div>
-
-                    <div class="d-flex justify-content-end mr-4">
-                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
-                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('bank')">
-                        Save & Next
-                      </button>
-
-                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
-                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('bank')">
-                        Edit Data
-                      </button>
-
-                      <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
-                        (click)="setValidation('bank')">
-                        Update & Next
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -2747,7 +2730,8 @@
                       <div class="col-md-9 row g-3">
 
 
-                        <div class="col-md-12 mb-2" *ngIf="!MedicalReportFile; else medicalReportFileInput">
+                        <div class="col-md-12 mb-2"
+                          *ngIf="!MedicalReportFile || MedicalReportFile == 'editMedicalFile'; else medicalReportFileInput">
                           <div *ngIf="!editButtonDisplay; else nonBlurFileInput" class="mb-3">
                             <div class="mb-3 opacity-50 pointer-events-none ">
                               <label
@@ -2759,37 +2743,41 @@
                           </div>
                           <ng-template #nonBlurFileInput>
                             <div class="mb-3">
-                              <label for="aadharFile"
+                              <label for="medicalFile"
                                 class="d-block text-center border border-primary rounded bg-file p-1 cursor-pointer">
                                 <i class="bi bi-file-earmark-arrow-up text-primary fs-4 d-block mb-1"></i>
-                                <span class="text-primary fw-semibold">Upload medical document</span>
-                                <input type="file" id="aadharFile" accept=".pdf" #aadharFileInput
-                                  (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                                <span class="text-primary fw-semibold">{{uploadMedicalFile}}</span>
+                                <input type="file" id="medicalFile" accept=".pdf" #aadharFileInput
+                                  (change)="onFileSelect($event, 'medicalFile')" class="d-none" />
                               </label>
                             </div>
                           </ng-template>
+                          <div *ngIf="medicalFileError" class="text-danger fs-custom mt-1">
+                            {{ medicalFileError }}
+                          </div>
 
                         </div>
                         <ng-template #medicalReportFileInput>
                           <div class="col-md-8 d-flex align-items-center">
                             <span class="text-decoration-underline custom-text cursor-pointer mr-2 fst-italic"
-                              (click)="viewFile(aadharFile)">
-                              aadhaar file
+                              (click)="viewFile(MedicalReportFile)">
+                              View Medical File
                             </span>
-                            <input type="file" accept=".pdf" #hiddenAadharInput
+                            <!-- <input type="file" accept=".pdf" #hiddenAadharInput
                               (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
                             <i *ngIf="editButtonDisplay" class="bi bi-trash3-fill text-danger mr-2 cursor-pointer"
                               (click)="deleteFile('6')"></i>
                             <i *ngIf="editButtonDisplay" class="bi bi-pencil-square text-info cursor-pointer"
-                              (click)="openAadharFileInput()"></i>
+                              (click)="openAadharFileInput()"></i> -->
                           </div>
                         </ng-template>
 
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 mt-3">
                           <label for="medicalDescription" class="form-label">Medical Description</label>
                           <textarea id="medicalDescription" class="form-control" formControlName="medicalDescription"
-                            rows="3" placeholder="Enter medical description"></textarea>
+                            rows="3" placeholder="Enter medical description"
+                            [readOnly]="isMedicalDataPresent"></textarea>
 
                           <!-- Validation Error -->
                           <div class="text-danger mt-1"
@@ -2806,18 +2794,19 @@
                     </div>
 
                     <div class="d-flex justify-content-end mr-4">
-                      <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
-                        class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('bank')">
+                      <button *ngIf="!isMedicalDataPresent && !medicalUpdate" type="submit"
+                        class="btn custom-bg text-white  btn-sm shadow-none border-0"
+                        (click)="setValidation('medical')">
                         Save & Next
                       </button>
 
-                      <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
-                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('bank')">
+                      <button *ngIf="isMedicalDataPresent && editButtonDisplay" type="submit"
+                        class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('medical')">
                         Edit Data
                       </button>
 
-                      <button *ngIf="addressUpadte" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
-                        (click)="setValidation('bank')">
+                      <button *ngIf="medicalUpdate" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
+                        (click)="setValidation('medical')">
                         Update & Next
                       </button>
                     </div>
@@ -2850,7 +2839,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="scroll-container">
+                  <div class="side-scroll-container">
 
                     <div class="list-group border-0">
                       <div
@@ -2950,11 +2939,106 @@
                       </div>
                     </div>
 
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.emergencyDetails === '20',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.emergencyDetails !== '20'
+                          }"></i>
+                          Emergency Details
+                        </div>
+                        <a (click)="setActiveSection('emergency')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.emergencyDetails === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.emergencyDetails !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.emergencyDetails === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.bankInfo === '20',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.bankInfo !== '20'
+                          }"></i>
+                          Bank Information
+                        </div>
+                        <a (click)="setActiveSection('bank')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.bankInfo === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.bankInfo !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.bankInfo === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.familyInfo === '20',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.familyInfo !== '20'
+                          }"></i>
+                          Family Information
+                        </div>
+                        <a (click)="setActiveSection('family')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.familyInfo === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.familyInfo !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.familyInfo === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.agreementDetails === '20',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.agreementDetails !== '20'
+                          }"></i>
+                          Agreemet Documentation <span class="text-warning">(Optional)</span>
+                        </div>
+                        <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.agreementDetails === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.agreementDetails !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.agreementDetails === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.medicalInfo === '20',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.medicalInfo !== '20'
+                          }"></i>
+                          Medical Reports <span class="text-warning">(Optional)</span>
+                        </div>
+                        <a (click)="setActiveSection('medical')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.candidateTrackingDTO?.medicalInfo === '20',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.medicalInfo !== '20'
+                        }">
+                          {{ loadedData?.candidateTrackingDTO?.medicalInfo === '20' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
                     <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
                       class="alert alert-success text-center mt-3">
-                      ✅ All sections are completed 🎉. Please wait while we schedule your interview. You will be
-                      notified
-                      shortly.
+                      <h4>✅ All sections have been successfully completed</h4>
+                       Please report on your joining date as per your offer letter. Verification is in progress, and you’ll be notified soon.
                     </div>
 
 

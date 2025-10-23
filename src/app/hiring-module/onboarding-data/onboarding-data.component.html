@@ -2811,15 +2811,15 @@
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label for="HQ" class="form-label form-label-small">Head Quarter</label>
-                          <select formControlName="HQ" class="form-control form-control-sm">
+                          <label for="workLocation" class="form-label form-label-small">Work Location</label>
+                          <select formControlName="workLocation" class="form-control form-control-sm">
                             <option value="">Select</option>
                             <!-- <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}</option> -->
                             <option value="1">need</option>
                           </select>
-                          <div *ngIf="registrationForm.get('HQ')?.touched && registrationForm.get('HQ')?.invalid"
+                          <div *ngIf="registrationForm.get('workLocation')?.touched && registrationForm.get('workLocation')?.invalid"
                             class="text-danger fs-custom">
-                            Head Quarter is required
+                            Work Location is required
                           </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -3220,10 +3220,8 @@
 
                     <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
                       class="alert alert-success text-center mt-3">
-                      <!-- ✅ All sections are completed 🎉. Please wait while we schedule your interview. You will be
-                      notified
-                      shortly. -->
-                      ✅ All sections have been successfully completed 🎉 Your data submission is now complete. Please report on your date of joining as mentioned in your offer letter. Our team will verify your submitted details, and you will be notified once the verification is complete. 
+                      <h4>✅ All sections have been successfully completed</h4>
+                       Please report on your joining date as per your offer letter. Verification is in progress, and you’ll be notified soon.
                     </div>
 
                   </div>
@@ -3386,3 +3384,17 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

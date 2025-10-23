@@ -255,7 +255,7 @@ export class OnboardingDataComponent implements OnInit {
       // professional information 
       department: ['', [Validators.required]],
       designation: ['', [Validators.required]],
-      HQ: ['', [Validators.required]],
+      workLocation: ['', [Validators.required]],
       ishod: ['', [Validators.required]],
       reportingManager: ['', [Validators.required]],
       paysheetGroup: ['', [Validators.required]],
@@ -487,7 +487,7 @@ export class OnboardingDataComponent implements OnInit {
             // professional
             // 'department',
             // 'designation',
-            // 'HQ',
+            // 'workLocation',
             // 'ishod',
             // 'reportingManager',
             // 'paysheetGroup',
@@ -1865,7 +1865,7 @@ export class OnboardingDataComponent implements OnInit {
       const professionalFields = [
         'department',
         'designation',
-        'HQ',
+        'workLocation',
         'ishod',
         'reportingManager',
         'paysheetGroup',
@@ -1896,7 +1896,7 @@ export class OnboardingDataComponent implements OnInit {
         candidateId: this.empId,
         departmentId: professionalSection.department,
         designationId: professionalSection.designation,
-        headQuarter: professionalSection.HQ,
+        headQuarter: professionalSection.workLocation,
         isHOD: professionalSection.ishod,
         reportingManagerId: professionalSection.reportingManager,
         paysheetGroup: professionalSection.paysheetGroup,

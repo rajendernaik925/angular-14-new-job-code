@@ -2840,6 +2840,11 @@
                     </div>
                   </div>
                   <div class="side-scroll-container">
+                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                      class="alert alert-success text-center mt-3">
+                      <h5>✅ All sections have been successfully completed</h5>
+                       Please report on your joining date as per your offer letter. Verification is in progress, and you’ll be notified soon.
+                    </div>
 
                     <div class="list-group border-0">
                       <div
@@ -3035,11 +3040,7 @@
                       </div>
                     </div>
 
-                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
-                      class="alert alert-success text-center mt-3">
-                      <h4>✅ All sections have been successfully completed</h4>
-                       Please report on your joining date as per your offer letter. Verification is in progress, and you’ll be notified soon.
-                    </div>
+                    
 
 
 

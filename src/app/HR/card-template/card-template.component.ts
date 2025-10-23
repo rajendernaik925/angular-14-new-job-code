@@ -27,9 +27,6 @@ export class CardTemplateComponent implements OnInit {
 
     this.activeTab = 'HHCL'
 
-
-
-
     this.loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(this.loggedUser);
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate')));

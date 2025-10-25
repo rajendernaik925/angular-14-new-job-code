@@ -81,17 +81,17 @@
              }" (click)="setActiveSection('agreement')">
             <i class="bi bi-briefcase mr-2"></i> Agreement Files
           </button>
-          <button class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none" [ngClass]="{
-               'bg-dark text-white shadow-none': activeTab === 'professional',
-               'btn-light text-dark': activeTab !== 'professional'
-             }" (click)="setActiveSection('professional')">
-            <i class="bi bi-person-check mr-2"></i> Professional Info
-          </button>
-          <button class="btn btn-sm w-100 text-start d-flex align-items-center rounded ps-2 shadow-none" [ngClass]="{
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center rounded mb-2 ps-2 shadow-none" [ngClass]="{
                'bg-dark text-white shadow-none': activeTab === 'medical',
                'btn-light text-dark': activeTab !== 'medical'
              }" (click)="setActiveSection('medical')">
             <i class="bi bi-lungs mr-2"></i> Medical Reports
+          </button>
+          <button class="btn btn-sm w-100 text-start d-flex align-items-center  rounded ps-2 shadow-none" [ngClass]="{
+               'bg-dark text-white shadow-none': activeTab === 'professional',
+               'btn-light text-dark': activeTab !== 'professional'
+             }" (click)="setActiveSection('professional')">
+            <i class="bi bi-person-check mr-2"></i> Professional Info
           </button>
           <hr class="mt-2">
           <div>
@@ -3329,10 +3329,121 @@
                   <div class="scroll-container">
                     <div class="row mb-4">
                       <div class="col-md-3 fw-bold-d">Proceed to HRMS</div>
-                      <div class="col-md-9 row text-danger d-flex justify-content-center align-items-center">
-                        <img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5sSR8EW8dzS2ZVyqgRguH_hHHo_0t_yYBw&s"
-                          alt="">
+                      <div class="col-md-9 row">
+                        <div class="col-md-4 mb-3">
+                          <label for="department" class="form-label form-label-small">Notice Period</label>
+                          <select formControlName="department" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of departmentListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('department')?.touched && registrationForm.get('department')?.invalid"
+                            class="text-danger fs-custom">
+                            Notice Period is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="designation" class="form-label form-label-small">Probation Period</label>
+                          <select formControlName="designation" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of designationListOptions" [value]="title?.designationid">{{
+                              title?.name }}</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('designation')?.touched && registrationForm.get('designation')?.invalid"
+                            class="text-danger fs-custom">
+                            Probation Period is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="reportingManager" class="form-label form-label-small">Division</label>
+                          <select formControlName="reportingManager" class="form-control form-control-sm" disabled>
+                            <option value="">Select</option>
+                            <option *ngFor="let title of managersListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('reportingManager')?.touched && registrationForm.get('reportingManager')?.invalid"
+                            class="text-danger fs-custom">
+                            Division is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="businessUnit" class="form-label form-label-small">Business Unit</label>
+                          <select formControlName="businessUnit" class="form-control form-control-sm"
+                            [attr.disabled]="true">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('businessUnit')?.touched && registrationForm.get('businessUnit')?.invalid"
+                            class="text-danger fs-custom">
+                            Business Unit is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="workLocation" class="form-label form-label-small">Work Location</label>
+                          <select formControlName="workLocation" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div *ngIf="registrationForm.get('workLocation')?.touched && registrationForm.get('workLocation')?.invalid"
+                            class="text-danger fs-custom">
+                            Work Location is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="incrementType" class="form-label form-label-small">Increament Type</label>
+                          <select formControlName="incrementType" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('incrementType')?.touched && registrationForm.get('incrementType')?.invalid"
+                            class="text-danger fs-custom">
+                            Increament Type is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="paysheetGroup" class="form-label form-label-small">Paysheet Group</label>
+                          <select formControlName="paysheetGroup" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
+                            <option value="1">need</option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('paysheetGroup')?.touched && registrationForm.get('paysheetGroup')?.invalid"
+                            class="text-danger fs-custom">
+                            Paysheet Group is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="ishod" class="form-label form-label-small">Is HOD</label>
+                          <select formControlName="ishod" class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
+                          </select>
+                          <div *ngIf="registrationForm.get('ishod')?.touched && registrationForm.get('ishod')?.invalid"
+                            class="text-danger fs-custom">
+                            Is HOD is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="hodName" class="form-label form-label-small">CTC</label>
+                          <input type="text" [value]="jobCodeData.name" readonly noFirstSpace
+                            formControlName="hodName" class="form-control form-control-sm" placeholder="Cost to company" />
+                          <div
+                            *ngIf="registrationForm.get('hodName')?.touched && registrationForm.get('hodName')?.invalid"
+                            class="text-danger fs-custom">
+                            First name is required
+                          </div>
+                        </div>
                       </div>
 
                     </div>

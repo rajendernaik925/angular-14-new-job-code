@@ -264,6 +264,7 @@ export class personalInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     // this.route.paramMap.subscribe(params => {
     //   const encodedId = params.get('id');
     //   if (encodedId) {
@@ -281,8 +282,12 @@ export class personalInfoComponent implements OnInit {
     //   }
     // });
 
+
+
     this.activeTab = 'personal'
     this.handleExperienceToggle('fresher');
+    this.empLogDataCheck();
+
     const loginData = JSON.parse(localStorage.getItem('hiringFieldLoginData') || '{}');
     this.jobCodeData = loginData;
     console.log("loggin data : ", this.jobCodeData);
@@ -292,10 +297,10 @@ export class personalInfoComponent implements OnInit {
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
     this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
     const HiringLoginCandidateId = localStorage.getItem('HiringLoginCandidateId') || '';
-    
-      console.log("rajender")
-      console.log("rrr : ",HiringLoginCandidateId);
-      console.log("rrr : ",this.jobCodeData.status);
+
+    console.log("rajender")
+    console.log("rrr : ", HiringLoginCandidateId);
+    console.log("rrr : ", this.jobCodeData.status);
     if (!HiringLoginCandidateId || !this.jobCodeData.status) {
       console.log("rajender")
       localStorage.removeItem('hiringFieldLoginData');
@@ -330,6 +335,31 @@ export class personalInfoComponent implements OnInit {
     this.loadYesNoOptions();
     this.status();
 
+  }
+
+  empLogDataCheck() {
+    const empLogDataStr = localStorage.getItem('hiringLoginData');
+    if (!empLogDataStr) return;
+
+    console.log("rajender")
+
+    const empLogData = JSON.parse(empLogDataStr);
+    console.log("now : ", empLogData)
+    console.log("emp id  : ", empLogData?.employeeType)
+
+
+    if (empLogData?.employeeType === 1) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Login Successful',
+        text: 'Please contact HR to fill the Basic Information page.',
+        confirmButtonText: 'OK',
+      });
+      localStorage.removeItem('hiringFieldLoginData');
+      localStorage.removeItem('hiringLoginData');
+      localStorage.removeItem('HiringLoginCandidateId');
+      this.router.navigate(['/hiring-login']);
+    }
   }
 
   // toggleSidebar() {
@@ -546,7 +576,7 @@ export class personalInfoComponent implements OnInit {
             .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isMedicalDataPresent = [res?.medicalDocumentDTO?.description]
-            .every(field => typeof field === 'string' && field.trim() !== '');  
+            .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -2344,6 +2374,7 @@ export class personalInfoComponent implements OnInit {
       if (result.isConfirmed) {
         localStorage.removeItem('hiringFieldLoginData');
         localStorage.removeItem('HiringLoginCandidateId');
+        localStorage.removeItem('hiringLoginData');
         this.router.navigate(['/hiring-login']);
       }
 

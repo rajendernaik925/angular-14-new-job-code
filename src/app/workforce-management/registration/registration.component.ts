@@ -28,6 +28,8 @@ export class RegistrationComponent implements OnInit {
   colorTheme = 'theme-dark-blue';
   @ViewChild('hiddenResumeInput') hiddenResumeInput!: ElementRef;
   resumePath: string = '';
+  indianStates: any[] = [];
+  indianCities: any[] = [];
 
 
   resumeFile: string | null = null;
@@ -55,6 +57,9 @@ export class RegistrationComponent implements OnInit {
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
       completeAddress: ['', Validators.required],
+      state: ['', Validators.required],
+      city: ['', Validators.required],
+      pincode: ['', Validators.required],
     });
   }
 
@@ -77,6 +82,8 @@ export class RegistrationComponent implements OnInit {
     this.maxDob = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
 
+    this.states();
+
 
     if (this.jobCodeData.candidateId) {
       this.loadUserData();
@@ -92,7 +99,7 @@ export class RegistrationComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         this.loadedData = res;
-        if(this.loadedData?.candidateInterviewDetails?.length) {
+        if (this.loadedData?.candidateInterviewDetails?.length) {
           localStorage.setItem('HiringLoginCandidateId', this.jobCodeData.candidateId);
           this.router.navigate(['/personal-info']);
         }
@@ -117,7 +124,10 @@ export class RegistrationComponent implements OnInit {
             firstName: res?.candidatePersonalInformationDetails?.firstName ? res.candidatePersonalInformationDetails.firstName : this.jobCodeData.name,
             mobileNumber: res?.candidatePersonalInformationDetails?.mobileNumber ? res.candidatePersonalInformationDetails.mobileNumber : this.jobCodeData.mobileNumber,
             lastName: res?.candidatePersonalInformationDetails?.lastName || '',
-            completeAddress: res?.candidatePersonalInformationDetails?.lastName || '',
+            completeAddress: res?.candidatePersonalInformationDetails?.address || '',
+            state: res?.candidatePersonalInformationDetails?.stateId || '',
+            city: res?.candidatePersonalInformationDetails?.cityId || '',
+            pincode: res?.candidatePersonalInformationDetails?.pincode || '',
             dob: res?.candidatePersonalInformationDetails?.dob || '',
             highestDegree: res?.candidatePersonalInformationDetails?.highestDegree || '',
             adhar: res?.candidatePersonalInformationDetails?.adhar || '',
@@ -128,6 +138,10 @@ export class RegistrationComponent implements OnInit {
             isFresher: isFresher,
             // resume: res?.candidatePersonalInformationDetails?.resume || '',
           });
+
+           if (res?.candidatePersonalInformationDetails?.stateId) {
+            this.getCities(res?.candidatePersonalInformationDetails?.stateId);
+          }
 
           this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.firstName]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -323,23 +337,16 @@ export class RegistrationComponent implements OnInit {
   setValidation(Action: string) {
     if (Action === 'experience') {
       let isValid = true;
-      // if (this.resumeFile || this.resumePath) {
-      //   this.registrationForm.get('resume')?.clearValidators();
-      //   this.registrationForm.get('resume')?.setValue(this.resumePath);
-      // }
       if (this.resumeFile || this.resumePath) {
         const resumeControl = this.registrationForm.get('resume');
         resumeControl?.clearValidators();
-        resumeControl?.updateValueAndValidity(); // refresh validators
+        resumeControl?.updateValueAndValidity();
       }
 
-
-      // Required fields based on fresher/experienced
       const requiredFields = this.isFresher
-        ? ['isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress']
-        : ['companyName', 'totalExperience', 'isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress'];
+        ? ['isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress', 'state', 'city', 'pincode']
+        : ['companyName', 'totalExperience', 'isFresher', 'email', 'firstName', 'lastName', 'mobileNumber', 'dob', 'highestDegree', 'adhar', 'resume', 'completeAddress', 'state', 'city', 'pincode'];
 
-      // Validate form
       requiredFields.forEach(field => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
@@ -355,7 +362,6 @@ export class RegistrationComponent implements OnInit {
 
       const formValues = { ...this.registrationForm.value };
 
-      // Format DOB
       if (formValues.dob) {
         const dateObj = new Date(formValues.dob);
         const yyyy = dateObj.getFullYear();
@@ -364,22 +370,6 @@ export class RegistrationComponent implements OnInit {
         formValues.dob = `${yyyy}-${mm}-${dd}`;
       }
 
-      // Build final JSON
-      // const experienceData: any = {
-      //   candidateId: this.jobCodeData.candidateId,
-      //   firstName: formValues.firstName || null,
-      //   lastName: formValues.lastName || null,
-      //   email: formValues.email || null,
-      //   mobile: formValues.mobileNumber || null,
-      //   dob: formValues.dob || null,
-      //   aadhar: formValues.adhar || null,
-      //   isFresher: formValues.isFresher === 'fresher',
-      //   company: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
-      //   experience: formValues.isFresher === 'fresher' ? 0.0 : formValues.totalExperience || 0.0,
-      //   highestDegree: formValues.highestDegree || null,
-      //   // resume: formValues.resume || null,
-      // };
-
       const experienceData: any = {
         candidateId: this.jobCodeData.candidateId,
         email: formValues.email || null,
@@ -387,10 +377,13 @@ export class RegistrationComponent implements OnInit {
         dob: formValues.dob || null,
         firstName: formValues.firstName || null,
         completeAddress: formValues.completeAddress || null,
+        pincode: formValues.pincode || null,
+        state: formValues.state || null,
+        city: formValues.city || null,
         lastName: formValues.lastName || null,
         highestDegree: formValues.highestDegree || null,
         aadharNumber: formValues.adhar || null,
-        isFresherFlag: formValues.isFresher === 'fresher' ? 1 : 0,   // 1 = Fresher, 0 = Experienced
+        isFresherFlag: formValues.isFresher === 'fresher' ? 1 : 0,
         companyName: formValues.isFresher === 'fresher' ? null : formValues.companyName || null,
         totalExperience: formValues.isFresher === 'fresher' ? null : formValues.totalExperience || null,
       };
@@ -429,6 +422,49 @@ export class RegistrationComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         console.error('HTTP Error:', err);
+      }
+    })
+  }
+
+  states() {
+    this.authService.states().subscribe({
+      next: (res: any) => {
+        this.indianStates = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("Error fetching states:", err);
+      }
+    });
+  }
+
+  onStateChange(event: Event) {
+    const selectedStateId = (event.target as HTMLSelectElement).value;
+
+    if (selectedStateId) {
+      this.indianCities = [];
+      this.registrationForm.patchValue({ city: '' }); 
+      this.getCities(selectedStateId);
+    } else {
+      this.indianCities = [];
+      this.registrationForm.patchValue({ city: '' });
+    }
+  }
+
+  onCityChange(event: Event) {
+    const selectedStateId = (event.target as HTMLSelectElement).value;
+    console.log("id : ", selectedStateId)
+  }
+
+  getCities(stateId: string) {
+    console.log("state id : ", stateId);
+    this.authService.cities(stateId).subscribe({
+      next: (res: any) => {
+        console.log("cities : ", res);
+        this.indianCities = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.indianCities = [];
+        console.log("error : ", err)
       }
     })
   }

@@ -114,18 +114,80 @@
 
                 </div>
 
-                <div class="row my-3">
-                  <div class="col-md-12">
+
+
+                <div class="row my-2">
+                  <!-- <div class="col-md-3">
+                    <div class="mb-3">
+                      <label for="state" class="form-label form-label-small">State <span class="text-danger">*</span></label>
+                      <select formControlName="state" [attr.disabled]="isAllDataPresent ? true : null"
+                        class="form-control form-control-sm">
+                        <option value="">Select</option>
+                        <option *ngFor="let state of indianStates" [value]="state?.id">{{ state?.name }}</option>
+                      </select>
+                      <div
+                        *ngIf="registrationForm.get('state')?.touched && registrationForm.get('state')?.invalid"
+                        class="text-danger fs-custom">
+                        Bank Name is required
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="col-md-3">
+                    <div class="mb-3">
+                      <label for="state" class="form-label form-label-small">
+                        State <span class="text-danger">*</span>
+                      </label>
+                      <select *ngIf="isAllDataPresent" formControlName="state"
+                        [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
+                        (change)="onStateChange($event)"
+                        [ngClass]="{'is-invalid': registrationForm.get('state')?.touched && registrationForm.get('state')?.invalid}">
+                        <option value="">Select state</option>
+                        <option *ngFor="let state of indianStates" [value]="state?.id">{{ state?.name }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-3">
+                    <div class="mb-3">
+                      <label for="city" class="form-label form-label-small">City <span
+                          class="text-danger">*</span></label>
+                      <select *ngIf="isAllDataPresent" formControlName="city"
+                        [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
+                        [ngClass]="{'is-invalid': registrationForm.get('city')?.touched && registrationForm.get('city')?.invalid}">
+                        <option *ngIf="indianCities.length" value="">Select City</option>
+                        <option *ngIf="!indianCities.length" value="">Please select state first</option>
+                        <option *ngFor="let city of indianCities" [value]="city?.id">{{ city?.name }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label for="completeAddress">Address <span class="text-danger">*</span></label>
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="completeAddress"
+                      placeholder="Enter Address" class="form-control form-control-sm" maxlength="50" noFirstSpace
+                      [ngClass]="{ 'is-invalid': registrationForm.get('completeAddress')?.invalid && registrationForm.get('completeAddress')?.touched }" />
+                  </div>
+
+                  <div class="col-md-3">
+                    <label for="pincode">Pincode <span class="text-danger">*</span></label>
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="pincode" maxlength="6"
+                      minlength="6" placeholder="Enter Pincode" class="form-control form-control-sm" numbersOnly
+                      noFirstSpace
+                      [ngClass]="{ 'is-invalid': registrationForm.get('pincode')?.invalid && registrationForm.get('pincode')?.touched }" />
+                  </div>
+
+                  <!-- <div class="col-md-">
                     <label for="completeAddress">
                       Complete Address (Pincode) <span class="text-danger">*</span>
                     </label>
                     <textarea [readOnly]="isAllDataPresent" stringOnly formControlName="completeAddress"
-                      class="form-control form-control-sm" placeholder="Enter Complete Address" rows="2" [ngClass]="{
+                      class="form-control form-control-sm" placeholder="Enter Complete Address" rows="1" [ngClass]="{
                         'is-invalid':
                           registrationForm.get('completeAddress')?.invalid &&
                           registrationForm.get('completeAddress')?.touched
                       }"></textarea>
-                  </div>
+                  </div> -->
                 </div>
 
                 <hr class="custom-hr mt-2 scale-in-hor-left" />

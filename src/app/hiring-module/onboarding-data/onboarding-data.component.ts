@@ -56,6 +56,8 @@ export class OnboardingDataComponent implements OnInit {
   employeeDataListOptions: any[] = [];
   ptStatesListOptions: any[] = [];
   salesOfficeListOptions: any[] = [];
+  increamentTypeList: any[] = [];
+  workLocationList: any[] = [];
 
   indianStates: any[] = [];
   communicationCities: any[] = [];
@@ -256,9 +258,9 @@ export class OnboardingDataComponent implements OnInit {
       department: ['', [Validators.required]],
       designation: ['', [Validators.required]],
       workLocation: ['', [Validators.required]],
-      ishod: ['', [Validators.required]],
+      // ishod: ['', [Validators.required]],
       reportingManager: ['', [Validators.required]],
-      paysheetGroup: ['', [Validators.required]],
+      // paysheetGroup: ['', [Validators.required]],
       incrementType: ['', [Validators.required]],
       businessUnit: ['', [Validators.required]],
       hodName: ['', [Validators.required]],
@@ -322,6 +324,8 @@ export class OnboardingDataComponent implements OnInit {
     this.salesDistrict();
     this.salesOffice();
     this.probationPeriod();
+    this.workLocation();
+    this.increamentType();
   }
 
   // toggleSidebar() {
@@ -363,6 +367,10 @@ export class OnboardingDataComponent implements OnInit {
         if (this.loadedData?.candidateInterviewDetails?.length) {
           // this.editButtonDisplay = false;
           // this.InterviewStatus();
+        }
+
+        if(res?.candidateOnboardingDTO?.reportingId) {
+          this.hodName(res?.candidateOnboardingDTO?.reportingId);
         }
 
         if (res?.familyInformationResponseDTO) {
@@ -537,7 +545,7 @@ export class OnboardingDataComponent implements OnInit {
             .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isMedicalDataPresent = [res?.medicalDocumentDTO?.description]
-            .every(field => typeof field === 'string' && field.trim() !== '');    
+            .every(field => typeof field === 'string' && field.trim() !== '');
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -1866,9 +1874,9 @@ export class OnboardingDataComponent implements OnInit {
         'department',
         'designation',
         'workLocation',
-        'ishod',
+        // 'ishod',
         'reportingManager',
-        'paysheetGroup',
+        // 'paysheetGroup',
         'incrementType',
         'businessUnit',
         'hodName'
@@ -1897,9 +1905,9 @@ export class OnboardingDataComponent implements OnInit {
         departmentId: professionalSection.department,
         designationId: professionalSection.designation,
         headQuarter: professionalSection.workLocation,
-        isHOD: professionalSection.ishod,
+        // isHOD: professionalSection.ishod,
         reportingManagerId: professionalSection.reportingManager,
-        paysheetGroup: professionalSection.paysheetGroup,
+        // paysheetGroup: professionalSection.paysheetGroup,
         incrementType: professionalSection.incrementType,
         businessUnit: professionalSection.businessUnit,
         hodName: professionalSection.hodName,
@@ -2471,6 +2479,38 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
+  workLocation() {
+    this.authService.workLocation().subscribe({
+      next: (res: any) => {
+        this.workLocationList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  hodName(reportingId:any) {
+    this.authService.getHodName(reportingId).subscribe({
+      next: (res: any) => {
+        console.log("hod name with id : ",res);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  increamentType() {
+    this.authService.increamentType().subscribe({
+      next: (res: any) => {
+        this.increamentTypeList = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
 
   private setCitiesAndPatch(cities: any[] | null, addressType: 'communication' | 'permanent', cityId: string | null) {
     const patchedCityId = cityId ?? '';
@@ -2487,12 +2527,6 @@ export class OnboardingDataComponent implements OnInit {
       });
     }
   }
-
-
-
-
-
-
 
   getProgressWidth(): string {
     const stepWidths = {
@@ -2515,12 +2549,6 @@ export class OnboardingDataComponent implements OnInit {
       timerProgressBar: true,
     });
   }
-
-  // lastWorkingformatDate(dateString: string): string {
-  //   if (!dateString) return '';
-  //   const date = new Date(dateString);
-  //   return date.toISOString().split('T')[0];
-  // }
 
   logout(): void {
     Swal.fire({
@@ -2549,16 +2577,14 @@ export class OnboardingDataComponent implements OnInit {
     }).then((result) => {
       const base64Once = btoa(this.empId.toString());
       const base64Twice = btoa(base64Once);
-      this.router.navigate(['/employee-code', base64Twice]);
-      // if (result.isConfirmed) {
-      //   localStorage.removeItem('hiringLoginData');
-      //   this.router.navigate(['/hiring-login']);
-      // }
+      if (result.isConfirmed) {
+        // localStorage.removeItem('hiringLoginData');
+        // this.router.navigate(['/hiring-login']);
+        this.router.navigate(['/employee-code', base64Twice]);
+      }
 
     });
   }
-
-
 
   checkDuplicateQualification(index: number): boolean {
     const educationArray = this.registrationForm.get('educationDetails') as FormArray;
@@ -2573,8 +2599,6 @@ export class OnboardingDataComponent implements OnInit {
 
     return duplicates.length > 0;
   }
-
-
 
   panCardKeydown(event: KeyboardEvent): void {
     const input = event.target as HTMLInputElement;
@@ -2624,9 +2648,6 @@ export class OnboardingDataComponent implements OnInit {
     }, 2000); // alert visible for 2 seconds
   }
 
-
-
-
   openTenthFileInput(): void {
     this.hiddenTenthInput.nativeElement.click();
   }
@@ -2656,7 +2677,6 @@ export class OnboardingDataComponent implements OnInit {
   openOthersInput(): void {
     this.hiddenOthersInput.nativeElement.click();
   }
-
 
   // onFileChange(event: any, controlName: string) {
   //   const file = event.target.files[0];

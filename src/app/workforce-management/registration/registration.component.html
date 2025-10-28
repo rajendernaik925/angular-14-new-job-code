@@ -137,7 +137,7 @@
                       <label for="state" class="form-label form-label-small">
                         State <span class="text-danger">*</span>
                       </label>
-                      <select *ngIf="isAllDataPresent" formControlName="state"
+                      <select  formControlName="state"
                         [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
                         (change)="onStateChange($event)"
                         [ngClass]="{'is-invalid': registrationForm.get('state')?.touched && registrationForm.get('state')?.invalid}">
@@ -152,7 +152,7 @@
                     <div class="mb-3">
                       <label for="city" class="form-label form-label-small">City <span
                           class="text-danger">*</span></label>
-                      <select *ngIf="isAllDataPresent" formControlName="city"
+                      <select formControlName="city"
                         [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
                         [ngClass]="{'is-invalid': registrationForm.get('city')?.touched && registrationForm.get('city')?.invalid}">
                         <option *ngIf="indianCities.length" value="">Select City</option>

@@ -2814,8 +2814,7 @@
                           <label for="workLocation" class="form-label form-label-small">Work Location</label>
                           <select formControlName="workLocation" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <!-- <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}</option> -->
-                            <option value="1">need</option>
+                            <option *ngFor="let item of workLocationList" [value]="item?.id">{{ item?.name }}</option>
                           </select>
                           <div *ngIf="registrationForm.get('workLocation')?.touched && registrationForm.get('workLocation')?.invalid"
                             class="text-danger fs-custom">
@@ -2826,8 +2825,7 @@
                           <label for="incrementType" class="form-label form-label-small">Increament Type</label>
                           <select formControlName="incrementType" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
-                            <option value="1">need</option>
+                            <option *ngFor="let item of increamentTypeList" [value]="item?.id">{{ item?.name }}</option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('incrementType')?.touched && registrationForm.get('incrementType')?.invalid"
@@ -2835,11 +2833,10 @@
                             Increament Type is required
                           </div>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                           <label for="paysheetGroup" class="form-label form-label-small">Paysheet Group</label>
                           <select formControlName="paysheetGroup" class="form-control form-control-sm">
                             <option value="">Select</option>
-                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
                             <option value="1">need</option>
                           </select>
                           <div
@@ -2847,8 +2844,8 @@
                             class="text-danger fs-custom">
                             Paysheet Group is required
                           </div>
-                        </div>
-                        <div class="col-md-4">
+                        </div> -->
+                        <!-- <div class="col-md-4">
                           <label for="ishod" class="form-label form-label-small">Is HOD</label>
                           <select formControlName="ishod" class="form-control form-control-sm">
                             <option value="">Select</option>
@@ -2858,7 +2855,7 @@
                             class="text-danger fs-custom">
                             Is HOD is required
                           </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4">
                           <label for="hodName" class="form-label form-label-small">HOD Name (Emp ID)</label>
                           <input type="text" [value]="jobCodeData.name" [readOnly]="isEmergencyDataPresent" noFirstSpace
@@ -3029,16 +3026,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.personalInfo === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.personalInfo !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
                           }"></i>
                           Personal Info
                         </div>
                         <a (click)="setActiveSection('personal')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.personalInfo === '20',
-                          'text-white btn btn-sm custom-bg': loadedData?.candidateTrackingDTO?.personalInfo !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
+                          'text-white btn btn-sm custom-bg': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.personalInfo === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.personalInfo === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3048,16 +3045,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.address === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.address !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.address === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.address !== '12.5'
                           }"></i>
                           Address
                         </div>
                         <a (click)="setActiveSection('address')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.address === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.address !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.address === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.address !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.address === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.address === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3067,17 +3064,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.education === '20.00',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.education !== '20.00'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.education === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.education !== '12.5'
                           }"></i>
                           Education
                         </div>
                         <a (click)="setActiveSection('education')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.education === '20.00',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.education !== '20.00'
+                          'custom-text': loadedData?.candidateTrackingDTO?.education === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.education !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.education === '20.00' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.education === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3087,17 +3084,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.document === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.document !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.document === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.document !== '12.5'
                           }"></i>
                           Documents
                         </div>
                         <a (click)="setActiveSection('documents')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.document === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.document !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.document === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.document !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.document === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.document === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3107,17 +3104,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.experience === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.experience !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.experience === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.experience !== '12.5'
                           }"></i>
                           Working Experience
                         </div>
                         <a (click)="setActiveSection('experience')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.experience === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.experience !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.experience === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.experience !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.experience === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.experience === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3127,17 +3124,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.emergencyDetails === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.emergencyDetails !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.emergencyDetails !== '12.5'
                           }"></i>
                           Emergency Details
                         </div>
                         <a (click)="setActiveSection('emergency')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.emergencyDetails === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.emergencyDetails !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.emergencyDetails !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.emergencyDetails === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3147,16 +3144,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.bankInfo === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.bankInfo !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.bankInfo === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.bankInfo !== '12.5'
                           }"></i>
                           Bank Information
                         </div>
                         <a (click)="setActiveSection('bank')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.bankInfo === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.bankInfo !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.bankInfo === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.bankInfo !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.bankInfo === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.bankInfo === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3166,16 +3163,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.familyInfo === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.familyInfo !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.familyInfo === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.familyInfo !== '12.5'
                           }"></i>
                           Family Information
                         </div>
                         <a (click)="setActiveSection('family')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.familyInfo === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.familyInfo !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.familyInfo === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.familyInfo !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.familyInfo === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.familyInfo === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3185,16 +3182,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.agreementDetails === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.agreementDetails !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.agreementDetails === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.agreementDetails !== '12.5'
                           }"></i>
                           Agreemet Documentation <span class="text-warning">(Optional)</span>
                         </div>
                         <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.agreementDetails === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.agreementDetails !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.agreementDetails === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.agreementDetails !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.agreementDetails === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.agreementDetails === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3204,16 +3201,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.medicalInfo === '20',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.medicalInfo !== '20'
+                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.medicalInfo === '12.5',
+                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.medicalInfo !== '12.5'
                           }"></i>
                           Medical Reports <span class="text-warning">(Optional)</span>
                         </div>
                         <a (click)="setActiveSection('medical')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.medicalInfo === '20',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.medicalInfo !== '20'
+                          'custom-text': loadedData?.candidateTrackingDTO?.medicalInfo === '12.5',
+                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.medicalInfo !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.medicalInfo === '20' ? 'View' : 'Add' }}
+                          {{ loadedData?.candidateTrackingDTO?.medicalInfo === '12.5' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3423,7 +3420,7 @@
                             Paysheet Group is required
                           </div>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                           <label for="ishod" class="form-label form-label-small">Is HOD</label>
                           <select formControlName="ishod" class="form-control form-control-sm">
                             <option value="">Select</option>
@@ -3433,7 +3430,7 @@
                             class="text-danger fs-custom">
                             Is HOD is required
                           </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4">
                           <label for="hodName" class="form-label form-label-small">CTC</label>
                           <input type="text" [value]="jobCodeData.name" readonly noFirstSpace

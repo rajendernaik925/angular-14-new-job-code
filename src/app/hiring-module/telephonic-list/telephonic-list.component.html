@@ -221,7 +221,7 @@
                 <div class="col-md-3">
                     <label>Division:</label>
                     <select class="form-control form-control-sm" [value]="feedbackForm.get('division')?.value"
-                        (change)="onDivisionChange($event.target.value)">
+                        (change)="onDivisionChange($event.target.value)" formControlName="division">
                         <option value="">Select</option>
                         <option *ngFor="let state of totalDivisionsList" [value]="state.id">
                             {{ state.name }}

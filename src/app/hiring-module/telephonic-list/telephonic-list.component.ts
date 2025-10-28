@@ -160,7 +160,7 @@ export class TelephonicListComponent implements OnInit {
       loginId: this.UserId,
       interviewScheduledId: this.interviewScheduledId,
       ...rest,
-      joiningDate: formattedJoiningDate, 
+      joiningDate: formattedJoiningDate,
       feedbackList: feedbackList.filter((f: any) => f.feedbackId && f.feedbackId !== '')
     };
 
@@ -224,7 +224,7 @@ export class TelephonicListComponent implements OnInit {
           //   else if (round === 3) statusDescription = 'Hold at HR';
           // }
 
-          console.log("inetrview scheduled id : ",interviewScheduledId )
+          console.log("inetrview scheduled id : ", interviewScheduledId)
 
           return {
             jobcodeId: item.jobcodeId || 'N/A',
@@ -397,7 +397,7 @@ export class TelephonicListComponent implements OnInit {
               "feedbackId": 4
             }
           ],
-        };  
+        };
 
         console.log("payload : ", payload);
         return;
@@ -428,15 +428,18 @@ export class TelephonicListComponent implements OnInit {
 
   approveHrCandidate(candidateId: any, interviewScheduledId: any) {
     this.candidateId = candidateId;
+    if (candidateId) {
+      this.handleAction(this.candidateId);
+    }
     this.interviewScheduledId = interviewScheduledId;
-    console.log("candidate id : ", candidateId);
-    console.log("interview round : ", interviewScheduledId);
-    this.dialogRef = this.dialog.open(this.approve, {
-      width: '700px',
-      // maxWidth: '90vw',
-      height: 'auto',
-      hasBackdrop: true
-    });
+    // console.log("candidate id : ", candidateId);
+    // console.log("interview round : ", interviewScheduledId);
+    // this.dialogRef = this.dialog.open(this.approve, {
+    //   width: '700px',
+    //   // maxWidth: '90vw',
+    //   height: 'auto',
+    //   hasBackdrop: true
+    // });
   }
 
   feedbackFactors() {
@@ -533,10 +536,7 @@ export class TelephonicListComponent implements OnInit {
     control?.updateValueAndValidity();
   }
 
-
   // master api call
-
-
   division() {
     this.authService.masterBu().subscribe({
       next: (res: any) => {
@@ -633,6 +633,32 @@ export class TelephonicListComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
+      }
+    })
+  }
+
+  handleAction(candidateId: any) {
+    this.isLoading = true;
+    this.authService.registeredData(candidateId).subscribe({
+      next: (res: any) => {
+        console.log('result : ', res);
+        this.isLoading = false;
+        console.log("rajender : ", res?.candidatePersonalInformationDetails?.designationId);
+        this.onDivisionChange(11);
+        this.feedbackForm.patchValue({
+          designation: res?.candidatePersonalInformationDetails?.designationId || '',
+          department: res?.candidatePersonalInformationDetails?.departmentId || '',
+        })
+        this.dialogRef = this.dialog.open(this.approve, {
+          width: '700px',
+          // maxWidth: '90vw',
+          height: 'auto',
+          hasBackdrop: true
+        });
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("error : ", err);
+        this.isLoading = false;
       }
     })
   }

@@ -58,6 +58,8 @@ export class OnboardingDataComponent implements OnInit {
   salesOfficeListOptions: any[] = [];
   increamentTypeList: any[] = [];
   workLocationList: any[] = [];
+  hodNameList: any[] = [];
+  costCenterList: any[] = [];
 
   indianStates: any[] = [];
   communicationCities: any[] = [];
@@ -71,9 +73,11 @@ export class OnboardingDataComponent implements OnInit {
   isEmergencyDataPresent: boolean = false;
   isBankDataPresent: boolean = false;
   isMedicalDataPresent: boolean = false;
+  isProfessionalDataPresent: boolean = false;
   emergencyUpdate: boolean = false;
   bankUpdate: boolean = false;
   medicalUpdate: boolean = false;
+  professionalUpdate: boolean = false;
   isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
@@ -265,6 +269,21 @@ export class OnboardingDataComponent implements OnInit {
       businessUnit: ['', [Validators.required]],
       hodName: ['', [Validators.required]],
 
+      // HRMS
+      noticePeriod: ['', [Validators.required]],
+      probationPeriod: ['', [Validators.required]],
+      employeeType: ['', [Validators.required]],
+      division: ['', [Validators.required]],
+      ptState: ['', [Validators.required]],
+      costCenter: ['', [Validators.required]],
+      costDigit: ['', [Validators.required]],
+      saleState: ['', [Validators.required]],
+      saleHQ: ['', [Validators.required]],
+      saleGroup: ['', [Validators.required]],
+      CTC: ['', [Validators.required]],
+      dateAsPerLetter: ['', [Validators.required]],
+      FirstDay: ['', [Validators.required]],
+
     });
 
     const eighteenYearsAgo = moment().subtract(18, 'years').toDate();
@@ -369,7 +388,7 @@ export class OnboardingDataComponent implements OnInit {
           // this.InterviewStatus();
         }
 
-        if(res?.candidateOnboardingDTO?.reportingId) {
+        if (res?.candidateOnboardingDTO?.reportingId) {
           this.hodName(res?.candidateOnboardingDTO?.reportingId);
         }
 
@@ -546,6 +565,10 @@ export class OnboardingDataComponent implements OnInit {
 
           this.isMedicalDataPresent = [res?.medicalDocumentDTO?.description]
             .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isProfessionalDataPresent = [res?.professionalDTO?.workLocationId]
+            .every(field => typeof field === 'string' && field.trim() !== '');
+
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -968,6 +991,10 @@ export class OnboardingDataComponent implements OnInit {
     } else if (value == 'medical') {
       this.isMedicalDataPresent = false;
       this.medicalUpdate = true;
+      this.MedicalReportFile = 'editMedicalFile'
+    } else if (value == 'professional') {
+      this.isProfessionalDataPresent = false;
+      this.professionalUpdate = true;
       this.MedicalReportFile = 'editMedicalFile'
     }
   }
@@ -1870,6 +1897,7 @@ export class OnboardingDataComponent implements OnInit {
       this.finalSave('family', formData);
     }
     else if (Action === 'professional') {
+      console.log("rajender")
       const professionalFields = [
         'department',
         'designation',
@@ -1900,27 +1928,26 @@ export class OnboardingDataComponent implements OnInit {
         return;
       }
 
+      console.log("rajender1")
+
       const finalProfessionalData = {
         candidateId: this.empId,
         departmentId: professionalSection.department,
         designationId: professionalSection.designation,
-        headQuarter: professionalSection.workLocation,
+        workLocationId: professionalSection.workLocation,
         // isHOD: professionalSection.ishod,
         reportingManagerId: professionalSection.reportingManager,
         // paysheetGroup: professionalSection.paysheetGroup,
-        incrementType: professionalSection.incrementType,
-        businessUnit: professionalSection.businessUnit,
-        hodName: professionalSection.hodName,
+        incrementTypeId: professionalSection.incrementType,
+        buId: professionalSection.businessUnit,
+        reportingHeadId: professionalSection.hodName,
       };
 
       console.log('Final Professional JSON:', finalProfessionalData);
 
-      return;
-
-
       const formData = new FormData();
       formData.append('professionalDetails', JSON.stringify(finalProfessionalData));
-      formData.append('moduleId', '10');
+      formData.append('moduleId', '11');
       this.finalSave('professional', formData);
     }
     else if (Action === 'medical') {
@@ -1969,11 +1996,71 @@ export class OnboardingDataComponent implements OnInit {
       // ✅ Final save call
       this.finalSave('medical', formData);
     }
+    else if (Action === 'hrms') {
+      const hrmsFields = [
+        'noticePeriod',
+        'probationPeriod',
+        'employeeType',
+        'division',
+        'ptState',
+        'costCenter',
+        'costDigit',
+        'saleState',
+        'saleHQ',
+        'saleGroup',
+        'CTC',
+        'dateAsPerLetter',
+        'FirstDay'
+      ];
 
+      let hrmsSection: any = {};
+      let isValid = true;
 
+      hrmsFields.forEach((field) => {
+        const control = this.registrationForm.get(field);
+        if (control?.invalid) {
+          control.markAsTouched();
+          isValid = false;
+        } else {
+          hrmsSection[field] = control?.value;
+        }
+      });
+
+      if (!isValid) {
+        this.showAlert("Please fill all required HRMS information fields!", 'danger');
+        return;
+      }
+
+      console.log("rajender - HRMS validation passed");
+
+      const finalHRMSData = {
+        candidateId: this.empId,
+        noticePeriod: hrmsSection.noticePeriod,
+        probationPeriod: hrmsSection.probationPeriod,
+        employeeType: hrmsSection.employeeType,
+        divisionId: hrmsSection.division,
+        ptStateId: hrmsSection.ptState,
+        costCenterId: hrmsSection.costCenter,
+        costDigit: hrmsSection.costDigit,
+        saleStateId: hrmsSection.saleState,
+        saleHQId: hrmsSection.saleHQ,
+        saleGroupId: hrmsSection.saleGroup,
+        CTC: hrmsSection.CTC,
+        dateAsPerLetter: hrmsSection.dateAsPerLetter,
+        firstDay: hrmsSection.FirstDay,
+      };
+
+      console.log('Final HRMS JSON:', finalHRMSData);
+
+      return;
+
+      const formData = new FormData();
+      formData.append('hrmsDetails', JSON.stringify(finalHRMSData));
+      formData.append('moduleId', '12'); // use correct moduleId for HRMS if applicable
+      this.finalSave('hrms', formData);
+    }
 
   }
-
 
   finalSave(action: string, formData) {
     formData.append('jobCodeId', this.jobCodeData?.candidatePersonalInformationDetails?.jobcodeId);
@@ -2001,6 +2088,7 @@ export class OnboardingDataComponent implements OnInit {
           this.emergencyUpdate = false;
           this.bankUpdate = false;
           this.medicalUpdate = false;
+          this.professionalUpdate = false;
           // Swal.fire({
           //   title: 'Success',
           //   text: 'Successfully completed',
@@ -2296,6 +2384,8 @@ export class OnboardingDataComponent implements OnInit {
     })
   }
 
+
+
   states() {
     this.authService.states().subscribe({
       next: (res: any) => {
@@ -2408,19 +2498,19 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
-  // onBusinessUnitChange(event: any) {
-  //   const selectedId = event.target.value;
-  //   const selectedItem = this.businessUnitsList.find(item => item.id == selectedId);
-  //   console.log("selected item : ", selectedItem.id);
-  //   this.costCenter(selectedItem.id)
+  onBusinessUnitChange(event: any) {
+    const selectedId = event.target.value;
+    const selectedItem = this.businessUnitsListOptions.find(item => item.id == selectedId);
+    console.log("selected item : ", selectedItem.id);
+    this.costCenter(selectedItem.id)
 
-  // }
+  }
 
   costCenter(id: any) {
     this.authService.costCenterList(id).subscribe({
       next: (res) => {
-        // this.costCenterList = res;
-        // this.employeeForm.get('costCenter')?.setValue('');
+        this.costCenterList = res;
+        this.registrationForm.get('costCenter')?.setValue('');
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching managers:", err);
@@ -2490,10 +2580,13 @@ export class OnboardingDataComponent implements OnInit {
     });
   }
 
-  hodName(reportingId:any) {
+  hodName(reportingId: any) {
     this.authService.getHodName(reportingId).subscribe({
       next: (res: any) => {
-        console.log("hod name with id : ",res);
+        console.log("hod name with id : ", res);
+        this.hodNameList = res;
+        // this.registrationForm.get('hodName')?.patchValue(res[0].id);
+        this.registrationForm.get('hodName')?.patchValue(res[0]?.id || '');
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching managers:", err);
@@ -3212,9 +3305,12 @@ export class OnboardingDataComponent implements OnInit {
     this.activeTab = 'personal';
   }
 
-
-
-
+  onReporteeChange(event: any) {
+    const selectedValue = event.target.value;
+    if (selectedValue) {
+      this.hodName(selectedValue);
+    }
+  }
 
 }
 

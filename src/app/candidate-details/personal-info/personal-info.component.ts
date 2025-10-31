@@ -3015,8 +3015,4 @@ export class personalInfoComponent implements OnInit {
     this.activeTab = 'personal';
   }
 
-
-
-
-
 }

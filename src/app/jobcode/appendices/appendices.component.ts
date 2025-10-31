@@ -501,7 +501,6 @@ export class AppendicesComponent implements OnInit {
     this.salesGroup(selectedId);
   }
 
-
   salesGroup(id: any) {
     this.authService.salesGroup(id).subscribe({
       next: (res) => {

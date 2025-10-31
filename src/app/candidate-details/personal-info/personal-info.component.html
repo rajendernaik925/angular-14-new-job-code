@@ -239,7 +239,6 @@
                           </div>
                         </div>
                         <div class="col-md-4">
-
                           <label class="form-label form-label-small">Mobile Number</label>
                           <input type="text" [value]="jobCodeData?.candidatePersonalInformationDetails?.mobileNumber"
                             formControlName="mobileNumber" placeholder="9876543210" class="form-control form-control-sm"
@@ -263,7 +262,7 @@
                           <div class="mb-3">
                             <label class="form-label form-label-small">Title</label>
                             <select formControlName="titleId" [attr.disabled]="isAllDataPresent ? true : null"
-                              class="form-control form-control-sm">
+                              class="form-control form-control-sm"> 
                               <option value="">Select</option>
                               <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
                             </select>
@@ -361,7 +360,7 @@
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <label class="form-label form-label-small">Blood Group</label>
+                          <label for="bloodGroupId" class="form-label form-label-small">Blood Group</label>
                           <select formControlName="bloodGroupId" [attr.disabled]="isAllDataPresent ? true : null"
                             class="form-control form-control-sm">
                             <option value="">Select</option>
@@ -411,8 +410,8 @@
                             class="text-danger fs-custom">
                             enter valid DL Number (AP0123456789012)
                           </div>
-
                         </div>
+                           
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">PAN Number</label>
                           <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"

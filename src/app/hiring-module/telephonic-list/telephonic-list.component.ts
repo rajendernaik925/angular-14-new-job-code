@@ -196,33 +196,11 @@ export class TelephonicListComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
 
-        // this.rows = res.map((item: any, index: number) => ({
-        //   jobcodeId: item.jobcodeId || 'N/A',
-        //   jcReferanceId: item.jcReferanceId || 'N/A',
-        //   candidateId: item.candidateId || 'N/A',
-        //   name: item.name || 'N/A',
-        //   jobTitleName: item.jobTitleName || 'N/A',
-        //   mobileNumber: item.mobileNumber || 'N/A',
-        //   email: item.email || 'N/A',
-        //   teamName: item.teamName || 'N/A',
-        //   reportingManager: item.reportingManager || 'N/A',
-        //   createdBy: item.createdBy || 'N/A',
-        //   // status: item.status || 'N/A'
-        // }));
-
         this.rows = res.map((item: any) => {
           // let statusDescription = '';
 
           const round = item.interviewRoundInfo?.interviewRound;
           const interviewScheduledId = item.interviewRoundInfo?.sno;
-          // this.interviewScheduledId = interviewScheduledId;
-          // const roundStatus = item.interviewRoundInfo?.status;
-
-          // if (roundStatus === '1006') {
-          //   if (round === 1) statusDescription = 'Hold at Interviewer';
-          //   else if (round === 2) statusDescription = 'Hold at Manager';
-          //   else if (round === 3) statusDescription = 'Hold at HR';
-          // }
 
           console.log("inetrview scheduled id : ", interviewScheduledId)
 
@@ -239,27 +217,6 @@ export class TelephonicListComponent implements OnInit {
             interviewScheduledId: interviewScheduledId ?? null,
           };
         });
-
-
-
-
-        // Ensure at least 100 dummy entries
-        // while (this.rows.length < 10) {
-        //   const dummyIndex = this.rows.length + 1;
-        //   this.rows.push({
-        //     jobcodeId: 1000 + dummyIndex,
-        //     jcReferanceId: `JC${1000 + dummyIndex}`,
-        //     candidateId: dummyIndex,
-        //     name: `Candidate ${dummyIndex}`,
-        //     jobTitleName: `Job Title ${dummyIndex}`,
-        //     mobileNumber: `987654${String(dummyIndex).padStart(4, '0')}`,
-        //     email: `dummy${dummyIndex}@example.com`,
-        //     teamName: `Team ${dummyIndex}`,
-        //     reportingManager: `Manager ${dummyIndex}`,
-        //     createdBy: `Creator ${dummyIndex}`,
-        //     // status: dummyIndex % 3 === 0 ? 1001 : dummyIndex % 3 === 1 ? 1003 : 1005
-        //   });
-        // }
 
         this.originalRows = [...this.rows];
       },
@@ -308,40 +265,6 @@ export class TelephonicListComponent implements OnInit {
     this.dialog.closeAll();
   }
 
-  // rejectHrCandidate(candidateId: number, interviewScheduledId: any) {
-  //   console.log("candidate id : ", candidateId);
-  //   this.candidateId = candidateId;
-  //   this.interviewScheduledId = interviewScheduledId;
-  //   Swal.fire({
-  //     html: `
-  //     <div class="mb-3">
-  //       <img src="https://i.pinimg.com/originals/c3/c4/70/c3c470ab294138c5c52a1372911422e4.gif" alt="delete" style="width:80px; height:60px; border-radius: 15px;" />
-  //     </div>
-  //     <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to Reject this Candidate?</h5>
-  //     <p class="text-muted mb-0" style="font-size: 14px;">
-  //       This will stop the interview process and mark the candidate as rejected.
-  //     </p>
-  //   `,
-  //     showCancelButton: true,
-  //     cancelButtonText: 'Cancel',
-  //     confirmButtonText: 'Reject',
-  //     reverseButtons: true,
-  //     customClass: {
-  //       popup: 'p-3 rounded-4',
-  //       htmlContainer: 'text-center',
-  //       actions: 'd-flex justify-content-center',
-  //       cancelButton: 'btn btn-info btn-sm shadow-none mr-2',
-  //       confirmButton: 'btn btn-danger btn-sm shadow-none'
-  //     },
-  //     buttonsStyling: false,
-  //     width: '550px',
-  //     backdrop: true
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       // api call
-  //     }
-  //   });
-  // }
 
   rejectHrCandidate(candidateId: number, interviewScheduledId: any) {
     console.log("candidate id : ", candidateId);
@@ -459,7 +382,7 @@ export class TelephonicListComponent implements OnInit {
         });
       },
       error: (err: HttpErrorResponse) => {
-        // console.log("Error fetching feedback factors: ", err);
+        console.log("Error fetching feedback factors: ", err);
       }
     });
   }
@@ -573,8 +496,6 @@ export class TelephonicListComponent implements OnInit {
     })
   }
 
-
-
   state() {
     this.authService.states().subscribe({
       next: (res: any) => {
@@ -586,6 +507,7 @@ export class TelephonicListComponent implements OnInit {
       }
     })
   }
+
   onStateChange(event: Event): void {
     const selectedStateId = (event.target as HTMLSelectElement).value;
 
@@ -598,6 +520,7 @@ export class TelephonicListComponent implements OnInit {
       this.totalCities(selectedStateId);
     }
   }
+
   totalCities(id: any) {
     this.authService.cities(id).subscribe({
       next: (res: any) => {
@@ -617,6 +540,7 @@ export class TelephonicListComponent implements OnInit {
     control?.markAsTouched();
     control?.updateValueAndValidity();
   }
+  
   onRegionChange(event: Event): void {
     const selectedRegionId = (event.target as HTMLSelectElement).value;
 
@@ -625,6 +549,7 @@ export class TelephonicListComponent implements OnInit {
     control?.markAsTouched();
     control?.updateValueAndValidity();
   }
+
   region() {
     this.authService.totalRegions().subscribe({
       next: (res: any) => {
@@ -651,7 +576,6 @@ export class TelephonicListComponent implements OnInit {
         })
         this.dialogRef = this.dialog.open(this.approve, {
           width: '700px',
-          // maxWidth: '90vw',
           height: 'auto',
           hasBackdrop: true
         });

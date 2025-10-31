@@ -1058,11 +1058,11 @@ export class AuthService {
   }
 
   getHodName(reportingId:any) {
-    return this.http.get(`${this.jobCodeUrls}master/hodname`,reportingId)
+    return this.http.get(`${this.jobCodeUrls}master/reportee/${reportingId}`)
   }
 
   increamentType() {
-    return this.http.get(`${this.jobCodeUrls}master/increamenttype`)
+    return this.http.get(`${this.jobCodeUrls}master/incrementtype`)
   }
 
   states() {

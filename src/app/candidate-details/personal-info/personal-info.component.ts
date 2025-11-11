@@ -394,7 +394,6 @@ export class personalInfoComponent implements OnInit {
         this.loadedData = res;
         this.isLoading = false;
         this.jobCodeData = res;
-        console.log("result : ", res);
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }

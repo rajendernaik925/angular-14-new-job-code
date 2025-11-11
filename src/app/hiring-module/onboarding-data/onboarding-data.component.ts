@@ -56,8 +56,11 @@ export class OnboardingDataComponent implements OnInit {
   employeeDataListOptions: any[] = [];
   ptStatesListOptions: any[] = [];
   salesOfficeListOptions: any[] = [];
+  salesGroupListOptions: any[] = [];
+  salesDistrictListOptions: any[] = [];
   increamentTypeList: any[] = [];
   workLocationList: any[] = [];
+  probationPeriodList: any[] = [];
   hodNameList: any[] = [];
   costCenterList: any[] = [];
 
@@ -74,10 +77,12 @@ export class OnboardingDataComponent implements OnInit {
   isBankDataPresent: boolean = false;
   isMedicalDataPresent: boolean = false;
   isProfessionalDataPresent: boolean = false;
+  isHrmsDataPresent: boolean = false;
   emergencyUpdate: boolean = false;
   bankUpdate: boolean = false;
   medicalUpdate: boolean = false;
   professionalUpdate: boolean = false;
+  hrmsUpdate: boolean = false;
   isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
@@ -132,6 +137,8 @@ export class OnboardingDataComponent implements OnInit {
   medicalFileError: string | null = null;
   familyAadharFileError: string | null = null;
   searchEmpId: string = '';
+  userData: any;
+  loginId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -276,7 +283,6 @@ export class OnboardingDataComponent implements OnInit {
       division: ['', [Validators.required]],
       ptState: ['', [Validators.required]],
       costCenter: ['', [Validators.required]],
-      costDigit: ['', [Validators.required]],
       saleState: ['', [Validators.required]],
       saleHQ: ['', [Validators.required]],
       saleGroup: ['', [Validators.required]],
@@ -315,6 +321,10 @@ export class OnboardingDataComponent implements OnInit {
     if (this.empId) {
       this.loadUserData();
     }
+
+    let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
+    this.userData = JSON.parse(loggedUser);
+    this.loginId = this.userData.user.empID;
 
     this.title();
     this.gender();
@@ -390,6 +400,20 @@ export class OnboardingDataComponent implements OnInit {
 
         if (res?.candidateOnboardingDTO?.reportingId) {
           this.hodName(res?.candidateOnboardingDTO?.reportingId);
+        }
+
+        if (res?.candidateOnboardingDTO?.buId) {
+          this.costCenter(res?.candidateOnboardingDTO?.buId);
+        }
+
+        console.log("cost center : ",res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId)
+
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.division) {
+          this.costCenter(res?.fetchingEmployeeMoveToHrmsDTO?.division);
+        }
+
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode) {
+          this.salesGroup(res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode);
         }
 
         if (res?.familyInformationResponseDTO) {
@@ -529,6 +553,28 @@ export class OnboardingDataComponent implements OnInit {
             // medical Report
             medicalDescription: res?.medicalDocumentDTO?.description || '',
 
+            // professional
+            workLocation: res?.professionalInformationDTO?.workLocationId || '',
+            incrementType: res?.professionalInformationDTO?.incrementTypeId || '',
+
+
+
+            // HRMS
+            CTC: res?.candidateOnboardingDTO?.expectedCtc || '',
+            division: res?.fetchingEmployeeMoveToHrmsDTO?.division ? res?.fetchingEmployeeMoveToHrmsDTO?.division : res?.candidateOnboardingDTO?.buId || '',
+            // division: res?.candidateOnboardingDTO?.buId || '',
+            FirstDay: res?.candidateOnboardingDTO?.joiningDate || '',
+            dateAsPerLetter: res?.candidateOnboardingDTO?.offerLetterSentDate || '',
+            noticePeriod: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
+            costCenter: res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId || '',
+            probationPeriod: res?.fetchingEmployeeMoveToHrmsDTO?.probationId || '',
+            employeeType: res?.fetchingEmployeeMoveToHrmsDTO?.employeeType || '',
+            ptState: res?.fetchingEmployeeMoveToHrmsDTO?.ptStateCode || '',
+            saleState: res?.fetchingEmployeeMoveToHrmsDTO?.saleDistrict || '',
+
+            saleHQ: res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode || '',
+            saleGroup: res?.fetchingEmployeeMoveToHrmsDTO?.salesGroupCode || '',
+
             // Experience Details
             isFresher: isFresher,
             joiningTime: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
@@ -566,7 +612,10 @@ export class OnboardingDataComponent implements OnInit {
           this.isMedicalDataPresent = [res?.medicalDocumentDTO?.description]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
-          this.isProfessionalDataPresent = [res?.professionalDTO?.workLocationId]
+          this.isProfessionalDataPresent = [res?.professionalInformationDTO?.workLocationName]
+            .every(field => typeof field === 'string' && field.trim() !== '');
+
+          this.isHrmsDataPresent = [res?.professionalInformationDTO?.workLocationName]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
 
@@ -576,6 +625,7 @@ export class OnboardingDataComponent implements OnInit {
           this.isExperienceBoolean = res?.candidateExperienceDetails?.candidateJoiningDetails?.experienceId;
 
           this.handleExperienceToggle(isFresher);
+
 
           // Handle Education Details
           // if (res?.candidateEducationDetails?.length) {
@@ -995,7 +1045,9 @@ export class OnboardingDataComponent implements OnInit {
     } else if (value == 'professional') {
       this.isProfessionalDataPresent = false;
       this.professionalUpdate = true;
-      this.MedicalReportFile = 'editMedicalFile'
+    } else if (value == 'hrms') {
+      this.isHrmsDataPresent = false;
+      this.hrmsUpdate = true;
     }
   }
 
@@ -2004,7 +2056,6 @@ export class OnboardingDataComponent implements OnInit {
         'division',
         'ptState',
         'costCenter',
-        'costDigit',
         'saleState',
         'saleHQ',
         'saleGroup',
@@ -2035,31 +2086,36 @@ export class OnboardingDataComponent implements OnInit {
 
       const finalHRMSData = {
         candidateId: this.empId,
-        noticePeriod: hrmsSection.noticePeriod,
-        probationPeriod: hrmsSection.probationPeriod,
+        noticePeriodId: hrmsSection.noticePeriod,
+        probationId: hrmsSection.probationPeriod,
         employeeType: hrmsSection.employeeType,
-        divisionId: hrmsSection.division,
-        ptStateId: hrmsSection.ptState,
+        division: hrmsSection.division,
+        ptState: hrmsSection.ptState,
         costCenterId: hrmsSection.costCenter,
-        costDigit: hrmsSection.costDigit,
-        saleStateId: hrmsSection.saleState,
-        saleHQId: hrmsSection.saleHQ,
-        saleGroupId: hrmsSection.saleGroup,
-        CTC: hrmsSection.CTC,
-        dateAsPerLetter: hrmsSection.dateAsPerLetter,
-        firstDay: hrmsSection.FirstDay,
+        saleDistrict: hrmsSection.saleState,
+        saleHq: hrmsSection.saleHQ,
+        saleGroup: hrmsSection.saleGroup,
+        finalCtc: hrmsSection.CTC,
+        offerLetterDate: this.datePipe.transform(this.toDate(hrmsSection.dateAsPerLetter), 'yyyy-MM-dd'),
+        joiningDate: this.datePipe.transform(this.toDate(hrmsSection.FirstDay), 'yyyy-MM-dd'),
+        loginId: this.loginId
       };
 
       console.log('Final HRMS JSON:', finalHRMSData);
 
-      return;
+      // return;
 
       const formData = new FormData();
       formData.append('hrmsDetails', JSON.stringify(finalHRMSData));
-      formData.append('moduleId', '12'); // use correct moduleId for HRMS if applicable
-      this.finalSave('hrms', formData);
+      this.FinalMoveToHrms('hrms', finalHRMSData);
     }
 
+  }
+
+  toDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('-');
+    return new Date(`${year}-${month}-${day}`);
   }
 
   finalSave(action: string, formData) {
@@ -2089,6 +2145,7 @@ export class OnboardingDataComponent implements OnInit {
           this.bankUpdate = false;
           this.medicalUpdate = false;
           this.professionalUpdate = false;
+          this.hrmsUpdate = false;
           // Swal.fire({
           //   title: 'Success',
           //   text: 'Successfully completed',
@@ -2521,7 +2578,7 @@ export class OnboardingDataComponent implements OnInit {
   salesDistrict() {
     this.authService.salesDistrict().subscribe({
       next: (res) => {
-        // this.salesDistrictList = res;
+        this.salesDistrictListOptions = res;
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching managers:", err);
@@ -2542,6 +2599,7 @@ export class OnboardingDataComponent implements OnInit {
 
   onSalesOfficeChange(event: any) {
     const selectedId = event.target.value;
+    //  console.log("selected sale office id : ",selectedId)
     this.salesGroup(selectedId);
   }
 
@@ -2549,8 +2607,8 @@ export class OnboardingDataComponent implements OnInit {
   salesGroup(id: any) {
     this.authService.salesGroup(id).subscribe({
       next: (res) => {
-        // this.salesGroupList = res;
-        // this.employeeForm.get('salesGroup')?.setValue('');
+        this.salesGroupListOptions = res;
+        this.registrationForm.get('saleGroup')?.setValue('');
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching sales group:", err);
@@ -2561,13 +2619,15 @@ export class OnboardingDataComponent implements OnInit {
   probationPeriod() {
     this.authService.probationPeriod().subscribe({
       next: (res: any) => {
-        // this.probationPeriodList = res;
+        this.probationPeriodList = res;
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching managers:", err);
       }
     });
   }
+
+
 
   workLocation() {
     this.authService.workLocation().subscribe({
@@ -2649,13 +2709,13 @@ export class OnboardingDataComponent implements OnInit {
       <div class="mb-3">
         <img src="assets/img/job-code/logout-gif.gif" alt="logout" style="width:60px; height:60px; " />
       </div>
-      <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to log out?</h5>
+      <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to Save & Exit?</h5>
       <p class="text-muted mb-0" style="font-size: 14px;">
         You will need to log in again to access your profile and application details.
       </p>
     `,
       showCancelButton: true,
-      confirmButtonText: 'Log Out',
+      confirmButtonText: 'Exit',
       cancelButtonText: 'Cancel',
       customClass: {
         popup: 'p-3 rounded-4',
@@ -2668,13 +2728,12 @@ export class OnboardingDataComponent implements OnInit {
       width: '500px',
       backdrop: true
     }).then((result) => {
-      const base64Once = btoa(this.empId.toString());
-      const base64Twice = btoa(base64Once);
+
       if (result.isConfirmed) {
-        // localStorage.removeItem('hiringLoginData');
-        // this.router.navigate(['/hiring-login']);
-        this.router.navigate(['/employee-code', base64Twice]);
+        this.router.navigate(['/employee-code'])
       }
+
+
 
     });
   }
@@ -3310,6 +3369,55 @@ export class OnboardingDataComponent implements OnInit {
     if (selectedValue) {
       this.hodName(selectedValue);
     }
+  }
+
+  FinalMoveToHrms(action: string, body: any) {
+    console.log("Action : ", action);
+    console.log("finla move to HRMS");
+    alert(`candidate id : ${this.empId}`);
+
+    Swal.fire({
+      html: `
+       <div class="mb-3">
+         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZM9W5m85CN4_xgg6D1yEnJKLArugi2Hx-cA&s" alt="delete" style="width:60px; height:60px; border-radius: 15px;" />
+       </div>
+       <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to move this Candidate?</h5>
+       <p class="text-muted mb-0" style="font-size: 14px;">
+         This will complete the Hiring process and moving to HRMS.
+       </p>
+     `,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Move',
+      reverseButtons: true,
+      customClass: {
+        popup: 'p-3 rounded-4',
+        htmlContainer: 'text-center',
+        actions: 'd-flex justify-content-center',
+        cancelButton: 'btn btn-danger btn-sm shadow-none mr-2',
+        confirmButton: 'btn btn-success btn-sm shadow-none'
+      },
+      buttonsStyling: false,
+      width: '550px',
+      backdrop: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.finalMoveToHRMS(body).subscribe({
+          next: (res: HttpResponse<any>) => {
+            console.log("final move to hrms", res);
+            this.loadUserData();
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Successfully Completed to Move to HRMS'
+            })
+          },
+          error: (err: HttpErrorResponse) => {
+            console.log("error : ", err)
+          }
+        });
+      }
+    })
   }
 
 }

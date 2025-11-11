@@ -118,7 +118,7 @@
               <i class="bi bi-person-circle mr-1 mb-3"></i> {{ jobCodeData?.name || 'Rajender Naik' }}
               <br>
               <a class="text-danger small mt-3" role="button" (click)="logout()">
-                <i class="bi bi-box-arrow-right mr-1"></i> Log Out
+                <i class="bi bi-box-arrow-right mr-1"></i> Save & Exit
               </a>
             </div>
             <div class="input-group" style="max-width: 300px;">
@@ -2757,7 +2757,8 @@
                       <div class="col-md-9 row">
                         <div class="col-md-4 mb-3">
                           <label for="department" class="form-label form-label-small">Department</label>
-                          <select formControlName="department" class="form-control form-control-sm">
+                          <select formControlName="department" class="form-control form-control-sm"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let title of departmentListOptions" [value]="title?.id">{{ title?.name }}
                             </option>
@@ -2770,7 +2771,8 @@
                         </div>
                         <div class="col-md-4">
                           <label for="designation" class="form-label form-label-small">Designation</label>
-                          <select formControlName="designation" class="form-control form-control-sm">
+                          <select formControlName="designation" class="form-control form-control-sm"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let title of designationListOptions" [value]="title?.designationid">{{
                               title?.name }}</option>
@@ -2784,7 +2786,8 @@
                         <div class="col-md-4">
                           <label for="reportingManager" class="form-label form-label-small">Repoting Manager</label>
                           <select formControlName="reportingManager" class="form-control form-control-sm"
-                            (change)="onReporteeChange($event)">
+                            (change)="onReporteeChange($event)"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let title of managersListOptions" [value]="title?.id">{{ title?.name }}
                             </option>
@@ -2797,7 +2800,8 @@
                         </div>
                         <div class="col-md-4">
                           <label for="businessUnit" class="form-label form-label-small">Business Unit</label>
-                          <select formControlName="businessUnit" class="form-control form-control-sm">
+                          <select formControlName="businessUnit" class="form-control form-control-sm"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}
                             </option>
@@ -2810,7 +2814,8 @@
                         </div>
                         <div class="col-md-4">
                           <label for="workLocation" class="form-label form-label-small">Work Location</label>
-                          <select formControlName="workLocation" class="form-control form-control-sm">
+                          <select formControlName="workLocation" class="form-control form-control-sm"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let item of workLocationList" [value]="item?.id">{{ item?.name }}</option>
                           </select>
@@ -2822,7 +2827,8 @@
                         </div>
                         <div class="col-md-4 mb-3">
                           <label for="incrementType" class="form-label form-label-small">Increament Type</label>
-                          <select formControlName="incrementType" class="form-control form-control-sm">
+                          <select formControlName="incrementType" class="form-control form-control-sm"
+                            [attr.disabled]="isProfessionalDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let item of increamentTypeList" [value]="item?.id">{{ item?.name }}</option>
                           </select>
@@ -2986,8 +2992,8 @@
                     </div>
                     <div class="text-end w-25">
                       <small class="text-muted d-none d-md-block"
-                        *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
-                        {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
+                        *ngIf="loadedData?.hrTrackingDTO?.totalPercentage !== '100'; else allDone">
+                        {{ (100 - (+loadedData?.hrTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
                         Complete
                       </small>
 
@@ -2999,27 +3005,32 @@
 
                       <div class="progress mt-1" style="height: 4px;">
                         <div class="progress-bar bg-primary" role="progressbar"
-                          [style.width.%]="+loadedData?.candidateTrackingDTO?.totalPercentage || 0"></div>
+                          [style.width.%]="+loadedData?.hrTrackingDTO?.totalPercentage || 0"></div>
                       </div>
                     </div>
                   </div>
                   <div class="side-scroll-container">
+                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                      class="alert alert-success text-center mt-3">
+                      <h5>✅ All sections have been successfully completed</h5>
+                      Verification has been completed. You can now proceed with the Move to HRMS process.
+                    </div>
 
                     <div class="list-group border-0">
                       <div
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.personalInfo === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.personalInfo !== '11.11'
                           }"></i>
                           Personal Info
                         </div>
                         <a (click)="setActiveSection('personal')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
-                          'text-white btn btn-sm custom-bg': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.personalInfo === '11.11',
+                          'text-white btn btn-sm custom-bg': loadedData?.hrTrackingDTO?.personalInfo !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.personalInfo === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.personalInfo === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3029,16 +3040,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.address === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.address !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.address === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.address !== '11.11'
                           }"></i>
                           Address
                         </div>
                         <a (click)="setActiveSection('address')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.address === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.address !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.address === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.address !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.address === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.address === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3048,17 +3059,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.education === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.education !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.education === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.education !== '11.11'
                           }"></i>
                           Education
                         </div>
                         <a (click)="setActiveSection('education')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.education === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.education !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.education === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.education !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.education === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.education === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3068,17 +3079,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.document === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.document !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.document === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.document !== '11.11'
                           }"></i>
                           Documents
                         </div>
                         <a (click)="setActiveSection('documents')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.document === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.document !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.document === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.document !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.document === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.document === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3088,17 +3099,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.experience === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.experience !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.experience === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.experience !== '11.11'
                           }"></i>
                           Working Experience
                         </div>
                         <a (click)="setActiveSection('experience')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.experience === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.experience !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.experience === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.experience !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.experience === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.experience === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3108,17 +3119,17 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.emergencyDetails !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.emergency === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.emergency !== '11.11'
                           }"></i>
                           Emergency Details
                         </div>
                         <a (click)="setActiveSection('emergency')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.emergencyDetails !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.emergency === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.emergency !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.emergencyDetails === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.emergency === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3128,16 +3139,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.bankInfo === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.bankInfo !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.bank === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.bank !== '11.11'
                           }"></i>
                           Bank Information
                         </div>
                         <a (click)="setActiveSection('bank')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.bankInfo === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.bankInfo !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.bank === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.bank !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.bankInfo === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.bank === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3147,16 +3158,16 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.familyInfo === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.familyInfo !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.family === '11.11',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.family !== '11.11'
                           }"></i>
                           Family Information
                         </div>
                         <a (click)="setActiveSection('family')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.familyInfo === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.familyInfo !== '12.5'
+                          'custom-text': loadedData?.hrTrackingDTO?.family === '11.11',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.family !== '11.11'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.familyInfo === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.hrTrackingDTO?.family === '11.11' ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3166,17 +3177,56 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.agreementDetails === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.agreementDetails !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.professional === '11.12',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.professional !== '11.12'
+                          }"></i>
+                          Professional Information
+                        </div>
+                        <a (click)="setActiveSection('professional')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
+                          'custom-text': loadedData?.hrTrackingDTO?.professional === '11.12',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.professional !== '11.12'
+                        }">
+                          {{ loadedData?.hrTrackingDTO?.professional === '11.12' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.hrTrackingDTO?.hrms === '11.12',
+                            'bi bi-info-circle-fill text-danger': loadedData?.hrTrackingDTO?.hrms !== '11.12'
+                          }"></i>
+                          HRMS Information
+                        </div>
+                        <a (click)="setActiveSection('hrms')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                          'custom-text': loadedData?.hrTrackingDTO?.hrms === '11.12',
+                          'text-white custom-bg btn btn-sm': loadedData?.hrTrackingDTO?.hrms !== '11.12'
+                        }">
+                          {{ loadedData?.hrTrackingDTO?.hrms === '11.12' ? 'View' : 'Add' }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="list-group border-0">
+                      <div
+                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                        <div>
+                          <i class="mr-2" [ngClass]="{
+                            'bi bi-check-circle-fill text-success': loadedData?.agreementFileDTO?.sno,
+                            'bi bi-info-circle-fill text-danger': !loadedData?.agreementFileDTO?.sno
                           }"></i>
                           Agreemet Documentation <span class="text-warning">(Optional)</span>
                         </div>
                         <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer"
                           [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.agreementDetails === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.agreementDetails !== '12.5'
+                          'custom-text': loadedData?.agreementFileDTO?.sno,
+                          'text-white custom-bg btn btn-sm': !loadedData?.agreementFileDTO?.sno
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.agreementDetails === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.agreementFileDTO?.sno ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
@@ -3186,26 +3236,26 @@
                         class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
                         <div>
                           <i class="mr-2" [ngClass]="{
-                            'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.medicalInfo === '12.5',
-                            'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.medicalInfo !== '12.5'
+                            'bi bi-check-circle-fill text-success': loadedData?.medicalDocumentDTO?.sno,
+                            'bi bi-info-circle-fill text-danger': !loadedData?.medicalDocumentDTO?.sno
                           }"></i>
                           Medical Reports <span class="text-warning">(Optional)</span>
                         </div>
                         <a (click)="setActiveSection('medical')" class="text-decoration-none cursor-pointer" [ngClass]="{
-                          'custom-text': loadedData?.candidateTrackingDTO?.medicalInfo === '12.5',
-                          'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.medicalInfo !== '12.5'
+                          'custom-text': loadedData?.medicalDocumentDTO?.sno,
+                          'text-white custom-bg btn btn-sm': !loadedData?.medicalDocumentDTO?.sno
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.medicalInfo === '12.5' ? 'View' : 'Add' }}
+                          {{ loadedData?.medicalDocumentDTO?.sno ? 'View' : 'Add' }}
                         </a>
                       </div>
                     </div>
 
-                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    <!-- <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
                       class="alert alert-success text-center mt-3">
                       <h4>✅ All sections have been successfully completed</h4>
                       Please report on your joining date as per your offer letter. Verification is in progress, and
                       you’ll be notified soon.
-                    </div>
+                    </div> -->
 
                   </div>
                 </div>
@@ -3315,7 +3365,8 @@
                       <div class="col-md-9 row">
                         <div class="col-md-4 mb-3">
                           <label for="noticePeriod" class="form-label form-label-small">Notice Period</label>
-                          <select formControlName="noticePeriod" class="form-control form-control-sm">
+                          <select formControlName="noticePeriod" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
                             <option *ngFor="let title of joiningOptions" [value]="title?.id">{{ title?.name }}
                             </option>
@@ -3326,11 +3377,90 @@
                             Notice Period is required
                           </div>
                         </div>
+
+                        <div class="col-md-4">
+                          <label for="dateAsPerLetter" class="form-label form-label-small">Date As Per Letter</label>
+                          <input type="text" noFirstSpace readonly formControlName="dateAsPerLetter"
+                            class="form-control form-control-sm" placeholder="Date As Per Letter" />
+                          <div
+                            *ngIf="registrationForm.get('dateAsPerLetter')?.touched && registrationForm.get('dateAsPerLetter')?.invalid"
+                            class="text-danger fs-custom">
+                            Date As Per Letter is required
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="FirstDay" class="form-label form-label-small">First Day Date</label>
+                          <input type="text" noFirstSpace formControlName="FirstDay" readonly
+                            class="form-control form-control-sm" placeholder="First Day Date" />
+                          <div
+                            *ngIf="registrationForm.get('FirstDay')?.touched && registrationForm.get('FirstDay')?.invalid"
+                            class="text-danger fs-custom">
+                            First Day Date is required
+                          </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                          <label for="CTC" class="form-label form-label-small">CTC</label>
+                          <input type="text" noFirstSpace formControlName="CTC" numbersOnly noFirstSpace
+                            [readOnly]="isHrmsDataPresent" class="form-control form-control-sm"
+                            placeholder="Cost to Company" maxlength="8" />
+                          <div *ngIf="registrationForm.get('CTC')?.touched && registrationForm.get('CTC')?.invalid"
+                            class="text-danger fs-custom">
+                            CTC is required
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="division" class="form-label form-label-small">Division</label>
+                          <select formControlName="division" class="form-control form-control-sm"
+                            (change)="onBusinessUnitChange($event)" [attr.disabled]="isHrmsDataPresent ? true : null">
+                            <option value="">Select</option>
+                            <option *ngFor="let title of businessUnitsListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="registrationForm.get('division')?.touched && registrationForm.get('division')?.invalid"
+                            class="text-danger fs-custom">
+                            Division is required
+                          </div>
+                        </div>
+
+                        <div class='col-md-4'>
+                          <label class='form-label form-label-small'>Cost Center </label>
+                          <div class="d-flex align-items-center">
+                            <select class="form-control form-control-sm mr-3 " formControlName="costCenter"
+                              [attr.disabled]="isHrmsDataPresent ? true : null"
+                              [ngClass]="{'is-invalid': registrationForm.get('costCenter')?.invalid && registrationForm.get('costCenter')?.touched}">
+                              <option value="">Select </option>
+                              <option *ngFor="let item of costCenterList" [value]="item.id">{{ item.name }} </option>
+                            </select>
+
+                            <!-- <div class="form-check form-check-inline mr-2">
+                              <input type="radio" name="costDigit" class="form-check-input" value="5"
+                                formControlName="costDigit" id="digit5"
+                                [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
+                              <label class="form-check-label" for="digit5">5 D</label>
+                            </div> -->
+
+                            <!-- <div class="form-check form-check-inline">
+                              <input type="radio" name="costDigit" class="form-check-input" value="6"
+                                formControlName="costDigit" id="digit6"
+                                [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
+                              <label class="form-check-label" for="digit6">6 D</label>
+                            </div> -->
+                          </div>
+                          <div *ngIf="(registrationForm.get('costCenter')?.touched && registrationForm.get('costCenter')?.invalid) ||
+                            (registrationForm.get('costDigit')?.touched && registrationForm.get('costDigit')?.invalid)"
+                            class="text-danger fs-custom">
+                            Cost Center (D = Digit) is required
+                          </div>
+
+                        </div>
                         <div class="col-md-4">
                           <label for="probationPeriod" class="form-label form-label-small">Probation Period</label>
-                          <select formControlName="probationPeriod" class="form-control form-control-sm">
+                          <select formControlName="probationPeriod" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <option *ngFor="let title of designationListOptions" [value]="title?.designationid">{{
+                            <option *ngFor="let title of probationPeriodList" [value]="title?.id">{{
                               title?.name }}</option>
                           </select>
                           <div
@@ -3341,10 +3471,11 @@
                         </div>
                         <div class="col-md-4 mb-3">
                           <label for="employeeType" class="form-label form-label-small">Employee Type</label>
-                          <select formControlName="employeeType" class="form-control form-control-sm">
+                          <select formControlName="employeeType" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
-                            <option value="1">need</option>
+                            <option *ngFor="let title of employeeDataListOptions" [value]="title?.id">{{ title?.name }}
+                            </option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('employeeType')?.touched && registrationForm.get('employeeType')?.invalid"
@@ -3352,26 +3483,14 @@
                             Employee Type is required
                           </div>
                         </div>
-                        <div class="col-md-4">
-                          <label for="division" class="form-label form-label-small">Division</label>
-                          <select formControlName="division" class="form-control form-control-sm">
-                            <option value="">Select</option>
-                            <option *ngFor="let title of managersListOptions" [value]="title?.id">{{ title?.name }}
-                            </option>
-                          </select>
-                          <div
-                            *ngIf="registrationForm.get('division')?.touched && registrationForm.get('division')?.invalid"
-                            class="text-danger fs-custom">
-                            Division is required
-                          </div>
-                        </div>
 
                         <div class="col-md-4 mb-3">
                           <label for="ptState" class="form-label form-label-small">PT State</label>
-                          <select formControlName="ptState" class="form-control form-control-sm">
+                          <select formControlName="ptState" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <!-- <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option> -->
-                            <option value="1">need</option>
+                            <option *ngFor="let title of ptStatesListOptions" [value]="title?.statecode">{{
+                              title?.ptstate }}</option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('ptState')?.touched && registrationForm.get('ptState')?.invalid"
@@ -3392,44 +3511,14 @@
                             Is HOD is required
                           </div>
                         </div> -->
-                        <div class='col-md-4'>
-                          <label class='form-label form-label-small'>Cost Center (D = Digit)</label>
-                          <div class="d-flex align-items-center">
-                            <select class="form-control form-control-sm mr-3 " formControlName="costCenter"
-                              style="width: 100px;"
-                              [ngClass]="{'is-invalid': registrationForm.get('costCenter')?.invalid && registrationForm.get('costCenter')?.touched}">
-                              <option value="">Select </option>
-                              <option *ngFor="let item of costCenterList" [value]="item.id">{{ item.name }} </option>
-                              <option Value="1">need</option>
-                            </select>
-
-                            <div class="form-check form-check-inline mr-2">
-                              <input type="radio" name="costDigit" class="form-check-input" value="5"
-                                formControlName="costDigit" id="digit5"
-                                [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
-                              <label class="form-check-label" for="digit5">5 D</label>
-                            </div>
-
-                            <div class="form-check form-check-inline">
-                              <input type="radio" name="costDigit" class="form-check-input" value="6"
-                                formControlName="costDigit" id="digit6"
-                                [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
-                              <label class="form-check-label" for="digit6">6 D</label>
-                            </div>
-                          </div>
-                          <div *ngIf="(registrationForm.get('costCenter')?.touched && registrationForm.get('costCenter')?.invalid) ||
-                            (registrationForm.get('costDigit')?.touched && registrationForm.get('costDigit')?.invalid)"
-                            class="text-danger fs-custom">
-                            Cost Center (D = Digit) is required
-                          </div>
-
-                        </div>
 
                         <div class="col-md-4 mb-3">
                           <label for="saleState" class="form-label form-label-small">Sales State/District</label>
-                          <select formControlName="saleState" class="form-control form-control-sm">
+                          <select formControlName="saleState" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of salesDistrictListOptions" [value]="title?.salesdistcode">{{
+                              title?.salesdistname }}</option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('saleState')?.touched && registrationForm.get('saleState')?.invalid"
@@ -3439,9 +3528,11 @@
                         </div>
                         <div class="col-md-4">
                           <label for="saleHQ" class="form-label form-label-small">Sales (HQ)</label>
-                          <select formControlName="saleHQ" class="form-control form-control-sm">
+                          <select formControlName="saleHQ" class="form-control form-control-sm"
+                            (change)="onSalesOfficeChange($event)" [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of salesOfficeListOptions" [value]="title?.salesofficecode">{{
+                              title?.salesofficename }}</option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('saleHQ')?.touched && registrationForm.get('saleHQ')?.invalid"
@@ -3451,9 +3542,11 @@
                         </div>
                         <div class="col-md-4">
                           <label for="saleGroup" class="form-label form-label-small">Sale Group</label>
-                          <select formControlName="saleGroup" class="form-control form-control-sm">
+                          <select formControlName="saleGroup" class="form-control form-control-sm"
+                            [attr.disabled]="isHrmsDataPresent ? true : null">
                             <option value="">Select</option>
-                            <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
+                            <option *ngFor="let title of salesGroupListOptions" [value]="title?.SALESGROUPCODE">{{
+                              title?.SALESGROUPNAME }}</option>
                           </select>
                           <div
                             *ngIf="registrationForm.get('saleGroup')?.touched && registrationForm.get('saleGroup')?.invalid"
@@ -3462,54 +3555,32 @@
                           </div>
                         </div>
 
-                        <div class="col-md-4">
-                          <label for="CTC" class="form-label form-label-small">CTC</label>
-                          <input type="text" noFirstSpace formControlName="CTC" numbersOnly noFirstSpace
-                            class="form-control form-control-sm" placeholder="Cost to Company"  maxlength="8"/>
-                          <div *ngIf="registrationForm.get('CTC')?.touched && registrationForm.get('CTC')?.invalid"
-                            class="text-danger fs-custom">
-                            CTC is required
-                          </div>
-                        </div>
 
-                        <div class="col-md-4">
-                          <label for="dateAsPerLetter" class="form-label form-label-small">Date As Per Letter</label>
-                          <input type="text" [value]="jobCodeData.name" readonly noFirstSpace
-                            formControlName="dateAsPerLetter" class="form-control form-control-sm"
-                            placeholder="Date As Per Letter" />
-                          <div
-                            *ngIf="registrationForm.get('dateAsPerLetter')?.touched && registrationForm.get('dateAsPerLetter')?.invalid"
-                            class="text-danger fs-custom">
-                            Date As Per Letter is required
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <label for="FirstDay" class="form-label form-label-small">First Day Date</label>
-                          <input type="text" [value]="jobCodeData.name" readonly noFirstSpace formControlName="FirstDay"
-                            class="form-control form-control-sm" placeholder="First Day Date" />
-                          <div
-                            *ngIf="registrationForm.get('FirstDay')?.touched && registrationForm.get('FirstDay')?.invalid"
-                            class="text-danger fs-custom">
-                            First Day Date is required
-                          </div>
-                        </div>
                       </div>
                     </div>
 
                     <div class="d-flex justify-content-end mr-4">
-                      <button *ngIf="!isProfessionalDataPresent && !professionalUpdate" type="submit"
+                      <button *ngIf="!isHrmsDataPresent && !hrmsUpdate" type="submit"
                         class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('hrms')">
-                        Save & Next
+                        Final Move to HRMS
                       </button>
 
-                      <button *ngIf="isProfessionalDataPresent && editButtonDisplay" type="submit"
+                      <button *ngIf="isHrmsDataPresent && editButtonDisplay" type="submit"
                         class="btn btn-info  btn-sm shadow-none border-0  mx-2" (click)="edit('hrms')">
                         Edit Data
                       </button>
 
-                      <button *ngIf="professionalUpdate" type="submit"
-                        class="btn btn-dark  btn-sm shadow-none border-0 " (click)="setValidation('hrms')">
-                        Update & Next
+                      <!-- <button
+                        *ngIf="isHrmsDataPresent && editButtonDisplay && loadedData?.hrTrackingDTO?.totalPercentage === '100'"
+                        type="submit"
+                        style="box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;"
+                        class="btn btn-success  btn-sm border-0  mx-2" (click)="FinalMoveToHrms()">
+                        Final Move to HRMS
+                      </button> -->
+
+                      <button *ngIf="hrmsUpdate" type="submit" class="btn btn-dark  btn-sm shadow-none border-0 "
+                        (click)="setValidation('hrms')">
+                        Final Move to HRMS
                       </button>
                     </div>
                   </div>

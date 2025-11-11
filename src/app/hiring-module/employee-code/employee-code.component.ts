@@ -134,14 +134,12 @@ export class EmployeeCodeComponent implements OnInit {
        <div class="mb-3">
          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZM9W5m85CN4_xgg6D1yEnJKLArugi2Hx-cA&s" alt="delete" style="width:60px; height:60px; border-radius: 15px;" />
        </div>
-       <h5 class="mb-2" style="font-weight: bold;">Are you sure you want to move this Candidate?</h5>
-       <p class="text-muted mb-0" style="font-size: 14px;">
-         This will complete the Hiring process and moving to HRMS.
-       </p>
+       <h5 class="mb-2" style="font-weight: bold;"> Review complete candidate information before moving to HRMS.</h5>
+       
      `,
       showCancelButton: true,
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Move',
+      confirmButtonText: 'View',
       reverseButtons: true,
       customClass: {
         popup: 'p-3 rounded-4',

@@ -228,7 +228,7 @@ import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboard
     TestingPurposeComponent,
     SetPasswordComponent,
     TelephonicListComponent,
-    OnboardingDataComponent
+    OnboardingDataComponent,
   ],
   imports: [
     BrowserModule,

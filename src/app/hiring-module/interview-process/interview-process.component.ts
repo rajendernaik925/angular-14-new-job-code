@@ -33,6 +33,7 @@ export class InterviewProcessComponent implements OnInit {
   feedbackForm: FormGroup;
   employeeId: string | null = null;
   userData: any;
+  UserId: number | null = null;
   minDate: Date = new Date();
   maxDate: Date;
   colorTheme = 'theme-dark-blue';
@@ -40,7 +41,6 @@ export class InterviewProcessComponent implements OnInit {
   pageSize = 10;
   totalRecords: number = 0;
   totalPages: number = 1;
-  UserId: number | null = null;
   interviewScheduleId: number | null = null;
   roundNo: number | null = null;
   candidateId: number | null = null;

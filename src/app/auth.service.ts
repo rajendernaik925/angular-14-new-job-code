@@ -893,7 +893,7 @@ export class AuthService {
     };
   }
   
-  private jobCodeUrls: string = "http://192.168.213.126:2025/";
+  private jobCodeUrls: string = "http://192.168.212.99:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -1354,6 +1354,12 @@ export class AuthService {
       observe: 'response',
       responseType: 'text' as 'json'
     })
+  }
+
+  finalMoveToHRMS(body: any): Observable<HttpResponse<any>> {
+    return this.http.post(`${this.jobCodeUrls}movetohrms/moveemployeedata`, body, { observe: 'response' }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   private fuelUrls: string = "http://192.168.215.162:8094/";

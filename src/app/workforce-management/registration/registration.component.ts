@@ -99,7 +99,7 @@ export class RegistrationComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         this.loadedData = res;
-        if (this.loadedData?.candidateInterviewDetails?.length) {
+        if (this.loadedData?.candidateOnboardingDTO?.offerLetterSentDate || this.loadedData?.candidateOnboardingDTO?.offerLetterFile) {
           localStorage.setItem('HiringLoginCandidateId', this.jobCodeData.candidateId);
           this.router.navigate(['/personal-info']);
         }

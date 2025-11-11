@@ -191,6 +191,7 @@ const routes: Routes = [
   {path:'onboarding-data/:id', component:OnboardingDataComponent},
 
 
+
   // Manager 
   { path: 'managerApprovals', component: ManagerApprovalsComponent, canActivate: [AuthGuard] },
   { path: 'attendanceApprovals', component: AttendanceApprovalsComponent, canActivate: [AuthGuard] },

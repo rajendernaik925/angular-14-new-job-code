@@ -450,11 +450,6 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
-  onCityChange(event: Event) {
-    const selectedStateId = (event.target as HTMLSelectElement).value;
-    console.log("id : ", selectedStateId)
-  }
-
   getCities(stateId: string) {
     console.log("state id : ", stateId);
     this.authService.cities(stateId).subscribe({

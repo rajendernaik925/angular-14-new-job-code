@@ -63,7 +63,6 @@ export class OnboardingDataComponent implements OnInit {
   probationPeriodList: any[] = [];
   hodNameList: any[] = [];
   costCenterList: any[] = [];
-
   indianStates: any[] = [];
   communicationCities: any[] = [];
   permanentCities: any[] = [];
@@ -139,6 +138,7 @@ export class OnboardingDataComponent implements OnInit {
   searchEmpId: string = '';
   userData: any;
   loginId: number | null = null;
+  costCenterDisableVlaue: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -283,6 +283,7 @@ export class OnboardingDataComponent implements OnInit {
       division: ['', [Validators.required]],
       ptState: ['', [Validators.required]],
       costCenter: ['', [Validators.required]],
+      costDigit: ['', [Validators.required]],
       saleState: ['', [Validators.required]],
       saleHQ: ['', [Validators.required]],
       saleGroup: ['', [Validators.required]],
@@ -393,7 +394,7 @@ export class OnboardingDataComponent implements OnInit {
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
-        if (this.loadedData?.candidateInterviewDetails?.length) {
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode) {
           // this.editButtonDisplay = false;
           // this.InterviewStatus();
         }
@@ -406,14 +407,14 @@ export class OnboardingDataComponent implements OnInit {
           this.costCenter(res?.candidateOnboardingDTO?.buId);
         }
 
-        console.log("cost center : ",res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId)
+        console.log("cost center : ", res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId)
 
         if (res?.fetchingEmployeeMoveToHrmsDTO?.division) {
           this.costCenter(res?.fetchingEmployeeMoveToHrmsDTO?.division);
         }
 
-        if (res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode) {
-          this.salesGroup(res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode);
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId) {
+          this.costCenter(res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId);
         }
 
         if (res?.familyInformationResponseDTO) {
@@ -521,13 +522,7 @@ export class OnboardingDataComponent implements OnInit {
             emergencyEmail: res?.emergencyContactDetailsDTO?.email || '',
             completeaAddress: res?.emergencyContactDetailsDTO?.address || '',
 
-            // bank details 
-            //     'accountNumber',
-            // 'confirmAccountNumber',
-            // 'bankName',
-            // 'ifscCode',
-            // 'identificationMarkA',
-            // 'identificationMarkB'
+            // bank details
             accountNumber: res?.bankDetailsDTO?.accountNumber || '',
             confirmAccountNumber: res?.bankDetailsDTO?.accountNumber || '',
             bankName: res?.bankDetailsDTO?.bankId || '',
@@ -536,14 +531,6 @@ export class OnboardingDataComponent implements OnInit {
             identificationMarkB: res?.bankDetailsDTO?.identificationMarkB || '',
 
             // professional
-            // 'department',
-            // 'designation',
-            // 'workLocation',
-            // 'ishod',
-            // 'reportingManager',
-            // 'paysheetGroup',
-            // 'incrementType',
-            // 'businessUnit'
             department: res?.candidatePersonalInformationDetails?.departmentId || '',
             designation: res?.candidatePersonalInformationDetails?.designationId || '',
             reportingManager: res?.candidateOnboardingDTO?.reportingId || '',
@@ -557,8 +544,6 @@ export class OnboardingDataComponent implements OnInit {
             workLocation: res?.professionalInformationDTO?.workLocationId || '',
             incrementType: res?.professionalInformationDTO?.incrementTypeId || '',
 
-
-
             // HRMS
             CTC: res?.candidateOnboardingDTO?.expectedCtc || '',
             division: res?.fetchingEmployeeMoveToHrmsDTO?.division ? res?.fetchingEmployeeMoveToHrmsDTO?.division : res?.candidateOnboardingDTO?.buId || '',
@@ -567,6 +552,7 @@ export class OnboardingDataComponent implements OnInit {
             dateAsPerLetter: res?.candidateOnboardingDTO?.offerLetterSentDate || '',
             noticePeriod: res?.candidateExperienceDetails?.candidateJoiningDetails?.joiningId || '',
             costCenter: res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId || '',
+            // costDigit: res?.fetchingEmployeeMoveToHrmsDTO?.costDigit || '',
             probationPeriod: res?.fetchingEmployeeMoveToHrmsDTO?.probationId || '',
             employeeType: res?.fetchingEmployeeMoveToHrmsDTO?.employeeType || '',
             ptState: res?.fetchingEmployeeMoveToHrmsDTO?.ptStateCode || '',
@@ -582,6 +568,7 @@ export class OnboardingDataComponent implements OnInit {
             expectedSalary: res?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary || '',
             suitableJobDescription: res?.candidateExperienceDetails?.candidateSalaryDetails?.description || '',
           });
+
 
 
           if (res?.candidateCommunicationAddressDetails?.postalCode) {
@@ -615,7 +602,7 @@ export class OnboardingDataComponent implements OnInit {
           this.isProfessionalDataPresent = [res?.professionalInformationDTO?.workLocationName]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
-          this.isHrmsDataPresent = [res?.professionalInformationDTO?.workLocationName]
+          this.isHrmsDataPresent = [res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
 
@@ -2056,6 +2043,7 @@ export class OnboardingDataComponent implements OnInit {
         'division',
         'ptState',
         'costCenter',
+        'costDigit',
         'saleState',
         'saleHQ',
         'saleGroup',
@@ -2092,6 +2080,7 @@ export class OnboardingDataComponent implements OnInit {
         division: hrmsSection.division,
         ptState: hrmsSection.ptState,
         costCenterId: hrmsSection.costCenter,
+        digit: hrmsSection.costDigit,
         saleDistrict: hrmsSection.saleState,
         saleHq: hrmsSection.saleHQ,
         saleGroup: hrmsSection.saleGroup,
@@ -2110,12 +2099,6 @@ export class OnboardingDataComponent implements OnInit {
       this.FinalMoveToHrms('hrms', finalHRMSData);
     }
 
-  }
-
-  toDate(dateStr: string): Date | null {
-    if (!dateStr) return null;
-    const [day, month, year] = dateStr.split('-');
-    return new Date(`${year}-${month}-${day}`);
   }
 
   finalSave(action: string, formData) {
@@ -2557,23 +2540,69 @@ export class OnboardingDataComponent implements OnInit {
 
   onBusinessUnitChange(event: any) {
     const selectedId = event.target.value;
+    this.registrationForm.get('costCenter')?.setValue('');
     const selectedItem = this.businessUnitsListOptions.find(item => item.id == selectedId);
     console.log("selected item : ", selectedItem.id);
     this.costCenter(selectedItem.id)
 
   }
 
+  // costCenter(id: any) {
+  //   this.authService.costCenterList(id).subscribe({
+  //     next: (res: any) => {
+  //       this.costCenterList = res;
+  //       const selectedId = this.jobCodeData?.fetchingEmployeeMoveToHrmsDTO?.costCenterId;
+  //       console.log("cost center list : ", this.costCenterList)
+  //       const selectedItem = this.costCenterList.find((item: any) => item.id == selectedId);
+  //       console.log("Selected item :", selectedItem)
+  //       if (selectedItem) {
+  //         console.log('Selected Cost Center Name:', selectedItem.name);
+  //         if (selectedItem.name?.toUpperCase() === 'OFFICE') {
+  //           this.registrationForm.patchValue({ costDigit: 5 });
+  //         }
+  //       }
+  //     },
+  //     error: (err: HttpErrorResponse) => {
+  //       console.log("Error fetching managers:", err);
+  //     }
+  //   });
+  // }
+
   costCenter(id: any) {
     this.authService.costCenterList(id).subscribe({
-      next: (res) => {
-        this.costCenterList = res;
-        this.registrationForm.get('costCenter')?.setValue('');
+      next: (res: any) => {
+        this.costCenterList = res || [];
+
+        if (this.jobCodeData?.fetchingEmployeeMoveToHrmsDTO?.costCenterId) {
+          const selectedId = this.jobCodeData?.fetchingEmployeeMoveToHrmsDTO?.costCenterId;
+          console.log("Selected ID:", selectedId);
+          console.log("Cost Center List:", this.costCenterList);
+          const selectedItem = this.costCenterList.find((item: any) => {
+            return String(item.id) === String(selectedId) ||
+              String(item.costCenterId) === String(selectedId);
+          });
+
+          console.log("Selected item:", selectedItem);
+
+          if (selectedItem) {
+            console.log('Selected Cost Center Name:', selectedItem.name);
+            if (selectedItem.name?.trim().toUpperCase() === 'OFFICE') {
+              this.registrationForm.patchValue({ costDigit: '5' });
+              this.costCenterDisableVlaue = true;
+            } else {
+              this.registrationForm.patchValue({ costDigit: '' });
+            }
+          } else {
+            console.warn("No cost center matched the selectedId");
+          }
+        }
       },
       error: (err: HttpErrorResponse) => {
-        console.log("Error fetching managers:", err);
+        console.error("Error fetching cost centers:", err);
       }
     });
   }
+
 
   salesDistrict() {
     this.authService.salesDistrict().subscribe({
@@ -2601,6 +2630,7 @@ export class OnboardingDataComponent implements OnInit {
     const selectedId = event.target.value;
     //  console.log("selected sale office id : ",selectedId)
     this.salesGroup(selectedId);
+    this.registrationForm.get('saleGroup')?.setValue('');
   }
 
 
@@ -2608,7 +2638,6 @@ export class OnboardingDataComponent implements OnInit {
     this.authService.salesGroup(id).subscribe({
       next: (res) => {
         this.salesGroupListOptions = res;
-        this.registrationForm.get('saleGroup')?.setValue('');
       },
       error: (err: HttpErrorResponse) => {
         console.log("Error fetching sales group:", err);
@@ -2664,6 +2693,23 @@ export class OnboardingDataComponent implements OnInit {
       }
     });
   }
+
+  costCenterChange(event: any) {
+    const selectedId = event.target.value;
+    const selectedItem = this.costCenterList.find((item: any) => item.id == selectedId);
+    if (selectedItem) {
+      if (selectedItem.name.toUpperCase() === 'OFFICE') {
+        this.registrationForm.patchValue({ costDigit: '5' });
+        this.costCenterDisableVlaue = true;
+      } else {
+        this.registrationForm.patchValue({ costDigit: '' });
+        this.costCenterDisableVlaue = false;
+      }
+    } else {
+      console.log("No cost center found for ID:", selectedId);
+    }
+  }
+
 
   private setCitiesAndPatch(cities: any[] | null, addressType: 'communication' | 'permanent', cityId: string | null) {
     const patchedCityId = cityId ?? '';
@@ -3369,6 +3415,12 @@ export class OnboardingDataComponent implements OnInit {
     if (selectedValue) {
       this.hodName(selectedValue);
     }
+  }
+
+  toDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('-');
+    return new Date(`${year}-${month}-${day}`);
   }
 
   FinalMoveToHrms(action: string, body: any) {

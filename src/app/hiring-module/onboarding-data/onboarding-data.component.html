@@ -121,13 +121,13 @@
                 <i class="bi bi-box-arrow-right mr-1"></i> Save & Exit
               </a>
             </div>
-            <div class="input-group" style="max-width: 300px;">
+            <!-- <div class="input-group" style="max-width: 300px;">
               <input type="text" numbersOnly noFirstSpace class="form-control mr-1" placeholder="Enter Employee ID"
                 [(ngModel)]="searchEmpId" />
               <button class="btn btn-sm custom-bg text-white border-0 shadow-none" (click)="searchEmployee()">
                 Search
               </button>
-            </div>
+            </div> -->
 
           </div>
         </div>
@@ -3425,28 +3425,28 @@
                         </div>
 
                         <div class='col-md-4'>
-                          <label class='form-label form-label-small'>Cost Center </label>
+                          <label class='form-label form-label-small'>Cost Center (D = Digit) </label>
                           <div class="d-flex align-items-center">
                             <select class="form-control form-control-sm mr-3 " formControlName="costCenter"
-                              [attr.disabled]="isHrmsDataPresent ? true : null"
+                              style="width: 100px;" [attr.disabled]="isHrmsDataPresent ? true : null" (change)="costCenterChange($event)"
                               [ngClass]="{'is-invalid': registrationForm.get('costCenter')?.invalid && registrationForm.get('costCenter')?.touched}">
                               <option value="">Select </option>
                               <option *ngFor="let item of costCenterList" [value]="item.id">{{ item.name }} </option>
                             </select>
 
-                            <!-- <div class="form-check form-check-inline mr-2">
+                            <div class="form-check form-check-inline mr-2">
                               <input type="radio" name="costDigit" class="form-check-input" value="5"
                                 formControlName="costDigit" id="digit5"
                                 [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
                               <label class="form-check-label" for="digit5">5 D</label>
-                            </div> -->
+                            </div>
 
-                            <!-- <div class="form-check form-check-inline">
+                            <div *ngIf="!costCenterDisableVlaue" class="form-check form-check-inline">
                               <input type="radio" name="costDigit" class="form-check-input" value="6"
                                 formControlName="costDigit" id="digit6"
                                 [ngClass]="{'is-invalid': registrationForm.get('costDigit')?.invalid && registrationForm.get('costDigit')?.touched}" />
                               <label class="form-check-label" for="digit6">6 D</label>
-                            </div> -->
+                            </div>
                           </div>
                           <div *ngIf="(registrationForm.get('costCenter')?.touched && registrationForm.get('costCenter')?.invalid) ||
                             (registrationForm.get('costDigit')?.touched && registrationForm.get('costDigit')?.invalid)"

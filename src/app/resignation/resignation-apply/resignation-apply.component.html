@@ -1,0 +1,264 @@
+<div class="card-header custom-bg fw-bold text-white">
+  Resignation & Offboarding Portal
+</div>
+<div class="container-fluid card scroll-container">
+  <div class="card-bdy">
+    <div class="row">
+      <div class="col-md-3" style="box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;">
+        <div class="d-flex flex-column align-items-center py-3 section-min-height">
+          <div class="image-wrapper text-center scale-in-center">
+            <img src="https://img.freepik.com/free-vector/big-family-meeting_74855-5220.jpg" alt="Employee Photo"
+              class="img-fluid mb-3 main-image" style="max-height: 250px;" />
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User Icon" class="user-icon" />
+          </div>
+          <div class="text-start w-100 px-2 text-center mt-4 ">
+            <span class="d-block mb-1" (click)="modelOpen()">13431</span>
+            <span class="d-block mb-1">RAJENDER BHUKYA</span>
+            <span class="d-block mb-1 small">JUNIOR SOFTWARE ENGINEER</span>
+            <span class="d-block mb-1 small">PERMANENT</span>
+            <span class="d-block mb-1 small">9876543210</span>
+            <span class="d-block mb-1 small">DOJ : 12-11-2025</span>
+            <span class="d-block mb-1 small">RAJENDER@GMAIL.COM</span>
+            <span class="d-block mb-1 small">INFORMATION TECHNOLOGY</span>
+            <!-- <hr> -->
+          </div>
+          <img src="../../../assets/img/idcard/design.png" class="mt-4" alt="" width="100%" height="25%">
+          <div class="mt-auto pt-3 text-center w-100 ">
+            <!-- <img src="https://heterohealthcare.com/assets/img/hhcllogo.svg?Version=4.82" alt="" width="60%"
+              height="50%"> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="col-md-9 mt-2 form-scroll-container">
+        <form [formGroup]="resignationForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+
+
+            <div class="col-md-12 mb-3">
+              <label for="reason" class="form-label ">Reason for Resignation</label>
+              <textarea id="reason" rows="2" formControlName="reason" class="form-control"
+                placeholder="Enter your reason..." [readonly]="!trackStatusValue"></textarea>
+              <div *ngIf="resignationForm.get('reason')?.touched && resignationForm.get('reason')?.invalid"
+                class="text-danger fs-custom small">
+                Reason is required.
+              </div>
+            </div>
+
+
+
+            <div class="col-md-3 mb-3">
+              <label for="discussed" class="form-label ">Discussed with Manager</label>
+              <select formControlName="discussed" class="form-control form-control-sm"
+                (change)="discussedOnChange($event)" [attr.disabled]='!trackStatusValue ? false : null'
+                [ngClass]="{'is-invalid': resignationForm.get('discussed')?.touched && resignationForm.get('discussed')?.invalid }">
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="No">NO</option>
+              </select>
+            </div>
+            <!-- <div class="col-md-3 mb-3">
+              <label for="Joining" class="form-label ">Joining Another Organization</label>
+              <select formControlName="Joining" class="form-control form-control-sm" [attr.disabled]='!trackStatusValue ? false : null'
+                [ngClass]="{'is-invalid': resignationForm.get('Joining')?.touched && resignationForm.get('Joining')?.invalid }">
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="No">NO</option>
+              </select>
+            </div> -->
+            <!-- <div class="col-md-3">
+              <label for="lastDate" class="form-label">Last Working Date</label>
+              <input type="text" id="lastWorkingDate" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                formControlName="lastWorkingDate" autocomplete="off" [bsConfig]="{
+                  adaptivePosition: true,
+                  showWeekNumbers: false,
+                  isAnimated: true,
+                  containerClass: colorTheme,
+                  customTodayClass: 'custom-today-class',
+                  dateInputFormat: 'DD-MMM-YYYY'
+                }" bsDatepicker [minDate]="minDate" [maxDate]="maxDate" required readonly />
+
+              <div *ngIf="
+                resignationForm.get('lastWorkingDate')?.touched &&
+                resignationForm.get('lastWorkingDate')?.invalid
+              " class="text-danger fs-custom">
+                Last Working Date is required
+              </div>
+            </div> -->
+
+            <div class="col-md-3">
+              <label class="form-label">Upload Resignation Letter (PDF)</label>
+              <div *ngIf="trackStatusValue; else viewPDF">
+                <button type="button" class="btn btn-sm btn-secondary-light fw-semibold w-100"
+                  (click)="fileInput.click()">
+                  <i class="bi bi-file-earmark-pdf-fill mr-1"></i> Select PDF
+                </button>
+                <input type="file" #fileInput accept=".pdf" formControlName="resignationLetter"
+                  (change)="onFileChange($event)" style="display: none" />
+                <span *ngIf="selectedFileName" class="ms-2 text-muted small">
+                  {{ selectedFileName }}
+                </span>
+                <div *ngIf="fileError" class="text-danger fs-custom small mt-1">
+                  {{ fileError }}
+                </div>
+              </div>
+              <ng-template #viewPDF>
+                <button type="button" class="btn btn-sm btn-secondary-light fw-semibold w-100">
+                  <i class="bi bi-file-earmark-pdf-fill mr-1"></i> View PDF
+                </button>
+              </ng-template>
+            </div>
+
+
+
+
+            <!-- <div class="col-md-6">
+              <label for="comments" class="form-label ">Comments</label>
+              <textarea id="comments" rows="3" formControlName="comments" class="form-control "
+                placeholder="Add any comments..." [readonly]="!trackStatusValue"></textarea>
+            </div> -->
+            <div *ngIf="trackStatusValue" class="text-end mt-4 ml-3">
+              <button type="submit" class="btn custom-bg text-light fw-semibold rounded-pill px-4 mr-2"
+                [disabled]="resignationForm.invalid">
+                Submit
+              </button>
+              <!-- <span class="btn bg-warning text-light fw-semibold rounded-pill px-4" (click)="trackStatus()">
+                Track Status
+              </span> -->
+            </div>
+          </div>
+        </form>
+        <span *ngIf="!trackStatusValue" class="text-danger mt-2 d-block fst-italic">
+          <strong>Note:</strong> HR will set the tentative date, and the resignation process starts once it’s accepted.
+        </span>
+
+        <!-- <div *ngIf="!trackStatusValue" class="card-header custom-bg fw-bold text-white mt-3">
+          Tracking of Resignation & Offboarding Portal
+        </div> -->
+
+        <h6 *ngIf="!trackStatusValue" class="my-3 fw-bold" (click)="tempClick()">Resignation Tracking</h6>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-success bg-light text-success fw-semibold mt-2 rounded">
+          <span>Submitted by Employee</span>
+          <i class="bi bi-check-circle-fill text-success fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-warning bg-light text-warning fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-warning fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-danger bg-light text-danger fw-semibold mt-2 rounded">
+          <span>Awaiting at HR Acceptance</span>
+          <i class="bi bi-check-circle-fill text-danger fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-danger bg-light text-danger fw-semibold mt-2 rounded">
+          <span>Awaiting at Clearance</span>
+          <i class="bi bi-check-circle-fill text-danger fs-5"></i>
+        </div>
+
+        <!-- <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-danger bg-light text-danger fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-danger fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-danger bg-light text-danger fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-danger fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-warning bg-light text-warning fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-warning fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-warning bg-light text-warning fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-warning fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-warning bg-light text-warning fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-warning fs-5"></i>
+        </div>
+
+        <div *ngIf="!trackStatusValue"
+          class="card-header d-flex justify-content-between align-items-center border border-warning bg-light text-warning fw-semibold mt-2 rounded">
+          <span>Pending at manager review</span>
+          <i class="bi bi-check-circle-fill text-warning fs-5"></i>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="isVisible">
+  <div class="modal-content">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="m-0 fw-bold text-primary">{{ candidateName }}</h6>
+      <span class="close-btn" (click)="closeModal()">&times;</span>
+    </div>
+
+    <!-- Modal Title -->
+    <h5 class="text-center fw-semibold mb-3">Manager Review – Resignation Discussion</h5>
+
+    <!-- Body -->
+    <form [formGroup]="resignForm">
+      <!-- General Question -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Why are you resigning?</label>
+        <textarea class="form-control form-control-sm" rows="3" placeholder="Enter your reason here..."
+          formControlName="reason"></textarea>
+      </div>
+
+      <!-- Yes / No Questions -->
+      <div class="mb-2">
+        <label class="fw-semibold">Have you discussed your resignation with your reporting manager?</label>
+        <div>
+          <input type="radio" value="Yes" formControlName="discussed" /> Yes
+          <input type="radio" value="No" formControlName="discussed" class="ms-3" /> No
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="fw-semibold">Are you joining another organization?</label>
+        <div>
+          <input type="radio" value="Yes" formControlName="joiningAnother" /> Yes
+          <input type="radio" value="No" formControlName="joiningAnother" class="ms-3" /> No
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="fw-semibold">Would you consider staying if offered a new role?</label>
+        <div>
+          <input type="radio" value="Yes" formControlName="considerStay" /> Yes
+          <input type="radio" value="No" formControlName="considerStay" class="ms-3" /> No
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="mb-3">
+        <label class="fw-semibold">Manager Comments</label>
+        <textarea class="form-control form-control-sm" rows="3" placeholder="Enter your comments here..."
+          formControlName="managerComment"></textarea>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-end">
+        <button class="btn btn-primary btn-sm px-4" (click)="submitResignationForm()">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+.custom-bg
+  background-color: #0072BC 
+.custom-text
+  color: #0072BC   
+
+th, td
+  white-space: nowrap // Prevent text from wrapping to the next line
+  overflow: hidden     // Hide any overflowing content
+  text-overflow: ellipsis // Add ellipsis (...) if content overflows   
+
+.scroll-container
+  max-height: calc(100vh - 219px)
+  overflow-y: auto
+  display: block    
+
+thead th
+  position: -webkit-sticky
+  position: sticky
+  top: 0px
+  background: #0072BC
+  color: white
+  vertical-align: middle
+
+input:focus, select:focus, textarea:focus
+  border-color: black !important // Override Bootstrap default blue
+  box-shadow: none !important // Remove default Bootstrap shadow
+
+.table-scroll
+  max-height: 461px 
+  //max-height: 315px 
+  overflow-y: auto
+  border-top: none
+
+.sticky-header
+  position: sticky
+  top: 0
+  z-index: 2
+
+.scroll-container
+  max-height: calc(100vh - 205px)
+  overflow-y: auto
+  display: block
+
+  // Firefox
+  scrollbar-color: #0072bc #f1f1f1
+  scrollbar-width: thin
+
+  // Webkit (Chrome, Edge, Safari)
+  &::-webkit-scrollbar
+    width: 8px
+
+  &::-webkit-scrollbar-track
+    background: #f1f1f1
+
+  &::-webkit-scrollbar-thumb
+    background-color: #0072bc
+    border-radius: 4px
+    border: 2px solid transparent
+  th
+    position: sticky
+    top: 0
+    z-index: 2
+
+.small-header-th 
+  font-size: 12px
+  padding: 5px 10px
+  line-height: 1.8
+  white-space: nowrap
+  vertical-align: middle
+
+.small-header
+  font-size: 12px
+  padding: 5px 10px
+  line-height: 1.6
+
+.custom-action-btn 
+  color: white !important
+  line-height: 1.0
+  font-size: 12px
+  border-radius: 5px
+  border: none
+  &:active,
+  &:focus 
+    border: none
+    outline: none  

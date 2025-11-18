@@ -141,6 +141,11 @@ import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.co
 import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 import { TelephonicListComponent } from './hiring-module/telephonic-list/telephonic-list.component';
 import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboarding-data.component';
+import { ResignationApplyComponent } from './resignation/resignation-apply/resignation-apply.component';
+import { ResignationListComponent } from './resignation/resignation-list/resignation-list.component';
+import { ResignationHrListComponent } from './resignation/resignation-hr-list/resignation-hr-list.component';
+import { ResignationSideBarComponent } from './resignation/resignation-side-bar/resignation-side-bar.component';
+import { ResignationClearenceComponent } from './resignation/resignation-clearence/resignation-clearence.component';
 
 
 
@@ -229,6 +234,11 @@ import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboard
     SetPasswordComponent,
     TelephonicListComponent,
     OnboardingDataComponent,
+    ResignationApplyComponent,
+    ResignationListComponent,
+    ResignationHrListComponent,
+    ResignationSideBarComponent,
+    ResignationClearenceComponent,
   ],
   imports: [
     BrowserModule,

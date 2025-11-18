@@ -1,0 +1,47 @@
+<!-- <div class="d-flex justify-content-between align-items-center d-md-none mb-2">
+  <span class="fw-bold custom-text">{{ activeTab | activeUrl }}</span>
+  <button class="btn custom-bg text-light" (click)="toggleSidebar()">☰</button>
+</div>
+<div class="d-flex">
+  <div
+    class="card border-0 flex-fill sidebar"
+    [ngClass]="{ 'd-none': !isSidebarOpen, 'd-md-block': true }"
+  >
+    <div class="card-content">
+      <ul class="list-group list-group-flush border-0">
+        <li
+          *ngFor="let item of sidebarItems"
+          class="sidebar-item border cursor-pointer"
+          [routerLink]="item.route"
+          [ngClass]="{ 'active': isRouteActive(item) }"
+        >
+          <i class="{{ item.icon }} me-2"></i>
+          <span class="links">{{ item.label }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div> -->
+
+
+
+<div class="d-flex flex-wrap align-items-center">
+  <ul class="nav">
+    <li
+      *ngFor="let item of sidebarItems"
+      class="nav-item mr-2"
+      style="font-size: 0.85rem; line-height: 1.2; padding: 2px 0;"
+      [ngClass]="{ 'active': isRouteActive(item) }"
+    >
+      <a
+        class="nav-link fw-semibold"
+        [routerLink]="item.route"
+        [routerLinkActive]="'active'"
+      >
+        <!-- <i class="{{ item.icon }} mr-2"></i> -->
+        {{ item.label }}
+      </a>
+    </li>
+  </ul>
+</div>
+

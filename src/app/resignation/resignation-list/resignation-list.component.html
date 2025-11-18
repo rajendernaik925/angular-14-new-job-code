@@ -1,0 +1,62 @@
+<div class="container-fluid">
+    <app-nav></app-nav>
+</div>
+
+<div class="container-flui">
+    <div class="card shadow-sm">
+        <div class="card-body ">
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                <div class="flex-shrink-0 mr-3">
+                    <app-resignation-side-bar></app-resignation-side-bar>
+                </div>
+
+                <div class="flex-grow-1 d-flex justify-content-end">
+                    <input type="search" class="form-control w-25" placeholder="Search..." [(ngModel)]="searchTerm"
+                        style="width: 180px; font-size: 0.85rem; line-height: 1.2; padding: 2px 6px; height: 28px; " />
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <div class="table-responsive scroll-container">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="small-header-th">#</th>
+                                <th class="small-header-th">Employee Name</th>
+                                <th class="small-header-th">Employee ID</th>
+                                <th class="small-header-th">Designation</th>
+                                <th class="small-header-th">Department</th>
+                                <th class="small-header-th">Manager</th>
+                                <th class="text-center small-header-th">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="small-header" *ngFor="let emp of filteredList(); let i = index">
+                                <td class="small-header">{{ i + 1 }}</td>
+                                <td class="small-header">{{ emp.name }}</td>
+                                <td class="small-header">{{ emp.empId }}</td>
+                                <td class="small-header">{{ emp.designation }}</td>
+                                <td class="small-header">{{ emp.department }}</td>
+                                <td class="small-header">{{ emp.manager }}</td>
+                                <td class="text-center small-header">
+                                    <button class="border-none custom-bg text-white custom-action-btn px-3 py-1"
+                                        (click)="viewDetails(emp)">
+                                        View Form
+                                    </button>
+
+                                </td>
+                            </tr>
+
+                            <tr *ngIf="filteredList().length === 0">
+                                <td colspan="7" class="text-center text-muted">
+                                    No matching records found.
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -204,6 +204,7 @@
           <h5>Utilities</h5>
           <div class="crdsGrid">
             <ng-container *ngFor="let x of Ryts">
+              
               <div class="theCard" [routerLink]="['/ctcInfo']" *ngIf="x.CTC_VIEW == 'true'">
                 <img src="././assets/img/icons/ctc.svg" alt="ctc" />
                 <a>CTC Details</a>
@@ -215,10 +216,21 @@
               <a>Performance Appraisal</a>
             </div>
 
+            <div class="theCard" [routerLink]="['/resignation-apply']">
+                <img src="https://img.freepik.com/free-vector/hand-drawn-resignation-illustration_52683-113713.jpg" alt="ctc" />
+                <a>Resignation</a>
+              </div>
+              <div class="theCard" [routerLink]="['/resignation-list']">
+                <img src="https://png.pngtree.com/thumb_back/fh260/background/20220115/pngtree-back-office-to-manage-the-business-and-various-tasks-to-serve-image_982990.jpg" alt="ctc" />
+                <a>Resignation Approvals</a>
+              </div>
+
              <div class="theCard" [routerLink]="['/testing']">
               <img src="././assets/img/id-card.png" alt="family-details-icon" />
               <a>Testing</a>
             </div>
+
+            
 
             
 

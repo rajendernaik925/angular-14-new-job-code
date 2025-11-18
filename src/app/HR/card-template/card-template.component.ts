@@ -80,7 +80,21 @@ export class CardTemplateComponent implements OnInit {
       ]
     },
     {
-      name: 'Assam Unit-ⅠⅠ',
+      name: 'Assam Unit-Ⅰ',
+      images: [
+        { label: 'Front', url: 'assets/img/idcard/Hhcl-1.jpg' },
+        { label: 'Back', url: 'assets/img/idcard/assam-unit-2.PNG' }
+      ]
+    },
+    {
+      name: 'Hetero Visit',
+      images: [
+        { label: 'Front', url: 'assets/img/idcard/Hhcl-1.jpg' },
+        { label: 'Back', url: 'assets/img/idcard/assam-unit-2.PNG' }
+      ]
+    },
+    {
+      name: 'Azista Visit',
       images: [
         { label: 'Front', url: 'assets/img/idcard/Hhcl-1.jpg' },
         { label: 'Back', url: 'assets/img/idcard/assam-unit-2.PNG' }
@@ -96,17 +110,8 @@ export class CardTemplateComponent implements OnInit {
   }
 
 
-    setActiveSection(section: string) {
+  setActiveSection(section: string) {
     this.activeTab = section;
-
-    // Object.keys(this.registrationForm.controls).forEach(field => {
-    //   const control = this.registrationForm.get(field);
-    //   if (control) {
-    //     control.markAsUntouched();
-    //     control.markAsPristine();
-    //     control.updateValueAndValidity();
-    //   }
-    // });
   }
 
 }

@@ -262,7 +262,7 @@
                           <div class="mb-3">
                             <label class="form-label form-label-small">Title</label>
                             <select formControlName="titleId" [attr.disabled]="isAllDataPresent ? true : null"
-                              class="form-control form-control-sm"> 
+                              class="form-control form-control-sm">
                               <option value="">Select</option>
                               <option *ngFor="let title of titleOptions" [value]="title?.id">{{ title?.name }}</option>
                             </select>
@@ -411,7 +411,7 @@
                             enter valid DL Number (AP0123456789012)
                           </div>
                         </div>
-                           
+
                         <div class="col-md-4 mb-3">
                           <label class="form-label form-label-small">PAN Number</label>
                           <input id="pan" type="text" [readOnly]="isAllDataPresent" formControlName="pan"
@@ -494,14 +494,24 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Nationality</label>
-                          <input type="text" formControlName="nationality" class="form-control form-control-sm"
-                            value="Indian" readonly />
+                          <select formControlName="nationality" disabled class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option value="1">
+                              Indian
+                            </option>
+                          </select>
                         </div>
 
                         <div class="col-md-4">
                           <label for="religion" class="form-label form-label-small">Religion</label>
-                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="religion"
-                            maxlength="20" placeholder="Religion" class="form-control form-control-sm" stringOnly />
+                          <select formControlName="religion" [attr.disabled]="isAllDataPresent ? true : null"
+                            class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of religionOptions" [value]="item.id">
+                              {{ item.name }}
+                            </option>
+                          </select>
+
                           <div
                             *ngIf="registrationForm.get('religion')?.touched && registrationForm.get('religion')?.invalid"
                             class="text-danger fs-custom">
@@ -2842,7 +2852,8 @@
                     <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
                       class="alert alert-success text-center mt-3">
                       <h5>✅ All sections have been successfully completed</h5>
-                       Please report on your joining date as per your offer letter. Verification is in progress, and you’ll be notified soon.
+                      Please report on your joining date as per your offer letter. Verification is in progress, and
+                      you’ll be notified soon.
                     </div>
 
                     <div class="list-group border-0">
@@ -3011,7 +3022,8 @@
                           }"></i>
                           Agreemet Documentation <span class="text-warning">(Optional)</span>
                         </div>
-                        <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                        <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer"
+                          [ngClass]="{
                           'custom-text': loadedData?.agreementFileDTO?.sno,
                           'text-white custom-bg btn btn-sm': !loadedData?.agreementFileDTO?.sno
                         }">
@@ -3039,7 +3051,7 @@
                       </div>
                     </div>
 
-                    
+
 
 
 

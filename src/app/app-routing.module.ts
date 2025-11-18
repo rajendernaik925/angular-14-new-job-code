@@ -98,6 +98,10 @@ import { TestingPurposeComponent } from './HR/testing-purpose/testing-purpose.co
 import { SetPasswordComponent } from './homepage/set-password/set-password.component';
 import { TelephonicListComponent } from './hiring-module/telephonic-list/telephonic-list.component';
 import { OnboardingDataComponent } from './hiring-module/onboarding-data/onboarding-data.component';
+import { ResignationApplyComponent } from './resignation/resignation-apply/resignation-apply.component';
+import { ResignationListComponent } from './resignation/resignation-list/resignation-list.component';
+import { ResignationHrListComponent } from './resignation/resignation-hr-list/resignation-hr-list.component';
+import { ResignationClearenceComponent } from './resignation/resignation-clearence/resignation-clearence.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -185,10 +189,18 @@ const routes: Routes = [
   {path:'employee-basic-details', component:EmployeeBasicDetailComponent},
   {path:'leave-calender', component:LeaveCalenderComponent},
   {path:'employee-profile/:id', component:EmployeeProfileComponent},
-  {path:'id-card-template', component:CardTemplateComponent, canActivate: [AuthGuard]},
+  {path:'id-card-template', component:CardTemplateComponent},
   {path:'testing', component:TestingPurposeComponent},
   {path:'set-password', component:SetPasswordComponent},
   {path:'onboarding-data/:id', component:OnboardingDataComponent},
+
+
+
+  // resignation
+  {path:'resignation-apply', component: ResignationApplyComponent},
+   {path:'resignation-list', component: ResignationListComponent},
+   {path:'resignation-hr-list', component: ResignationHrListComponent},
+   {path:'resignation-clearence', component: ResignationClearenceComponent},
 
 
 

@@ -14,7 +14,7 @@
     </ol>
 </nav>
 <div class="container-fluid card">
-        <!-- <div class="row mb-4 p-2">
+    <!-- <div class="row mb-4 p-2">
             <div class="col-12 d-flex">
                 <p class="h5 m-0 text-center" style="color: #0072BC; font-weight: bold;">
                     <i class="bi bi-person-fill"></i> ID Card Template
@@ -22,7 +22,7 @@
             </div>
         </div> -->
 
-        <!-- <div class="custom-height">
+    <!-- <div class="custom-height">
             <div class="d-flex overflow-auto" style="gap: 1rem; padding: 1rem;">
                 <div *ngFor="let company of companies" style="
                 flex: 0 0 auto;
@@ -63,13 +63,13 @@
 
 
 
-      <div class="container-flui">
+    <div class="container-flui">
         <div class="container-flui mb-0">
             <div class="row">
                 <div class="col-md-2 d-none d-md-flex flex-column justify-content-betwen card border-0 py-3 px-2"
                     style="min-height: 68vh; background-color: #F8F8F8;">
                     <div class="mb-0 side-scroll-container">
-                        <h6 class="fw-bold text-dark ps-2 mb-3 mt-3">ID Card Templates</h6>
+                        <h6 class="fw-bold text-dark ps-2 mb-3 mt-2">ID Card Templates</h6>
                         <hr class="mt-2">
 
                         <button
@@ -124,6 +124,23 @@
                               'btn-light text-dark': activeTab !== 'assamUnit-2'
                             }" (click)="setActiveSection('assamUnit-2')">
                             <i class="bi bi-check-circle mr-2"></i> Assam Division Unit-II
+                        </button>
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'heteroVisit',
+                              'btn-light text-dark': activeTab !== 'heteroVisit'
+                            }" (click)="setActiveSection('heteroVisit')">
+                            <i class="bi bi-check-circle mr-2"></i> Hetero Visit
+                        </button>
+
+                        <button
+                            class="btn btn-sm w-100 text-start d-flex align-items-center mb-2 rounded ps-2 shadow-none"
+                            [ngClass]="{
+                              'custom-bg text-white shadow-none': activeTab === 'azistaVisit',
+                              'btn-light text-dark': activeTab !== 'azistaVisit'
+                            }" (click)="setActiveSection('azistaVisit')">
+                            <i class="bi bi-check-circle mr-2"></i> Azista Visit
                         </button>
                     </div>
                 </div>
@@ -202,15 +219,15 @@
                             <div class="scroll-container container  mt-3">
                                 <div class="row mb-4">
                                     <div class="col-md-6 text-center">
-                                        <img src="assets/img/idcard/Azista Aerospace ID.jpg" width="200px" height="285px" alt=""
-                                            class="border cursor-pointer"
+                                        <img src="assets/img/idcard/Azista Aerospace ID.jpg" width="200px"
+                                            height="285px" alt="" class="border cursor-pointer"
                                             (click)="downloadImage('assets/img/idcard/Azista Aerospace ID.jpg')"
                                             (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
                                     </div>
 
                                     <div class="col-md-6">
-                                        <img src="assets/img/idcard/back-2.jpg" width="200px" height="285px"
-                                            alt="" class="border cursor-pointer"
+                                        <img src="assets/img/idcard/back-2.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
                                             (click)="downloadImage('assets/img/idcard/back-2.jpg')"
                                             (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
                                     </div>
@@ -232,15 +249,15 @@
                             <div class="scroll-container container  mt-3">
                                 <div class="row mb-4">
                                     <div class="col-md-6 text-center">
-                                        <img src="assets/img/idcard/Azista BST ID card.jpg" width="200px" height="285px" alt=""
-                                            class="border cursor-pointer"
+                                        <img src="assets/img/idcard/Azista BST ID card.jpg" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
                                             (click)="downloadImage('assets/img/idcard/Azista BST ID card.jpg')"
                                             (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
                                     </div>
 
                                     <div class="col-md-6">
-                                        <img src="assets/img/idcard/back-3.jpg" width="200px" height="285px"
-                                            alt="" class="border cursor-pointer"
+                                        <img src="assets/img/idcard/back-3.jpg" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
                                             (click)="downloadImage('assets/img/idcard/back-3.jpg')"
                                             (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
                                     </div>
@@ -308,9 +325,68 @@
                             </div>
                         </div>
                     </div>
+
+                    <div *ngIf="activeTab === 'heteroVisit'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>HHCL Visit ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/hhcl-visit.png" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/hhcl-visit.png')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/HHcl back.jpg" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/HHcl back.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="activeTab === 'azistaVisit'">
+                        <div class="card w-100 border-0 pt-3">
+                            <div
+                                class="card-header custom-bg fw-bold text-white d-flex justify-content-between align-items-center">
+                                <span>Azista Visit ID Card Template Download <span *ngIf="downloadValue"
+                                        class="fs-cusom ml-2">(Click image to download)</span></span>
+                                <span class="fs-cusom"><i class="bi bi-patch-check-fill text-success"></i> Verified ID
+                                    Card Template </span>
+                            </div>
+
+                            <div class="scroll-container container  mt-3">
+                                <div class="row mb-4">
+                                    <div class="col-md-6 text-center">
+                                        <img src="assets/img/idcard/azista-vist.png" width="200px" height="285px" alt=""
+                                            class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/azista-vist.png')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <img src="assets/img/idcard/back-2.jpg" width="200px" height="285px"
+                                            alt="" class="border cursor-pointer"
+                                            (click)="downloadImage('assets/img/idcard/back-2.jpg')"
+                                            (mouseenter)="downloadValue = true" (mouseleave)="downloadValue = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

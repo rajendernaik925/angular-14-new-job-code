@@ -696,7 +696,6 @@
 
               <div *ngIf="activeTab === 'address'">
                 <div class="container-fluid border-0 pt-4 card ">
-                  <!-- <h5 class="mb-4 fw-bold">Address</h5> -->
 
                   <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0">Address</h5>
@@ -1618,7 +1617,7 @@
                         <ng-template #notFresher>
                           <div class="col-md-4">
                             <label class="form-label form-label-small">Job Responsibilities</label>
-                            <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="500"
+                            <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="190"
                               noFirstSpace formControlName="suitableJobDescription" class="form-control form-control-sm"
                               [readOnly]="isExperienceBoolean" placeholder="Description"></textarea>
                             <div
@@ -1830,10 +1829,49 @@
                             Company Name is required
                           </div>
                         </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Date of Joining</label>
+                          <input *ngIf="editButtonDisplay" type="text" id="start_Working_Date"
+                            class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                            formControlName="start_Working_Date" autocomplete="off" [bsConfig]="{
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MM-YYYY',
+                              maxDate: today
+                            }" bsDatepicker required readonly (bsValueChange)="calculateExperience()" />
+                          <div *ngIf="registrationForm.get('start_Working_Date')?.touched && registrationForm.get('start_Working_Date')?.invalid"
+                            class="text-danger fs-custom">
+                            Date of Joining is required
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                          <label class="form-label form-label-small">Date of Relieving</label>
+                          <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
+                            class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                            formControlName="LastOrStill_Working_Date" autocomplete="off" [bsConfig]="{
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MM-YYYY',
+                              maxDate: today
+                            }" bsDatepicker required readonly (bsValueChange)="calculateExperience()" />
+                          <div *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
+                            class="text-danger fs-custom">
+                            Date of Relieving is required
+                          </div>
+                        </div>
+
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Total Experience</label>
-                          <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience"
-                            placeholder="Experience" maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
+                          <input *ngIf="editButtonDisplay" type="text" readonly formControlName="totalExperience"
+                            placeholder="Experience"
                             class="form-control form-control-sm" />
                           <div
                             *ngIf="registrationForm.get('totalExperience')?.touched && registrationForm.get('totalExperience')?.invalid"
@@ -1841,29 +1879,59 @@
                             Total Experience is required
                           </div>
                         </div>
+
                         <div class="col-md-4">
-                          <label class="form-label form-label-small">Last Date</label>
-                          <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
-                            class="form-control form-control-sm" placeholder="dd-mm-yyyy"
-                            formControlName="LastOrStill_Working_Date" autocomplete="off" [bsConfig]="{
-                          adaptivePosition: true,
-                          showWeekNumbers: false,
-                          isAnimated: true,
-                          containerClass: colorTheme,
-                          customTodayClass: 'custom-today-class',
-                          dateInputFormat: 'DD-MM-YYYY',
-                          maxDate: today
-                        }" bsDatepicker required readonly />
-
-
-
-                          <div
-                            *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
-                            class="text-danger fs-custom">
-                            Last Date is required
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Designation</label>
+                            <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="expDesignation"
+                               class="form-control form-control-sm">
+                              <option value="">Select</option>
+                              <option *ngFor="let item of designationListOptions" [value]="item.name">
+                                {{ item.name }}
+                              </option>
+                            </select>
+                            <div *ngIf="registrationForm.get('expDesignation')?.touched && registrationForm.get('expDesignation')?.invalid"
+                              class="text-danger fs-custom">
+                              Industry Type is required
+                            </div>
                           </div>
                         </div>
+
                         <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Industry Type</label>
+                            <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="industryType"
+                               class="form-control form-control-sm">
+                              <option value="">Select</option>
+                              <option *ngFor="let item of industryTypeOptions" [value]="item.id">
+                                {{ item.name }}
+                              </option>
+                            </select>
+                            <div *ngIf="registrationForm.get('industryType')?.touched && registrationForm.get('industryType')?.invalid"
+                              class="text-danger fs-custom">
+                              Industry Type is required
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label form-label-small">Relevant to Current Role</label>
+                            <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="isRelevant"
+                               class="form-control form-control-sm">
+                              <option [ngValue]="''">Select</option>
+                              <option *ngFor="let item of yesNoOptions" [value]="item.id">
+                                {{ item.name }}
+                              </option>
+                            </select>
+                            <div *ngIf="registrationForm.get('isRelevant')?.touched && registrationForm.get('isRelevant')?.invalid"
+                              class="text-danger fs-custom">
+                              Is Relevent is required
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-4 mt-3">
                           <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0  mt-2"
                             (click)="setValidation('experienceWithCompany')">
                             Add & Save
@@ -1885,33 +1953,51 @@
                       </div>
                       <div class="col-md-9 mt-3" *ngIf="experienceArray?.length > 0 && !isFresher">
 
-                        <div class="mb-2" *ngFor="let exp of experienceArray; let i = index let isFirst = first">
+                        <div class="mb-2" *ngFor="let exp of experienceArray; let i = index let isFirst = first let isLast = last">
 
                           <div class="row d-none d-md-flex mb-2">
                             <div class="col-md-3">
-                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Company Name</label> -->
+                              <label class="form-label form-label-small">Company Name</label>
                               <input type="text" class="form-control" [value]="exp.companyName" readonly>
                             </div>
                             <div class="col-md-3">
-                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Total Experience</label> -->
-                              <input type="text" class="form-control" [value]="exp.totalExp + ' Years'" readonly>
+                              <label class="form-label form-label-small">Total Experience</label>
+                              <input type="text" class="form-control" [value]="exp.totalExp" readonly>
                             </div>
+
                             <div class="col-md-3">
-                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Last Date</label> -->
+                              <label class="form-label form-label-small">Start Date</label>
+                              <input type="text" class="form-control" [value]="exp.startingDate | date:'dd-MMM-yyyy'"
+                                readonly>
+                            </div>
+
+                            <div class="col-md-3">
+                              <label class="form-label form-label-small">Last Date</label>
                               <input type="text" class="form-control" [value]="exp.lastWorkingDate | date:'dd-MMM-yyyy'"
                                 readonly>
                             </div>
-                            <div class="col-md-3 d-flex flex-column justify-content-between" *ngIf="editButtonDisplay">
-                              <!-- <label *ngIf="isFirst" class="form-label form-label-small">Action</label> -->
-                              <i class="bi bi-trash3-fill cursor-pointer align-self-start"
-                                [class.text-muted]="experienceArray.length <= 1"
-                                [class.text-danger]="experienceArray.length > 1"
-                                [class.cursor-blocked]="experienceArray.length <= 1"
+
+                            <div class="col-md-3 mt-3">
+                              <label class="form-label form-label-small">Industry Name</label>
+                              <input type="text" class="form-control" [value]="exp.industryTypeName" readonly>
+                            </div>
+
+                            <div class="col-md-3 mt-3">
+                              <label class="form-label form-label-small">Designation Name</label>
+                              <input type="text" class="form-control" [value]="exp.expDesignation" readonly>
+                            </div>
+
+                            <div class="col-md-3 d-flex flex-column justify-content-between mt-3" *ngIf="editButtonDisplay">
+                              <!-- <label class="form-label form-label-small">Action</label> -->
+                              <!-- <i class="bi bi-trash3-fill cursor-pointer align-self-start"
                                 (click)="experienceArray.length > 1 && deleteExperience(exp.experienceMapId, i)">
-                              </i>
+                              </i> -->
+
+                              <button class="btn btn-sm btn-danger mt-4 shadow-none border-0 w-50"  (click)="deleteExperience(exp.experienceMapId, i)">Delete</button>
                             </div>
 
                           </div>
+                          <hr *ngIf="!isLast">
 
                           <!-- Mobile Card  -->
                           <div class="border rounded p-3 d-flex flex-column gap-2 d-md-none">
@@ -1921,7 +2007,7 @@
                             </div>
                             <div>
                               <strong>Total Experience:</strong><br>
-                              <input type="text" class="form-control mt-1" [value]="exp.totalExp + ' Years'" readonly>
+                              <input type="text" class="form-control mt-1" [value]="exp.totalExp" readonly>
                             </div>
                             <div>
                               <strong>Last Working Date:</strong><br>

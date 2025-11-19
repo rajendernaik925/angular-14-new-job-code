@@ -45,6 +45,7 @@ export class OnboardingDataComponent implements OnInit {
   joiningOptions: any[] = [];
   bloodGroupOptions: any[] = [];
   languageOptions: any[] = [];
+  religionOptions: any[] = [];
   relationOptions: any[] = [];
   bankOptions: any[] = [];
   yesNoOptions: any[] = [];
@@ -171,7 +172,7 @@ export class OnboardingDataComponent implements OnInit {
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
       whatsappNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       alternateMobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      nationality: ['Indian', Validators.required],
+      nationality: ['1', Validators.required],
       religion: ['', Validators.required],
       motherTongue: ['', Validators.required],
       knownLanguages: [[], Validators.required],
@@ -336,6 +337,7 @@ export class OnboardingDataComponent implements OnInit {
     this.states();
     this.bloodGroup();
     this.languages();
+    this.religion();
     this.relation();
     this.banks();
     this.loadYesNoOptions();
@@ -2375,6 +2377,18 @@ export class OnboardingDataComponent implements OnInit {
       }
     })
   }
+
+  religion() {
+      this.authService.religion().subscribe({
+        next: (res: any) => {
+          // console.log("titles : ",res)
+          this.religionOptions = res;
+        },
+        error: (err: HttpErrorResponse) => {
+          // console.log("error", err)
+        }
+      })
+    }
 
   relation() {
     this.authService.relation().subscribe({

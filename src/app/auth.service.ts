@@ -892,7 +892,7 @@ export class AuthService {
       observe: 'response' as 'response'
     };
   }
-  
+
   private jobCodeUrls: string = "http://192.168.214.225:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
@@ -1057,7 +1057,7 @@ export class AuthService {
     return this.http.get(`${this.jobCodeUrls}master/worklocation`)
   }
 
-  getHodName(reportingId:any) {
+  getHodName(reportingId: any) {
     return this.http.get(`${this.jobCodeUrls}master/reportee/${reportingId}`)
   }
 
@@ -1077,8 +1077,12 @@ export class AuthService {
     return this.http.get(`${this.jobCodeUrls}master/languages`)
   }
 
-   religion() {
+  religion() {
     return this.http.get(`${this.jobCodeUrls}master/religion`)
+  }
+
+   industryType() {
+    return this.http.get(`${this.jobCodeUrls}master/industrytypes`)
   }
 
   relation() {
@@ -1097,7 +1101,7 @@ export class AuthService {
     return this.http.get(`${this.jobCodeUrls}master/status`)
   }
 
-  deleteFamilyMember(id:any) {
+  deleteFamilyMember(id: any) {
     return this.http.delete(`${this.jobCodeUrls}hiring/deletefamily/${id}`).pipe(
       catchError(this.handleError)
     )
@@ -1340,8 +1344,8 @@ export class AuthService {
   registration(formData: FormData) {
     return this.http.post(
       `${this.jobCodeUrls}hiring/uploadfieldemployee`, formData).pipe(
-      catchError(this.handleError)
-    );
+        catchError(this.handleError)
+      );
   }
 
 

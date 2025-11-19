@@ -47,6 +47,8 @@ export class personalInfoComponent implements OnInit {
   bloodGroupOptions: any[] = [];
   languageOptions: any[] = [];
   religionOptions: any[] = [];
+  designationListOptions: any[] = [];
+  industryTypeOptions: any[] = [];
   relationOptions: any[] = [];
   bankOptions: any[] = [];
   yesNoOptions: any[] = [];
@@ -200,7 +202,11 @@ export class personalInfoComponent implements OnInit {
       joiningTime: ['', Validators.required],
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
+      isRelevant: ['', Validators.required],
+      expDesignation: ['', Validators.required],
+      industryType: ['', Validators.required],
       LastOrStill_Working_Date: ['', Validators.required],
+      start_Working_Date: ['', Validators.required],
       payslipFile1: [null, Validators.required],
       payslipFile2: [null, Validators.required],
       payslipFile3: [null, Validators.required],
@@ -333,9 +339,11 @@ export class personalInfoComponent implements OnInit {
     this.languages();
     this.religions();
     this.relation();
+    this.industryType();
     this.banks();
     this.loadYesNoOptions();
     this.status();
+    this.designation();
 
   }
 
@@ -742,7 +750,11 @@ export class personalInfoComponent implements OnInit {
               this.registrationForm.patchValue({
                 companyName: '',
                 totalExperience: '',
+                isRelevant: '',
+                expDesignation: '',
+                industryType: '',
                 LastOrStill_Working_Date: '',
+                start_Working_Date: '',
                 // currentSalary: '',
                 // expectedSalary: '',
                 // suitableJobDescription: '',
@@ -1051,7 +1063,7 @@ export class personalInfoComponent implements OnInit {
 
     if (this.isFresher) {
       // Clear validators for experience-related fields
-      ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary',
+      ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary', 'industryType', 'start_Working_Date', 'isRelevant', 'expDesignation',
         'suitableJobDescription'].forEach(field => {
           this.registrationForm.get(field)?.clearValidators();
           this.registrationForm.get(field)?.setValue('');
@@ -1062,7 +1074,7 @@ export class personalInfoComponent implements OnInit {
 
     } else {
       // Apply validators for experience fields
-      ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary',
+      ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary', 'industryType', 'start_Working_Date', 'isRelevant', 'expDesignation',
         'suitableJobDescription'].forEach(field => {
           this.registrationForm.get(field)?.setValidators(Validators.required);
         });
@@ -1569,7 +1581,7 @@ export class personalInfoComponent implements OnInit {
       }
       let isValid = true;
       const sectionData: any = {};
-      const experienceFields = ['LastOrStill_Working_Date', 'totalExperience', 'companyName'];
+      const experienceFields = ['LastOrStill_Working_Date', 'totalExperience', 'companyName', 'industryType', 'start_Working_Date', 'isRelevant', 'expDesignation'];
       experienceFields.forEach((field) => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
@@ -1587,7 +1599,11 @@ export class personalInfoComponent implements OnInit {
       const experienceData: any = {
         companyName: sectionData.companyName,
         totalExp: sectionData.totalExperience,
+        releventToPrevious: sectionData.isRelevant,
+        expDesignation: sectionData.expDesignation,
+        industryTypeId: sectionData.industryType,
         lastWorkingDate: this.datePipe.transform(sectionData.LastOrStill_Working_Date, 'yyyy-MM-dd'),
+        startingDate: this.datePipe.transform(sectionData.start_Working_Date, 'yyyy-MM-dd'),
         experienceId: this.experienceId
       };
       const experiencePayload = {
@@ -1595,6 +1611,10 @@ export class personalInfoComponent implements OnInit {
         companyName: experienceData.companyName,
         totalExp: experienceData.totalExp,
         lastWorkingDate: experienceData.lastWorkingDate,
+        releventToPrevious: experienceData.releventToPrevious,
+        industryTypeId: experienceData.industryTypeId,
+        startingDate: experienceData.startingDate,
+        expDesignation: experienceData.expDesignation,
         // jobCodeId: this.jobCodeData?.jobCodeId,
         // candidateId: this.jobCodeData?.candidateId,
         moduleId: '5'
@@ -1604,7 +1624,11 @@ export class personalInfoComponent implements OnInit {
           this.showAlert("Experience added Successfully.", 'success');
           this.loadUserData();
           this.registrationForm.get('LastOrStill_Working_Date')?.reset();
+          this.registrationForm.get('start_Working_Date')?.reset();
           this.registrationForm.get('totalExperience')?.reset();
+          this.registrationForm.get('isRelevant')?.reset('');
+          this.registrationForm.get('expDesignation')?.reset('');
+          this.registrationForm.get('industryType')?.reset('');
           this.registrationForm.get('companyName')?.reset();
         },
         error: (err: HttpErrorResponse) => {
@@ -1992,22 +2016,26 @@ export class personalInfoComponent implements OnInit {
             // this.fileInput.nativeElement.value = '';
           } else if (action === 'experience') {
             // this.loadUserData();
-            const educationArray = this.registrationForm.get('educationDetails') as FormArray;
+            // const educationArray = this.registrationForm.get('educationDetails') as FormArray;
             // this.selectedFiles = {}
             // this.payslipFile = null;
             // this.serviceLetterFile = null;
-            if (educationArray) {
-              educationArray.clear();
-              // educationArray.push(this.createEducationFormGroup());
-            }
+            // if (educationArray) {
+            //   educationArray.clear();
+            //   // educationArray.push(this.createEducationFormGroup());
+            // }
             this.registrationForm.patchValue({
               companyName: '',
-              totalExperience: '',
               LastOrStill_Working_Date: '',
-              // currentSalary: '',
-              // expectedSalary: '',
-              // suitableJobDescription: '',
+              start_Working_Date: '',
+              totalExperience: '',
+              // isRelevant: '',
+              // industryType: '',
+              // expDesignation: '',
             });
+            // this.registrationForm.get('isRelevant')?.reset('');
+            // this.registrationForm.get('industryType')?.reset('');
+            // this.registrationForm.get('expDesignation')?.reset('');
           } else if (action === 'family') {
             const educationFields = [
               'familyRelationId',
@@ -2207,6 +2235,30 @@ export class personalInfoComponent implements OnInit {
       next: (res: any) => {
         // console.log("titles : ",res)
         this.religionOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
+
+  designation() {
+    this.authService.jobTitle().subscribe({
+      next: (res) => {
+        // this.isLoading = false;
+        this.designationListOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // this.isLoading = false;
+        console.log("Error fetching managers:", err);
+      }
+    });
+  }
+
+  industryType() {
+    this.authService.industryType().subscribe({
+      next: (res: any) => {
+        this.industryTypeOptions = res;
       },
       error: (err: HttpErrorResponse) => {
         // console.log("error", err)
@@ -3027,5 +3079,73 @@ export class personalInfoComponent implements OnInit {
     this.searchEmpId = '';
     this.activeTab = 'personal';
   }
+
+  // calculateExperience() {
+  //   const start = this.registrationForm.get('start_Working_Date')?.value;
+  //   const end = this.registrationForm.get('LastOrStill_Working_Date')?.value;
+
+  //   if (!start || !end) {
+  //     this.registrationForm.patchValue({ totalExperience: '' });
+  //     return;
+  //   }
+
+  //   const startDate = new Date(start);
+  //   const endDate = new Date(end);
+
+  //   if (endDate < startDate) {
+  //     this.registrationForm.patchValue({ totalExperience: 'Invalid Dates' });
+  //     return;
+  //   }
+
+  //   let years = endDate.getFullYear() - startDate.getFullYear();
+  //   let months = endDate.getMonth() - startDate.getMonth();
+  //   let days = endDate.getDate() - startDate.getDate();
+
+  //   if (days < 0) {
+  //     months--;
+  //     days += new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+  //   }
+  //   if (months < 0) {
+  //     years--;
+  //     months += 12;
+  //   }
+
+  //   const experience = `${years} Yr ${months} Mon ${days} Days`;
+
+  //   this.registrationForm.patchValue({
+  //     totalExperience: experience
+  //   });
+  // }
+
+  calculateExperience() {
+    const start = this.registrationForm.get('start_Working_Date')?.value;
+    const end = this.registrationForm.get('LastOrStill_Working_Date')?.value;
+
+    if (!start || !end) {
+      this.registrationForm.patchValue({ totalExperience: '' });
+      return;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    let years = endDate.getFullYear() - startDate.getFullYear();
+    let months = endDate.getMonth() - startDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Convert total experience to months only
+    const totalMonths = `${years * 12 + months} Months`;
+
+    this.registrationForm.patchValue({
+      totalExperience: totalMonths
+    });
+  }
+
+
+
 
 }

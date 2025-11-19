@@ -88,30 +88,30 @@ export class ResignationApplyComponent implements OnInit {
 
   discussedOnChange(event: any) {
     const selectedValue = event.target.value;
-    if (selectedValue == 'No') {
-      Swal.fire({
-        icon: 'error',
-        title: 'Manager Discussion Required',
-        text: 'Please discuss with your manager before applying for resignation.'
-      });
-      this.resignationForm.patchValue({ discussed: '' });
-    } else {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Have you discussed this with your manager?',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Im Sure',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#198754',
-        cancelButtonColor: '#d33'
-      }).then((result) => {
-        if (!result.isConfirmed) {
-          this.resignationForm.patchValue({ discussed: '' });
-        }
-      });
-
-    }
+    console.log("selected value : ",selectedValue);
+    // if (selectedValue == 'No') {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Manager Discussion Required',
+    //     text: 'Please discuss with your manager before applying for resignation.'
+    //   });
+    //   this.resignationForm.patchValue({ discussed: '' });
+    // } else {
+    //   Swal.fire({
+    //     icon: 'warning',
+    //     title: 'Are you sure?',
+    //     text: 'Have you discussed this with your manager?',
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Yes, Im Sure',
+    //     cancelButtonText: 'Cancel',
+    //     confirmButtonColor: '#198754',
+    //     cancelButtonColor: '#d33'
+    //   }).then((result) => {
+    //     if (!result.isConfirmed) {
+    //       this.resignationForm.patchValue({ discussed: '' });
+    //     }
+    //   });
+    // }
   }
 
   modelOpen() {

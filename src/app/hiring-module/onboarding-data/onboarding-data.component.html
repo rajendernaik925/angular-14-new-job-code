@@ -520,14 +520,23 @@
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Nationality</label>
-                          <input type="text" formControlName="nationality" class="form-control form-control-sm"
-                            value="Indian" readonly />
+                          <select formControlName="nationality" disabled class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option value="1">
+                              Indian
+                            </option>
+                          </select>
                         </div>
 
                         <div class="col-md-4">
                           <label for="religion" class="form-label form-label-small">Religion</label>
-                          <input type="text" [readOnly]="isAllDataPresent" noFirstSpace formControlName="religion"
-                            maxlength="20" placeholder="Religion" class="form-control form-control-sm" stringOnly />
+                          <select formControlName="religion" [attr.disabled]="isAllDataPresent ? true : null"
+                            class="form-control form-control-sm">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of religionOptions" [value]="item.id">
+                              {{ item.name }}
+                            </option>
+                          </select>
                           <div
                             *ngIf="registrationForm.get('religion')?.touched && registrationForm.get('religion')?.invalid"
                             class="text-danger fs-custom">
@@ -3428,7 +3437,8 @@
                           <label class='form-label form-label-small'>Cost Center (D = Digit) </label>
                           <div class="d-flex align-items-center">
                             <select class="form-control form-control-sm mr-3 " formControlName="costCenter"
-                              style="width: 100px;" [attr.disabled]="isHrmsDataPresent ? true : null" (change)="costCenterChange($event)"
+                              style="width: 100px;" [attr.disabled]="isHrmsDataPresent ? true : null"
+                              (change)="costCenterChange($event)"
                               [ngClass]="{'is-invalid': registrationForm.get('costCenter')?.invalid && registrationForm.get('costCenter')?.touched}">
                               <option value="">Select </option>
                               <option *ngFor="let item of costCenterList" [value]="item.id">{{ item.name }} </option>

@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -39,6 +39,7 @@ export class InterviewScheduleComponent implements OnInit {
   pageSize = 9;
   @ViewChild('interviewDialog', { static: true }) interviewDialog!: TemplateRef<any>;
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
+  @ViewChild('AboutCandidateDetailsDialog', { static: true }) AboutCandidateDetailsDialog!: TemplateRef<any>;
   addNewRoundForm: FormGroup;
   searchQueryText: any;
   totalRecords: number = 0;
@@ -51,7 +52,10 @@ export class InterviewScheduleComponent implements OnInit {
   InterviewerError: string = ''
   // isSidebarOpen = true;
   // closeButton: boolean = true;
-  lastInterviewMode:any;
+  lastInterviewMode: any;
+  fileURL: SafeResourceUrl | null = null;
+  showPDF: boolean = false;
+  resumeFile: string | null = null;
 
 
 
@@ -529,7 +533,7 @@ export class InterviewScheduleComponent implements OnInit {
           ? res.candidateInterviewDetails[recordLength - 1].modeId
           : null;
 
-          this.lastInterviewMode = lastInterviewMode;
+        this.lastInterviewMode = lastInterviewMode;
 
         console.log("lastInterviewMode : ", lastInterviewMode);
 
@@ -557,9 +561,9 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
   getModeNameById(id: number): string {
-  const mode = this.interviewRounds.find((m: any) => m.id === id);
-  return mode ? mode.name : '';
-}
+    const mode = this.interviewRounds.find((m: any) => m.id === id);
+    return mode ? mode.name : '';
+  }
 
 
 
@@ -892,6 +896,53 @@ export class InterviewScheduleComponent implements OnInit {
 
   get endIndex(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+  }
+
+  viewDetails(employeeId: string) {
+    this.employeeId = employeeId;
+    this.isLoading = true;
+    this.authService.registeredData(employeeId).subscribe({
+      next: (res: any) => {
+        console.log("res : ", res)
+        this.isLoading = false;
+        this.candidateData = res;
+        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
+        // console.log("error : ", err)
+      }
+    })
+
+    this.dialogRef = this.dialog.open(this.AboutCandidateDetailsDialog, {
+      width: '1000px',
+      height: 'auto',
+      hasBackdrop: true
+    });
+  }
+
+  viewFile(file: any) {
+    this.dialog.closeAll();
+    if (!file) {
+      console.error("No file available for download.");
+      return;
+    }
+
+    const byteCharacters = atob(file);
+    const byteNumbers = new Array(byteCharacters?.length)
+      .fill(0)
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+    const objectURL = URL.createObjectURL(blob);
+    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+    this.showPDF = true;
+  }
+
+  closePDF() {
+    this.showPDF = false; // Hide the modal
+    this.fileURL = null; // Clear the URL
+    this.viewDetails(this.employeeId);
   }
 
 

@@ -55,6 +55,7 @@ export class OnboardingDataComponent implements OnInit {
   departmentListOptions: any[] = [];
   designationListOptions: any[] = [];
   employeeDataListOptions: any[] = [];
+  industryTypeOptions: any[] = [];
   ptStatesListOptions: any[] = [];
   salesOfficeListOptions: any[] = [];
   salesGroupListOptions: any[] = [];
@@ -220,6 +221,10 @@ export class OnboardingDataComponent implements OnInit {
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
       LastOrStill_Working_Date: ['', Validators.required],
+      isRelevant: ['', Validators.required],
+      expDesignation: ['', Validators.required],
+      industryType: ['', Validators.required],
+      start_Working_Date: ['', Validators.required],
       payslipFile1: [null, Validators.required],
       payslipFile2: [null, Validators.required],
       payslipFile3: [null, Validators.required],
@@ -338,6 +343,7 @@ export class OnboardingDataComponent implements OnInit {
     this.bloodGroup();
     this.languages();
     this.religion();
+    this.industryType();
     this.relation();
     this.banks();
     this.loadYesNoOptions();
@@ -396,8 +402,8 @@ export class OnboardingDataComponent implements OnInit {
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
-        if (res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode) {
-          // this.editButtonDisplay = false;
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.employeeId) {
+          this.editButtonDisplay = false;
           // this.InterviewStatus();
         }
 
@@ -417,6 +423,10 @@ export class OnboardingDataComponent implements OnInit {
 
         if (res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId) {
           this.costCenter(res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId);
+        }
+
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode) {
+          this.salesGroup(res?.fetchingEmployeeMoveToHrmsDTO?.salesOfficeCode);
         }
 
         if (res?.familyInformationResponseDTO) {
@@ -604,7 +614,7 @@ export class OnboardingDataComponent implements OnInit {
           this.isProfessionalDataPresent = [res?.professionalInformationDTO?.workLocationName]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
-          this.isHrmsDataPresent = [res?.fetchingEmployeeMoveToHrmsDTO?.costCenterId]
+          this.isHrmsDataPresent = [res?.fetchingEmployeeMoveToHrmsDTO?.employmentTypeName]
             .every(field => typeof field === 'string' && field.trim() !== '');
 
 
@@ -773,6 +783,10 @@ export class OnboardingDataComponent implements OnInit {
                 companyName: '',
                 totalExperience: '',
                 LastOrStill_Working_Date: '',
+                isRelevant: '',
+                start_Working_Date: '',
+                expDesignation: '',
+                industryType: '',
                 // currentSalary: '',
                 // expectedSalary: '',
                 // suitableJobDescription: '',
@@ -1089,7 +1103,7 @@ export class OnboardingDataComponent implements OnInit {
     if (this.isFresher) {
       // Clear validators for experience-related fields
       ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary',
-        'suitableJobDescription'].forEach(field => {
+        'suitableJobDescription', 'isRelevant', 'start_Working_Date', 'expDesignation', 'industryType'].forEach(field => {
           this.registrationForm.get(field)?.clearValidators();
           this.registrationForm.get(field)?.setValue('');
         });
@@ -1100,7 +1114,7 @@ export class OnboardingDataComponent implements OnInit {
     } else {
       // Apply validators for experience fields
       ['companyName', 'totalExperience', 'LastOrStill_Working_Date', 'currentSalary', 'expectedSalary',
-        'suitableJobDescription'].forEach(field => {
+        'suitableJobDescription', 'isRelevant', 'start_Working_Date', 'expDesignation', 'industryType'].forEach(field => {
           this.registrationForm.get(field)?.setValidators(Validators.required);
         });
 
@@ -1696,7 +1710,7 @@ export class OnboardingDataComponent implements OnInit {
       }
       let isValid = true;
       const sectionData: any = {};
-      const experienceFields = ['LastOrStill_Working_Date', 'totalExperience', 'companyName'];
+      const experienceFields = ['LastOrStill_Working_Date', 'totalExperience', 'companyName', 'isRelevant', 'start_Working_Date', 'expDesignation', 'industryType'];
       experienceFields.forEach((field) => {
         const control = this.registrationForm.get(field);
         if (control?.invalid) {
@@ -1714,7 +1728,11 @@ export class OnboardingDataComponent implements OnInit {
       const experienceData: any = {
         companyName: sectionData.companyName,
         totalExp: sectionData.totalExperience,
+        releventToPrevious: sectionData.isRelevant,
+        expDesignation: sectionData.expDesignation,
+        industryTypeId: sectionData.industryType,
         lastWorkingDate: this.datePipe.transform(sectionData.LastOrStill_Working_Date, 'yyyy-MM-dd'),
+        startingDate: this.datePipe.transform(sectionData.start_Working_Date, 'yyyy-MM-dd'),
         experienceId: this.experienceId
       };
       const experiencePayload = {
@@ -1722,6 +1740,10 @@ export class OnboardingDataComponent implements OnInit {
         companyName: experienceData.companyName,
         totalExp: experienceData.totalExp,
         lastWorkingDate: experienceData.lastWorkingDate,
+        releventToPrevious: experienceData.releventToPrevious,
+        industryTypeId: experienceData.industryTypeId,
+        startingDate: experienceData.startingDate,
+        expDesignation: experienceData.expDesignation,
         // jobCodeId: this.jobCodeData?.jobCodeId,
         // candidateId: this.jobCodeData?.candidateId,
         moduleId: '5'
@@ -1732,6 +1754,10 @@ export class OnboardingDataComponent implements OnInit {
           this.loadUserData();
           this.registrationForm.get('LastOrStill_Working_Date')?.reset();
           this.registrationForm.get('totalExperience')?.reset();
+          this.registrationForm.get('companyName')?.reset();
+          this.registrationForm.get('isRelevant')?.reset('');
+          this.registrationForm.get('expDesignation')?.reset('');
+          this.registrationForm.get('industryType')?.reset('');
           this.registrationForm.get('companyName')?.reset();
         },
         error: (err: HttpErrorResponse) => {
@@ -2180,6 +2206,10 @@ export class OnboardingDataComponent implements OnInit {
               companyName: '',
               totalExperience: '',
               LastOrStill_Working_Date: '',
+              isRelevant: '',
+              start_Working_Date: '',
+              expDesignation: '',
+              industryType: '',
               // currentSalary: '',
               // expectedSalary: '',
               // suitableJobDescription: '',
@@ -2379,16 +2409,16 @@ export class OnboardingDataComponent implements OnInit {
   }
 
   religion() {
-      this.authService.religion().subscribe({
-        next: (res: any) => {
-          // console.log("titles : ",res)
-          this.religionOptions = res;
-        },
-        error: (err: HttpErrorResponse) => {
-          // console.log("error", err)
-        }
-      })
-    }
+    this.authService.religion().subscribe({
+      next: (res: any) => {
+        // console.log("titles : ",res)
+        this.religionOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
+  }
 
   relation() {
     this.authService.relation().subscribe({
@@ -2539,6 +2569,17 @@ export class OnboardingDataComponent implements OnInit {
         console.log("Error fetching managers:", err);
       }
     });
+  }
+
+  industryType() {
+    this.authService.industryType().subscribe({
+      next: (res: any) => {
+        this.industryTypeOptions = res;
+      },
+      error: (err: HttpErrorResponse) => {
+        // console.log("error", err)
+      }
+    })
   }
 
   ptStates() {
@@ -3485,6 +3526,70 @@ export class OnboardingDataComponent implements OnInit {
       }
     })
   }
+
+  calculateExperience() {
+    const start = this.registrationForm.get('start_Working_Date')?.value;
+    const end = this.registrationForm.get('LastOrStill_Working_Date')?.value;
+
+    if (!start || !end) {
+      this.registrationForm.patchValue({ totalExperience: '' });
+      return;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    let years = endDate.getFullYear() - startDate.getFullYear();
+    let months = endDate.getMonth() - startDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Convert total experience to months only
+    const totalMonths = `${years * 12 + months}`;
+
+    this.registrationForm.patchValue({
+      totalExperience: totalMonths
+    });
+  }
+
+  onIsRelevantChange(fieldName: string) {
+    const isRelevant = this.registrationForm.get(fieldName);
+    const value = isRelevant?.value;
+    console.log("isRelevant value : ", value);
+    let selectedValue = value;
+
+    if (value == 1) {
+      // YES → make isRelevant required
+      isRelevant?.setValidators([Validators.required]);
+    } else {
+      // NO → remove required validator
+      isRelevant?.clearValidators();
+      this.registrationForm.patchValue({ isRelevant: '0' });
+      console.log(`field name : ${fieldName} & value : `, this.registrationForm.get(fieldName).value);
+      selectedValue = this.registrationForm.get(fieldName).value
+
+    }
+
+    if (fieldName === 'familyIsExpired') {
+      if (selectedValue == 1) {
+        // Yes → Inactive
+        this.registrationForm.get('familyStatus')?.setValue(2);
+      } else if (selectedValue == 0) {
+        // No → Active
+        this.registrationForm.get('familyStatus')?.setValue(1);
+      } else {
+        this.registrationForm.get('familyStatus')?.setValue('');
+      }
+
+    }
+
+
+    isRelevant?.updateValueAndValidity();
+  }
+
 
 }
 

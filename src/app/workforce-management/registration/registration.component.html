@@ -137,9 +137,8 @@
                       <label for="state" class="form-label form-label-small">
                         State <span class="text-danger">*</span>
                       </label>
-                      <select  formControlName="state"
-                        [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
-                        (change)="onStateChange($event)"
+                      <select formControlName="state" [attr.disabled]="isAllDataPresent ? true : null"
+                        class="form-control form-control-sm" (change)="onStateChange($event)"
                         [ngClass]="{'is-invalid': registrationForm.get('state')?.touched && registrationForm.get('state')?.invalid}">
                         <option value="">Select state</option>
                         <option *ngFor="let state of indianStates" [value]="state?.id">{{ state?.name }}</option>
@@ -152,8 +151,8 @@
                     <div class="mb-3">
                       <label for="city" class="form-label form-label-small">City <span
                           class="text-danger">*</span></label>
-                      <select formControlName="city"
-                        [attr.disabled]="isAllDataPresent ? true : null" class="form-control form-control-sm"
+                      <select formControlName="city" [attr.disabled]="isAllDataPresent ? true : null"
+                        class="form-control form-control-sm"
                         [ngClass]="{'is-invalid': registrationForm.get('city')?.touched && registrationForm.get('city')?.invalid}">
                         <option *ngIf="indianCities.length" value="">Select City</option>
                         <option *ngIf="!indianCities.length" value="">Please select state first</option>
@@ -201,7 +200,7 @@
                       <option value="2">Office</option>
                     </select>
                   </div> -->
-                  <div class="col-md-3">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label class="d-block custom-text">Are you a Fresher or Experienced?</label>
                       <div class="form-check form-check-inline">
@@ -218,8 +217,20 @@
                     </div>
                   </div>
 
+
+                  <div *ngIf="!isAllDataPresent" class="col-md-1 mt-3">
+                    <div *ngIf="isFresher">
+                      <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
+                        (click)="setValidation('experience')">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+
+
+
                 </div>
-                <div *ngIf="!isAllDataPresent" class="row">
+                <!-- <div *ngIf="!isAllDataPresent" class="row">
                   <div *ngIf="isFresher" class="col">
                     <div class="">
                       <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
@@ -228,7 +239,16 @@
                       </button>
                     </div>
                   </div>
-                </div>
+                </div> -->
+                <!-- <div *ngIf="!isAllDataPresent" class="d-flex justify-content-center">
+                  <div *ngIf="isFresher">
+                    <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
+                      (click)="setValidation('experience')">
+                      Submit
+                    </button>
+                  </div>
+                </div> -->
+
                 <hr *ngIf="!isFresher" class="custom-hr mt-2 scale-in-hor-left" />
                 <div *ngIf="!isFresher">
                   <div class="row mb-2 scale-in-ver-top">

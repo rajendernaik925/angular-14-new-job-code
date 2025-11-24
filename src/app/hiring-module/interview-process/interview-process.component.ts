@@ -454,10 +454,6 @@ export class InterviewProcessComponent implements OnInit {
         console.log("res : ", res)
         this.isLoading = false;
         this.candidateData = res;
-        console.log("data : ", this.candidateData.candidatePersonalInformationDetails?.designationName)
-        console.log("data : ", this.candidateData.candidatePersonalInformationDetails?.designationId)
-        console.log("data : ", this.candidateData.candidatePersonalInformationDetails?.departmentName)
-        console.log("data : ", this.candidateData.candidatePersonalInformationDetails?.departmentId)
         this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null; this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
         this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
         this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;

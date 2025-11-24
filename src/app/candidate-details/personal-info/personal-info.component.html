@@ -101,7 +101,12 @@
             <hr>
             <h6 class="fw-bold text-dark ps-2 mb-2">Account</h6>
             <div class="px-2 small text-uppercase my-3">
-              <i class="bi bi-person-circle mr-1 mb-3"></i> {{ jobCodeData?.name || 'Rajender Naik' }}
+              <span class="name-ellipsis"
+                [title]="loadedData?.candidatePersonalInformationDetails?.firstName || 'Rajender Nayak'">
+                <i class="bi bi-person-circle mr-1 mb-3"></i> {{
+                (loadedData?.candidatePersonalInformationDetails?.firstName || 'Rajender Nayak') }}
+              </span>
+
               <br>
               <a class="text-danger small mt-3" role="button" (click)="logout()">
                 <i class="bi bi-box-arrow-right mr-1"></i> Log Out
@@ -1843,12 +1848,13 @@
                               dateInputFormat: 'DD-MM-YYYY',
                               maxDate: today
                             }" bsDatepicker required readonly (bsValueChange)="calculateExperience()" />
-                          <div *ngIf="registrationForm.get('start_Working_Date')?.touched && registrationForm.get('start_Working_Date')?.invalid"
+                          <div
+                            *ngIf="registrationForm.get('start_Working_Date')?.touched && registrationForm.get('start_Working_Date')?.invalid"
                             class="text-danger fs-custom">
                             Date of Joining is required
                           </div>
                         </div>
-                        
+
                         <div class="col-md-4">
                           <label class="form-label form-label-small">Date of Relieving</label>
                           <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
@@ -1862,17 +1868,17 @@
                               dateInputFormat: 'DD-MM-YYYY',
                               maxDate: today
                             }" bsDatepicker required readonly (bsValueChange)="calculateExperience()" />
-                          <div *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
+                          <div
+                            *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
                             class="text-danger fs-custom">
                             Date of Relieving is required
                           </div>
                         </div>
 
                         <div class="col-md-4">
-                          <label class="form-label form-label-small">Total Experience</label>
+                          <label class="form-label form-label-small">Experience (Months)</label>
                           <input *ngIf="editButtonDisplay" type="text" readonly formControlName="totalExperience"
-                            placeholder="Experience"
-                            class="form-control form-control-sm" />
+                            placeholder="Experience" class="form-control form-control-sm" />
                           <div
                             *ngIf="registrationForm.get('totalExperience')?.touched && registrationForm.get('totalExperience')?.invalid"
                             class="text-danger fs-custom">
@@ -1884,13 +1890,14 @@
                           <div class="mb-3">
                             <label class="form-label form-label-small">Designation</label>
                             <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="expDesignation"
-                               class="form-control form-control-sm">
+                              class="form-control form-control-sm">
                               <option value="">Select</option>
                               <option *ngFor="let item of designationListOptions" [value]="item.name">
                                 {{ item.name }}
                               </option>
                             </select>
-                            <div *ngIf="registrationForm.get('expDesignation')?.touched && registrationForm.get('expDesignation')?.invalid"
+                            <div
+                              *ngIf="registrationForm.get('expDesignation')?.touched && registrationForm.get('expDesignation')?.invalid"
                               class="text-danger fs-custom">
                               Industry Type is required
                             </div>
@@ -1901,13 +1908,14 @@
                           <div class="mb-3">
                             <label class="form-label form-label-small">Industry Type</label>
                             <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="industryType"
-                               class="form-control form-control-sm">
+                              class="form-control form-control-sm">
                               <option value="">Select</option>
                               <option *ngFor="let item of industryTypeOptions" [value]="item.id">
                                 {{ item.name }}
                               </option>
                             </select>
-                            <div *ngIf="registrationForm.get('industryType')?.touched && registrationForm.get('industryType')?.invalid"
+                            <div
+                              *ngIf="registrationForm.get('industryType')?.touched && registrationForm.get('industryType')?.invalid"
                               class="text-danger fs-custom">
                               Industry Type is required
                             </div>
@@ -1918,19 +1926,20 @@
                           <div class="mb-3">
                             <label class="form-label form-label-small">Relevant to Current Role</label>
                             <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="isRelevant"
-                               class="form-control form-control-sm">
+                              (change)="onIsRelevantChange('isRelevant')" class="form-control form-control-sm">
                               <option [ngValue]="''">Select</option>
                               <option *ngFor="let item of yesNoOptions" [value]="item.id">
                                 {{ item.name }}
                               </option>
                             </select>
-                            <div *ngIf="registrationForm.get('isRelevant')?.touched && registrationForm.get('isRelevant')?.invalid"
+                            <div
+                              *ngIf="registrationForm.get('isRelevant')?.touched && registrationForm.get('isRelevant')?.invalid"
                               class="text-danger fs-custom">
                               Is Relevent is required
                             </div>
                           </div>
                         </div>
-                        
+
                         <div class="col-md-4 mt-3">
                           <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0  mt-2"
                             (click)="setValidation('experienceWithCompany')">
@@ -1953,7 +1962,8 @@
                       </div>
                       <div class="col-md-9 mt-3" *ngIf="experienceArray?.length > 0 && !isFresher">
 
-                        <div class="mb-2" *ngFor="let exp of experienceArray; let i = index let isFirst = first let isLast = last">
+                        <div class="mb-2"
+                          *ngFor="let exp of experienceArray; let i = index let isFirst = first let isLast = last">
 
                           <div class="row d-none d-md-flex mb-2">
                             <div class="col-md-3">
@@ -1961,7 +1971,7 @@
                               <input type="text" class="form-control" [value]="exp.companyName" readonly>
                             </div>
                             <div class="col-md-3">
-                              <label class="form-label form-label-small">Total Experience</label>
+                              <label class="form-label form-label-small">Experience (Months)</label>
                               <input type="text" class="form-control" [value]="exp.totalExp" readonly>
                             </div>
 
@@ -1987,13 +1997,15 @@
                               <input type="text" class="form-control" [value]="exp.expDesignation" readonly>
                             </div>
 
-                            <div class="col-md-3 d-flex flex-column justify-content-between mt-3" *ngIf="editButtonDisplay">
+                            <div class="col-md-3 d-flex flex-column justify-content-between mt-3"
+                              *ngIf="editButtonDisplay">
                               <!-- <label class="form-label form-label-small">Action</label> -->
                               <!-- <i class="bi bi-trash3-fill cursor-pointer align-self-start"
                                 (click)="experienceArray.length > 1 && deleteExperience(exp.experienceMapId, i)">
                               </i> -->
 
-                              <button class="btn btn-sm btn-danger mt-4 shadow-none border-0 w-50"  (click)="deleteExperience(exp.experienceMapId, i)">Delete</button>
+                              <button class="btn btn-sm btn-danger mt-4 shadow-none border-0 w-50"
+                                (click)="deleteExperience(exp.experienceMapId, i)">Delete</button>
                             </div>
 
                           </div>
@@ -2006,13 +2018,26 @@
                               <input type="text" class="form-control mt-1" [value]="exp.companyName" readonly>
                             </div>
                             <div>
-                              <strong>Total Experience:</strong><br>
+                              <strong>Total Experience (In Months):</strong><br>
                               <input type="text" class="form-control mt-1" [value]="exp.totalExp" readonly>
+                            </div>
+                            <div>
+                              <strong>Start Date:</strong><br>
+                              <input type="text" class="form-control mt-1"
+                                [value]="exp.startingDate | date:'dd-MMM-yyyy'" readonly>
                             </div>
                             <div>
                               <strong>Last Working Date:</strong><br>
                               <input type="text" class="form-control mt-1"
                                 [value]="exp.lastWorkingDate | date:'dd-MMM-yyyy'" readonly>
+                            </div>
+                            <div>
+                              <strong>Industry Name:</strong><br>
+                              <input type="text" class="form-control mt-1" [value]="exp.industryTypeName" readonly>
+                            </div>
+                            <div>
+                              <strong>Designation Name:</strong><br>
+                              <input type="text" class="form-control mt-1" [value]="exp.expDesignation" readonly>
                             </div>
                             <div *ngIf="editButtonDisplay">
                               <button class="btn btn-light btn-sm w-100 mt-2"
@@ -2340,7 +2365,7 @@
                     </div>
                   </div>
                   <div class="scroll-container">
-                    <div class="row mb-4">
+                    <div *ngIf="editButtonDisplay" class="row mb-4">
                       <div class="col-md-3 fw-bold-d">Family Member Details</div>
                       <div class="col-md-9 row g-3">
                         <div class="col-md-4">
@@ -2440,7 +2465,8 @@
 
                         <div class="col-md-4">
                           <label for="familyIsdependent" class="form-label form-label-small">Is Dependent</label>
-                          <select formControlName="familyIsdependent" class="form-control form-control-sm">
+                          <select formControlName="familyIsdependent" class="form-control form-control-sm"
+                            (change)="onIsRelevantChange('familyIsdependent')">
                             <option value="">Select</option>
                             <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
@@ -2454,7 +2480,7 @@
                         <div class="col-md-4">
                           <label for="familyIsExpired" class="form-label form-label-small">Is Expired</label>
                           <select formControlName="familyIsExpired" class="form-control form-control-sm"
-                            (change)="onIsExpiredChange($event)">
+                            (change)="onIsRelevantChange('familyIsExpired')">
                             <option value="">Select</option>
                             <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
@@ -2466,7 +2492,8 @@
                         </div>
                         <div class="col-md-4 mb-3">
                           <label for="familyIsPFNominee" class="form-label form-label-small">Is PF Nominee</label>
-                          <select formControlName="familyIsPFNominee" class="form-control form-control-sm">
+                          <select formControlName="familyIsPFNominee" class="form-control form-control-sm"
+                            (change)="onIsRelevantChange('familyIsPFNominee')">
                             <option value="">Select</option>
                             <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
@@ -2480,7 +2507,8 @@
                         <div class="col-md-4">
                           <label for="familyIsGraduityNominee" class="form-label form-label-small">Is Graduity
                             Nominee</label>
-                          <select formControlName="familyIsGraduityNominee" class="form-control form-control-sm">
+                          <select formControlName="familyIsGraduityNominee" class="form-control form-control-sm"
+                            (change)="onIsRelevantChange('familyIsGraduityNominee')">
                             <option value="">Select</option>
                             <option *ngFor="let title of yesNoOptions" [value]="title?.id">{{ title?.name }}</option>
                           </select>
@@ -2529,7 +2557,7 @@
                       </div>
                     </div>
 
-                    <div class="row mb-4">
+                    <div *ngIf="editButtonDisplay" class="row mb-4">
                       <div class="col-md-3 fw-semibold">
                         Family Member ID Proof
                         <p class="mb-1 text-muted">Upload only PDF files. File size must be 5MB or less.</p>
@@ -2615,7 +2643,7 @@
                       </div>
                     </div>
 
-                    <div class="d-flex justify-content-end mr-4">
+                    <div *ngIf="editButtonDisplay" class="d-flex justify-content-end mr-4">
                       <button type="submit" class="btn custom-bg text-white  btn-sm shadow-none border-0"
                         (click)="setValidation('family')">
                         Save & Add
@@ -2632,7 +2660,7 @@
                       </button> -->
                     </div>
                     <div *ngFor="let member of FamilyInfoData; let i = index" class="mb-3">
-                      <hr>
+                      <hr *ngIf="editButtonDisplay">
                       <div class="row mb-4">
 
                         <div class="col-md-3 fw-semibold">
@@ -2728,7 +2756,7 @@
                           </div>
 
                           <!-- Delete Button -->
-                          <div class="col-md-12 mt-2 d-flex justify-content-start">
+                          <div *ngIf="editButtonDisplay" class="col-md-12 mt-2 d-flex justify-content-start">
                             <button type="button" class="btn btn-sm btn-danger"
                               (click)="deleteFamilyMember(member.sno)">
                               <i class="bi bi-trash3-fill"></i> Delete
@@ -2935,207 +2963,238 @@
                     </div>
                   </div>
                   <div class="side-scroll-container">
-                    <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    <div
+                      *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100' && !loadedData.fetchingEmployeeMoveToHrmsDTO?.employeeId else notCompleted"
                       class="alert alert-success text-center mt-3">
                       <h5>✅ All sections have been successfully completed</h5>
                       Please report on your joining date as per your offer letter. Verification is in progress, and
                       you’ll be notified soon.
                     </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                    <ng-template #notCompleted>
+                      <div class="alert alert-success text-center mt-3 p-3">
+                        <h5>🎉 Congratulations!</h5>
+                        <p class="mb-1">
+                          Your Employee ID has been successfully generated.
+                        </p>
+
+                        <h4 class="fw-bold custom-text">
+                          Employee ID: {{ loadedData.fetchingEmployeeMoveToHrmsDTO?.employeeId }}
+                        </h4>
+
+                        <p class="text-muted mt-2">
+                          Please click the button below to log in and continue.
+                        </p>
+
+                        <button class="btn custom-bg text-white btn-sm mt-2 border-0 shadow-none"
+                          (click)="goToIConnectPortal()">
+                          Go to IConnect Portal
+                        </button>
+                      </div>
+                    </ng-template>
+
+
+                    <div *ngIf="!loadedData.fetchingEmployeeMoveToHrmsDTO?.employeeId">
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
                           }"></i>
-                          Personal Info
-                        </div>
-                        <a (click)="setActiveSection('personal')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                            Personal Info
+                          </div>
+                          <a (click)="setActiveSection('personal')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.personalInfo === '12.5',
                           'text-white btn btn-sm custom-bg': loadedData?.candidateTrackingDTO?.personalInfo !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.personalInfo === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.personalInfo === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.address === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.address !== '12.5'
                           }"></i>
-                          Address
-                        </div>
-                        <a (click)="setActiveSection('address')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                            Address
+                          </div>
+                          <a (click)="setActiveSection('address')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.address === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.address !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.address === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.address === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.education === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.education !== '12.5'
                           }"></i>
-                          Education
-                        </div>
-                        <a (click)="setActiveSection('education')" class="text-decoration-none cursor-pointer"
-                          [ngClass]="{
+                            Education
+                          </div>
+                          <a (click)="setActiveSection('education')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.education === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.education !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.education === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.education === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.document === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.document !== '12.5'
                           }"></i>
-                          Documents
-                        </div>
-                        <a (click)="setActiveSection('documents')" class="text-decoration-none cursor-pointer"
-                          [ngClass]="{
+                            Documents
+                          </div>
+                          <a (click)="setActiveSection('documents')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.document === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.document !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.document === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.document === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.experience === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.experience !== '12.5'
                           }"></i>
-                          Working Experience
-                        </div>
-                        <a (click)="setActiveSection('experience')" class="text-decoration-none cursor-pointer"
-                          [ngClass]="{
+                            Working Experience
+                          </div>
+                          <a (click)="setActiveSection('experience')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.experience === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.experience !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.experience === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.experience === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.emergency === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.emergency !== '12.5'
                           }"></i>
-                          Emergency Details
-                        </div>
-                        <a (click)="setActiveSection('emergency')" class="text-decoration-none cursor-pointer"
-                          [ngClass]="{
+                            Emergency Details
+                          </div>
+                          <a (click)="setActiveSection('emergency')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.emergency === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.emergency !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.emergency === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.emergency === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.bank === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.bank !== '12.5'
                           }"></i>
-                          Bank Information
-                        </div>
-                        <a (click)="setActiveSection('bank')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                            Bank Information
+                          </div>
+                          <a (click)="setActiveSection('bank')" class="text-decoration-none cursor-pointer" [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.bank === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.bank !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.bank === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.bank === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.candidateTrackingDTO?.family === '12.5',
                             'bi bi-info-circle-fill text-danger': loadedData?.candidateTrackingDTO?.family !== '12.5'
                           }"></i>
-                          Family Information
-                        </div>
-                        <a (click)="setActiveSection('family')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                            Family Information
+                          </div>
+                          <a (click)="setActiveSection('family')" class="text-decoration-none cursor-pointer" [ngClass]="{
                           'custom-text': loadedData?.candidateTrackingDTO?.family === '12.5',
                           'text-white custom-bg btn btn-sm': loadedData?.candidateTrackingDTO?.family !== '12.5'
                         }">
-                          {{ loadedData?.candidateTrackingDTO?.family === '12.5' ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.candidateTrackingDTO?.family === '12.5' ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.agreementFileDTO?.sno,
                             'bi bi-info-circle-fill text-danger': !loadedData?.agreementFileDTO?.sno
                           }"></i>
-                          Agreemet Documentation <span class="text-warning">(Optional)</span>
-                        </div>
-                        <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer"
-                          [ngClass]="{
+                            Agreemet Documentation <span class="text-warning">(Optional)</span>
+                          </div>
+                          <a (click)="setActiveSection('agreement')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.agreementFileDTO?.sno,
                           'text-white custom-bg btn btn-sm': !loadedData?.agreementFileDTO?.sno
                         }">
-                          {{ loadedData?.agreementFileDTO?.sno ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.agreementFileDTO?.sno ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="list-group border-0">
-                      <div
-                        class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
-                        <div>
-                          <i class="mr-2" [ngClass]="{
+                      <div class="list-group border-0">
+                        <div
+                          class="list-group-item border-0 d-flex justify-content-between align-items-center mt-2 filled-bg">
+                          <div>
+                            <i class="mr-2" [ngClass]="{
                             'bi bi-check-circle-fill text-success': loadedData?.medicalDocumentDTO?.sno,
                             'bi bi-info-circle-fill text-danger': !loadedData?.medicalDocumentDTO?.sno
                           }"></i>
-                          Medical Reports <span class="text-warning">(Optional)</span>
-                        </div>
-                        <a (click)="setActiveSection('medical')" class="text-decoration-none cursor-pointer" [ngClass]="{
+                            Medical Reports <span class="text-warning">(Optional)</span>
+                          </div>
+                          <a (click)="setActiveSection('medical')" class="text-decoration-none cursor-pointer"
+                            [ngClass]="{
                           'custom-text': loadedData?.medicalDocumentDTO?.sno,
                           'text-white custom-bg btn btn-sm': !loadedData?.medicalDocumentDTO?.sno
                         }">
-                          {{ loadedData?.medicalDocumentDTO?.sno ? 'View' : 'Add' }}
-                        </a>
+                            {{ loadedData?.medicalDocumentDTO?.sno ? 'View' : 'Add' }}
+                          </a>
+                        </div>
                       </div>
                     </div>
+
+
 
 
 

@@ -205,8 +205,8 @@ export class personalInfoComponent implements OnInit {
       isRelevant: ['', Validators.required],
       expDesignation: ['', Validators.required],
       industryType: ['', Validators.required],
-      LastOrStill_Working_Date: ['', Validators.required],
       start_Working_Date: ['', Validators.required],
+      LastOrStill_Working_Date: ['', Validators.required],
       payslipFile1: [null, Validators.required],
       payslipFile2: [null, Validators.required],
       payslipFile3: [null, Validators.required],
@@ -324,9 +324,9 @@ export class personalInfoComponent implements OnInit {
       this.loadUserData();
     }
 
-    if (this.empId) {
-      this.loadUserData();
-    }
+    // if (this.empId) {
+    //   this.loadUserData();
+    // }
 
     this.title();
     this.gender();
@@ -407,9 +407,9 @@ export class personalInfoComponent implements OnInit {
         if (this.loadedData?.candidateTrackingDTO?.totalPercentage === '100' && !this.loadedData?.candidateInterviewDetails?.length) {
           // this.completedStatus();
         }
-        if (this.loadedData?.candidateInterviewDetails?.length) {
-          // this.editButtonDisplay = false;
-          // this.InterviewStatus();
+        if (res?.fetchingEmployeeMoveToHrmsDTO?.employeeId) {
+          this.editButtonDisplay = false;
+          this.InterviewStatus(res?.fetchingEmployeeMoveToHrmsDTO?.employeeId);
         }
 
         if (res?.familyInformationResponseDTO) {
@@ -2748,35 +2748,123 @@ export class personalInfoComponent implements OnInit {
     this.alertMessage = null;
   }
 
-  InterviewStatus() {
+  // InterviewStatus(empId: any) {
+  //   Swal.fire({
+  //     html: `
+
+  //     <h4 class="mb-2 fw-bold">🎉 Congratulations! 🎉</h4>
+
+  //     <p style="font-size:15px; margin-bottom:6px;">
+  //       Your Employee ID has been successfully generated.
+  //     </p>
+
+  //     <h3 class="fw-bold" style="margin:10px 0; color:#0072BC;">
+  //       ${empId}
+  //     </h3>
+
+  //     <p class="text-muted" style="font-size:14px;">
+  //       You can now log in to the <b>IConnect Portal</b> using this Employee ID.
+  //       <br>
+  //       Wishing you an exciting and successful journey ahead! 🚀
+  //     </p>
+  //   `,
+  //     showCancelButton: false,
+  //     confirmButtonText: 'Go to IConnect Portal',
+  //     customClass: {
+  //       popup: 'p-3 rounded-4',
+  //       htmlContainer: 'text-center',
+  //       confirmButton: 'btn btn-success btn-sm shadow-none w-100'
+  //     },
+  //     buttonsStyling: false,
+  //     width: '480px',
+  //     backdrop: true
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       window.open('https://sso.heterohealthcare.com/iconnect/#/dashboard', '_blank');
+  //     }
+  //   });
+  // }
+
+  InterviewStatus(empId: any) {
     Swal.fire({
       html: `
-        <div class="mb-3">
-          <img src="assets/img/job-code/document-gif.gif" alt="delete" style="width:60px; height:60px;" />
+      <div 
+        class="p-3 rounded-4 text-center"
+        style="
+          background: url('/mnt/data/6bb9011a-fe66-43f1-9b04-3116edfdfcd6.png');
+          background-size: cover;
+          background-position: center;
+          border-radius: 20px;
+          position: relative;
+          overflow: hidden;
+          color: #fff;
+        "
+      >
+        <!-- DARK OVERLAY -->
+        <div style="
+          position:absolute;
+          inset:0;
+          background: rgba(0,0,0,0.65);
+          backdrop-filter: blur(2px);
+        "></div>
+
+        <!-- CONTENT ABOVE OVERLAY -->
+        <div style="position: relative; z-index: 2;">
+          
+          <h4 class="mb-2 fw-bold" style="color:#fff;">🎉 Congratulations! 🎉</h4>
+
+          <p style="font-size:15px; margin-bottom:6px; color:#eee;">
+            Your Employee ID has been successfully generated.
+          </p>
+
+          <h3 class="fw-bold" style="margin:10px 0; color:#4da3ff;">
+            ${empId}
+          </h3>
+
+          <p style="font-size:14px; color:#ddd;">
+            You can now log in to the <b style="color:#fff;">IConnect Portal</b> using this Employee ID.
+            <br>
+            Wishing you an exciting and successful journey ahead! 🚀
+          </p>
         </div>
-        <h5 class="mb-2" style="font-weight: bold;">Interview Process Started!</h5>
-        <p class="text-muted mb-0" style="font-size: 14px;">
-        Your interview has started. Please stay updated and be available as per the schedule. Updates will follow via email.
-        </p>
-      `,
+      </div>
+    `,
+
+      // ✅ Buttons
       showCancelButton: true,
-      confirmButtonText: 'Track Interview Status',
-      cancelButtonText: 'Close',
+      confirmButtonText: 'Proceed to IConnect',
+      cancelButtonText: 'Cancel and Close',
+
+      // Styling
       customClass: {
-        popup: 'p-3 rounded-4',
-        htmlContainer: 'text-center',
-        confirmButton: 'btn btn-primary btn-sm shadow-none w-100 mb-2',
-        cancelButton: 'btn btn-outline-secondary btn-sm shadow-none'
+        popup: 'p-0 border-0 bg-transparent shadow-none',
+        confirmButton: 'btn btn-success btn-sm shadow-none mt-3 mr-3',
+        cancelButton: 'btn btn-danger btn-sm shadow-none  mt-3'
       },
       buttonsStyling: false,
-      width: '550px',
+
+      width: '480px',
+
+      // ✅ Disable close on outside click
+      allowOutsideClick: false,
+      allowEscapeKey: false,
       backdrop: true
     }).then((result) => {
       if (result.isConfirmed) {
+        window.open('https://sso.heterohealthcare.com/iconnect/#/login', '_blank');
+      } else {
         this.setActiveSection('status');
       }
+      // Cancel closes automatically
     });
   }
+
+  goToIConnectPortal() {
+    window.open('https://sso.heterohealthcare.com/iconnect/#/login', '_blank');
+  }
+
+
+
 
   completedStatus() {
     Swal.fire({
@@ -3080,43 +3168,6 @@ export class personalInfoComponent implements OnInit {
     this.activeTab = 'personal';
   }
 
-  // calculateExperience() {
-  //   const start = this.registrationForm.get('start_Working_Date')?.value;
-  //   const end = this.registrationForm.get('LastOrStill_Working_Date')?.value;
-
-  //   if (!start || !end) {
-  //     this.registrationForm.patchValue({ totalExperience: '' });
-  //     return;
-  //   }
-
-  //   const startDate = new Date(start);
-  //   const endDate = new Date(end);
-
-  //   if (endDate < startDate) {
-  //     this.registrationForm.patchValue({ totalExperience: 'Invalid Dates' });
-  //     return;
-  //   }
-
-  //   let years = endDate.getFullYear() - startDate.getFullYear();
-  //   let months = endDate.getMonth() - startDate.getMonth();
-  //   let days = endDate.getDate() - startDate.getDate();
-
-  //   if (days < 0) {
-  //     months--;
-  //     days += new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
-  //   }
-  //   if (months < 0) {
-  //     years--;
-  //     months += 12;
-  //   }
-
-  //   const experience = `${years} Yr ${months} Mon ${days} Days`;
-
-  //   this.registrationForm.patchValue({
-  //     totalExperience: experience
-  //   });
-  // }
-
   calculateExperience() {
     const start = this.registrationForm.get('start_Working_Date')?.value;
     const end = this.registrationForm.get('LastOrStill_Working_Date')?.value;
@@ -3138,14 +3189,46 @@ export class personalInfoComponent implements OnInit {
     }
 
     // Convert total experience to months only
-    const totalMonths = `${years * 12 + months} Months`;
+    const totalMonths = `${years * 12 + months}`;
 
     this.registrationForm.patchValue({
       totalExperience: totalMonths
     });
   }
 
+  onIsRelevantChange(fieldName: string) {
+    const isRelevant = this.registrationForm.get(fieldName);
+    const value = isRelevant?.value;
+    console.log("isRelevant value : ", value);
+    let selectedValue = value;
+
+    if (value == 1) {
+      // YES → make isRelevant required
+      isRelevant?.setValidators([Validators.required]);
+    } else {
+      // NO → remove required validator
+      isRelevant?.clearValidators();
+      this.registrationForm.patchValue({ isRelevant: '0' });
+      console.log(`field name : ${fieldName} & value : `, this.registrationForm.get(fieldName).value);
+      selectedValue = this.registrationForm.get(fieldName).value
+
+    }
+
+    if (fieldName === 'familyIsExpired') {
+      if (selectedValue == 1) {
+        // Yes → Inactive
+        this.registrationForm.get('familyStatus')?.setValue(2);
+      } else if (selectedValue == 0) {
+        // No → Active
+        this.registrationForm.get('familyStatus')?.setValue(1);
+      } else {
+        this.registrationForm.get('familyStatus')?.setValue('');
+      }
+
+    }
 
 
+    isRelevant?.updateValueAndValidity();
+  }
 
 }

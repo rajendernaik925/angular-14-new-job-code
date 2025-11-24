@@ -45,6 +45,7 @@
                     [ngClass]="{'text-center': col.center}">
                     {{ col.label }}
                   </th>
+                  <!-- <th class="small-header sticky-col text-center">Actions</th> -->
                 </tr>
               </thead>
               <tbody *ngIf="rows.length > 0; else noData">
@@ -80,6 +81,11 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
+
+                        <button class="border-none bg-info text-white custom-action-btn px-2 mr-2"
+                          (click)="viewDetails(row.employeeid)">
+                          View
+                        </button>
                         <button *ngIf="row.status === 'Pending'; else viewBtn"
                           class="border-none bg-success text-white custom-action-btn px-2"
                           (click)="handleAction(row.employeeid)">
@@ -89,7 +95,7 @@
                         <ng-template #viewBtn>
                           <button class="border-none custom-bg text-white custom-action-btn px-2"
                             (click)="viewAction(row.employeeid)">
-                            View
+                            Interview
                           </button>
                         </ng-template>
                       </ng-container>
@@ -104,6 +110,12 @@
                       </ng-template>
                     </ng-template>
                   </td>
+                  <!-- <td class="small-header">
+                    <button class="border-none custom-bg text-white custom-action-btn px-2"
+                      >
+                      Details
+                    </button>
+                  </td> -->
                 </tr>
               </tbody>
 
@@ -172,14 +184,7 @@
   </div>
 </div>
 
-<!-- loader -->
-<div class="loader attDnceLoadr" *ngIf="">
-  <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  </div>
-</div>
+
 
 <ng-template #interviewDialog>
   <div class="animate-zoom" style="font-size: 12px;">
@@ -515,3 +520,120 @@
     </div>
   </div>
 </ng-template>
+
+
+
+<ng-template #AboutCandidateDetailsDialog>
+  <div class="animate-zoom">
+    <div class="container">
+      <div class="row mb-2 align-items-center">
+        <div class="col-md-9">
+          <div class="d-flex ">
+            <span class="small text-uppercase mr-2">
+              Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase mr-2">
+              Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase">
+              Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName }}
+            </span>
+          </div>
+
+          <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
+            class="fw-bold custom-text">Details</span>
+        </div>
+        <div class="col-md-3 d-flex justify-content-end align-items-center">
+          <button type="button" class="btn btn-sm shadow-none " (click)="close()">
+            <i class="bi bi-x-circle fs-5 text-danger" (click)="close()"></i>
+          </button>
+        </div>
+      </div>
+      <hr class="m-0 p-0 text-dark border mb-2">
+
+      <div *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName; else noCandidateData"
+        class="scroll-container container">
+        <div class="card p-2 mb-3" style="font-size:12px;">
+          <h6 class=" mb-2" style="font-weight:600;">Basic Details : </h6>
+
+          <table class="table table-bordered table-sm mb-0" style="width:100%; margin:0; line-height:1.3;">
+            <tbody>
+              <tr>
+                <th style="width:20%; background-color:#f8f9fa; font-weight:600;">Name</th>
+                <td style="width:30%;">
+                  {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+                  {{ candidateData?.candidatePersonalInformationDetails?.lastName }}
+                </td>
+                <th style="width:20%; background-color:#f8f9fa; font-weight:600;">Highest Degree</th>
+                <td style="width:30%;">
+                  {{ candidateData?.candidatePersonalInformationDetails?.highestDegree || 'N/A' }}
+                </td>
+              </tr>
+
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Mobile</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Date of Birth</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.dob }}</td>
+              </tr>
+
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Email</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.email }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Aadhar</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.adhar }}</td>
+              </tr>
+
+              <tr>
+                <th style="background-color:#f8f9fa; font-weight:600;">Experience Type</th>
+                <td>
+                  {{ candidateData?.candidatePersonalInformationDetails?.isFresher ? 'Fresher' : 'Experienced' }}
+                </td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Resume</th>
+                <td>
+                  <ng-container *ngIf="resumeFile">
+                    <!-- <button class="btn btn-outline-primary btn-sm w-100 small" style="padding:2px 4px;"
+                      (click)="viewFile(resumeFile)">
+                      View Resume
+                    </button> -->
+                    <span class="badge custom-bg text-white cursor-pointer p-1" (click)="viewFile(resumeFile)">View
+                      Resume</span>
+                  </ng-container>
+                  <span *ngIf="!resumeFile">N/A</span>
+                </td>
+              </tr>
+
+              <tr *ngIf="!candidateData?.candidatePersonalInformationDetails?.isFresher">
+                <th style="background-color:#f8f9fa; font-weight:600;">Company Name</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.companyName || 'N/A' }}</td>
+                <th style="background-color:#f8f9fa; font-weight:600;">Total Experience</th>
+                <td>{{ candidateData?.candidatePersonalInformationDetails?.totalExperience || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+
+      </div>
+
+
+      <ng-template #noCandidateData>
+        <div class="alert alert-warning text-center">
+          No Candidate data available.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<div *ngIf="showPDF" class="overlay">
+  <div class="pdf-container">
+    <button class="close-btn" (click)="closePDF()">✖</button>
+    <iframe [src]="fileURL" width="100%" height="100%"></iframe>
+  </div>
+</div>

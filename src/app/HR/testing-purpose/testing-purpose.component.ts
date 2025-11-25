@@ -12,7 +12,8 @@ export class TestingPurposeComponent implements AfterViewInit, OnInit {
   a: number | null = 0;
   b: number | null = 0;
   myVideo: any;
-
+  devId: string = '';
+  
   ngOnInit(): void {
     // this.checkVideoTime();
     // this.adding(1,1);
@@ -20,6 +21,8 @@ export class TestingPurposeComponent implements AfterViewInit, OnInit {
     //  setTimeout(() => {
     //   this.showSurprise = true;
     // }, 5000);
+    this.devId = 'DEV-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
   }
 
   showSurprise = false;  // Button clicked

@@ -1889,15 +1889,16 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <label class="form-label form-label-small">Designation</label>
-                            <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="expDesignation"
+                            <!-- <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="expDesignation"
                               class="form-control form-control-sm">
                               <option value="">Select</option>
                               <option *ngFor="let item of designationListOptions" [value]="item.name">
                                 {{ item.name }}
                               </option>
-                            </select>
-                            <div
-                              *ngIf="registrationForm.get('expDesignation')?.touched && registrationForm.get('expDesignation')?.invalid"
+                            </select> -->
+                            <input *ngIf="editButtonDisplay" type="text" formControlName="expDesignation" maxlength="20"
+                            noFirstSpace placeholder="Enter Designation" class="form-control form-control-sm" />
+                            <div *ngIf="registrationForm.get('expDesignation')?.touched && registrationForm.get('expDesignation')?.invalid"
                               class="text-danger fs-custom">
                               Industry Type is required
                             </div>

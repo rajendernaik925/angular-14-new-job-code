@@ -139,7 +139,7 @@ export class RegistrationComponent implements OnInit {
             // resume: res?.candidatePersonalInformationDetails?.resume || '',
           });
 
-           if (res?.candidatePersonalInformationDetails?.stateId) {
+          if (res?.candidatePersonalInformationDetails?.stateId) {
             this.getCities(res?.candidatePersonalInformationDetails?.stateId);
           }
 
@@ -442,7 +442,7 @@ export class RegistrationComponent implements OnInit {
 
     if (selectedStateId) {
       this.indianCities = [];
-      this.registrationForm.patchValue({ city: '' }); 
+      this.registrationForm.patchValue({ city: '' });
       this.getCities(selectedStateId);
     } else {
       this.indianCities = [];
@@ -524,6 +524,84 @@ export class RegistrationComponent implements OnInit {
     const monthName = date.toLocaleString('default', { month: 'long' });
 
     return `${dayStr} ${monthName} ${year}`;
+  }
+
+  CorrectExperienceValue(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // Allow only digits and one dot
+    value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+
+    // Split on dot
+    let [yearsRaw = '', monthsRaw = ''] = value.split('.');
+
+    // Handle if user types just "."
+    if (yearsRaw === '' && monthsRaw !== '') {
+      yearsRaw = '0';
+    }
+
+    let years = parseInt(yearsRaw || '0', 10);
+    let months = parseInt(monthsRaw.slice(0, 2) || '0', 10);
+
+    // If months > 11, roll over to next year
+    if (months > 11) {
+      years += 1;
+      months = 0;
+    }
+
+    // Build final string
+    let finalValue = '';
+    if (value.endsWith('.') && monthsRaw === '') {
+      // If user just typed dot, allow e.g. "1." or "0."
+      finalValue = `${years}.`;
+    } else {
+      finalValue = months ? `${years}.${months}` : `${years}`;
+    }
+
+    input.value = finalValue;
+    this.registrationForm.get('totalExperience')?.setValue(finalValue);
+  }
+
+  validExperienceInput(event: KeyboardEvent): void {
+    const inputChar = event.key;
+    const inputElement = event.target as HTMLInputElement;
+    const currentValue = inputElement.value;
+
+    const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    if (allowedKeys.includes(inputChar)) return;
+
+    if (!/[\d.]/.test(inputChar)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (inputChar === '.' && currentValue === '') {
+      event.preventDefault();
+      return;
+    }
+
+    if (inputChar === '.' && currentValue.includes('.')) {
+      event.preventDefault();
+      return;
+    }
+
+    const parts = currentValue.split('.');
+
+    if (!currentValue.includes('.') && parts[0].length >= 2 && /\d/.test(inputChar)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (parts.length === 2 && parts[1].length >= 2 && /\d/.test(inputChar)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (/^00(\.00?)?$/.test(currentValue + inputChar)) {
+      event.preventDefault();
+      return;
+    }
   }
 
 

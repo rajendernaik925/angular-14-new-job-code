@@ -33,11 +33,12 @@
                 placeholder="Search Job Codes..." [formControl]="searchQuery" aria-level="Search"
                 style="max-width: 250px;"> -->
               <!-- <i class="fa fa-search"></i> -->
-               <button *ngIf="viewMoreValue" type="button" (click)="addBulk()"
+              <button *ngIf="viewMoreValue" type="button" (click)="addBulk()"
                 class="btn btn-sm bg-warning text-light mr-2 border-0 shadow-none">
                 Bulk Upload
               </button>
-              <input type="file" id="bulkFileInput" (change)="onFileChange($event)" accept=".xlsx, .xls" style="display:none" />
+              <input type="file" id="bulkFileInput" (change)="onFileChange($event)" accept=".xlsx, .xls"
+                style="display:none" />
               <button *ngIf="viewMoreValue" type="button" (click)="addCandidate()"
                 class="btn btn-sm custom-bg text-light border-0 shadow-none">
                 Add Candidate
@@ -299,9 +300,11 @@
             <input type="number" id="mobileNumber" class="form-control text-uppercase form-control-sm"
               formControlName="mobileNumber" placeholder="Enter mobile number" maxlength="10"
               (keydown)="preventNegativeInput($event, $event.target.value)" autocomplete="off" />
-            <div *ngIf="submitted && addCandidateForm.get('mobileNumber').invalid" class="text-danger fs-small">
+            <div *ngIf="addCandidateForm.get('mobileNumber').invalid && addCandidateForm.get('mobileNumber').touched"
+              class="text-danger fs-small">
               Mobile Number is required
             </div>
+
           </div>
         </div>
 

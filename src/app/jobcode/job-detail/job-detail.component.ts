@@ -47,7 +47,7 @@ export class JobDetailComponent implements OnInit {
   ) {
     this.publishForm = this.fb.group({
       publishMode: ['Offline', Validators.required],
-      businessUnit: this.fb.group({}) 
+      businessUnit: this.fb.group({})
     });
 
     // Subscribe to publishMode value changes
@@ -63,11 +63,26 @@ export class JobDetailComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // this.route.paramMap.subscribe(params => {
+    //   this.jobCodeId = Number(params.get('id')) || null;
+    //   this.idBasedSubmit = Number(params.get('id')) || null;
+    //   console.log('Job Code ID:', this.idBasedSubmit);
+    // });
+
     this.route.paramMap.subscribe(params => {
-      this.jobCodeId = Number(params.get('id')) || null;
-      this.idBasedSubmit = Number(params.get('id')) || null;
-      console.log('Job Code ID:', this.idBasedSubmit);
+      const encoded = params.get('id');
+
+      if (encoded) {
+        const decoded1 = atob(encoded);     // 1st decode
+        const decoded2 = atob(decoded1);    // 2nd decode
+
+        this.jobCodeId = Number(decoded2);
+        this.idBasedSubmit = Number(decoded2);
+
+        console.log('Job Code ID:', this.idBasedSubmit);
+      }
     });
+
 
     const loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData') || ''));
     this.userData = loggedUser ? JSON.parse(loggedUser) : {};

@@ -58,7 +58,7 @@
                         dateInputFormat: 'DD-MMM-YYYY'
                       }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" /> -->
-                    <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
+                    <input *ngIf="!isAllDataPresent" type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
                       formControlName="dob" autocomplete="off" [bsConfig]="{
                         adaptivePosition: true,
                         showWeekNumbers: false,
@@ -69,6 +69,8 @@
                         maxDate: maxDob  
                       }" bsDatepicker required readonly
                       [ngClass]="{ 'is-invalid': registrationForm.get('dob')?.invalid && registrationForm.get('dob')?.touched }" />
+
+                      <span *ngIf="isAllDataPresent" class="form-control form-control-sm" readonly>{{ loadedData?.candidatePersonalInformationDetails?.dob | date:'dd-MM-yyyy' }}</span>
 
                   </div>
                   <div class="col-md-3">
@@ -262,8 +264,8 @@
                     <div class="col-md-3">
                       <label>Total Experience <span class="text-danger">*</span></label>
                       <input type="text" formControlName="totalExperience" [readOnly]="isAllDataPresent"
-                        placeholder="Enter Total Year's of experience" maxlength="6"
-                        (keydown)="onlyNumbersWithDot($event)" maxlength="3" class="form-control form-control-sm"
+                        placeholder="Enter Total Year's of experience" maxlength="5" (input)="CorrectExperienceValue($event)"
+                        (keydown)="validExperienceInput($event)" class="form-control form-control-sm"
                         [ngClass]="{ 'is-invalid': registrationForm.get('totalExperience')?.invalid && registrationForm.get('totalExperience')?.touched }" />
                     </div>
 

@@ -492,10 +492,20 @@ export class JobcodeComponent implements OnInit {
     });
   }
 
+  // jobCodeDetails(id: number) {
+  //   this.jobCodeId = id;
+  //   this.router.navigate(['/jobcode', id]);
+  // }
+
   jobCodeDetails(id: number) {
     this.jobCodeId = id;
-    this.router.navigate(['/jobcode', id]);
+
+    const encoded1 = btoa(id.toString());      // 1st encode
+    const encoded2 = btoa(encoded1);           // 2nd encode
+
+    this.router.navigate(['/jobcode', encoded2]);
   }
+
 
   sortTable(column: string): void {
     if (this.sortColumn === column) {

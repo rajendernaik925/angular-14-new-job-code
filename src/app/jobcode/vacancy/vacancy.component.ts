@@ -362,11 +362,6 @@ export class VacancyComponent implements OnInit {
     this.addCandidateForm.get('workExperience')?.setValue(finalValue);
   }
 
-
-
-
-
-
   onSubmit(): void {
     this.submitted = true;
     this.isLoading = true;

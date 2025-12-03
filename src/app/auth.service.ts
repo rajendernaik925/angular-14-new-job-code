@@ -873,7 +873,6 @@ export class AuthService {
     return this.http.get<any>(`${this.baseUrl}/promotionletters/get/letter/${emp}/${Transactionid}`, { responseType: 'arraybuffer' as 'json' });
   }
 
-
   getCurrentDate(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/loginaction/currentdate`);
   }
@@ -893,7 +892,7 @@ export class AuthService {
     };
   }
 
-  private jobCodeUrls: string = "http://192.168.213.101:2025/";
+  private jobCodeUrls: string = "http://192.168.212.22:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)

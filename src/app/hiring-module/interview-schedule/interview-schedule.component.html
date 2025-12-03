@@ -286,7 +286,7 @@
 
 
           <div class="col-md-6">
-            <label for="interviewerName" class="form-label">Interview Mode<span class="text-danger">*</span></label>
+            <label for="interviewerName" class="form-label">Interview Mode <span class="text-danger">*</span></label>
             <select class="form-control form-control-sm" (change)="onModeChange($event)">
               <option value="">Select</option>
               <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>

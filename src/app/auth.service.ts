@@ -892,7 +892,9 @@ export class AuthService {
     };
   }
 
-  private jobCodeUrls: string = "http://192.168.212.22:2025/";
+  // private jobCodeUrls: string = "http://192.168.212.22:2025/";
+
+  private jobCodeUrls: string = "https://vendorapp.heterohealthcare.com/Jobcode/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
